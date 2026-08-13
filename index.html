@@ -38,7 +38,7 @@
       color: var(--text);
       margin: 0;
       padding: 20px;
-    }  
+    }   
 
     .container {
       max-width: 1600px;
@@ -46,7 +46,6 @@
       width: 95%;
     }
 
-    /* Encabezado estilo Banner Dota 2 */
     header {
       text-align: center;
       padding: 20px 0;
@@ -95,7 +94,6 @@
       text-shadow: 0 0 8px rgba(229, 193, 88, 0.3);
     }
 
-    /* Botones de control */
     .stream-controls {
       display: flex;
       gap: 10px;
@@ -127,7 +125,6 @@
       box-shadow: 0 0 10px rgba(229, 193, 88, 0.4);
     }
 
-    /* Grid Transmisiones */
     .streams-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
@@ -195,7 +192,6 @@
       font-weight: normal;
     }
 
-    /* Barra de estado */
     .status-bar {
       display: flex;
       justify-content: space-between;
@@ -251,7 +247,6 @@
       box-shadow: 0 0 12px rgba(229, 193, 88, 0.6);
     }
 
-    /* Tabla Scoreboard */
     .table-responsive {
       overflow-x: auto;
       background: var(--card-bg);
@@ -405,9 +400,7 @@
       border: 1px solid var(--border-metallic);
     }
 
-    /* ========================================================
-       ESTILOS DEL POPUP OVERLAY (ADAPTACIÓN DOTA 2 HUD)
-       ======================================================== */
+    /* ESTILOS DEL POPUP OVERLAY */
     .popup-modal-overlay {
       display: none;
       position: fixed;
@@ -426,18 +419,19 @@
       display: flex;
     }
 
-    /* Estilos nativos del popup extraído de Liquipedia */
     .brkts-popup.brkts-match-info-popup {
       position: relative !important;
       top: auto !important;
       left: auto !important;
-      width: 450px !important;
+      width: 520px !important;
       max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
       background: linear-gradient(180deg, #121822 0%, #0b0f17 100%) !important;
       border: 1px solid var(--border-metallic) !important;
       border-radius: 6px !important;
       box-shadow: 0 12px 35px rgba(0,0,0,0.9), 0 0 15px rgba(229, 193, 88, 0.1) !important;
-      padding: 16px !important;
+      padding: 18px !important;
       color: var(--text) !important;
       font-size: 13px !important;
     }
@@ -455,14 +449,6 @@
     }
 
     .brkts-popup-close-button:hover { color: var(--accent-gold); }
-
-    .match-info-countdown {
-      text-align: center;
-      display: block;
-      color: var(--text-muted);
-      font-size: 12px;
-      margin-bottom: 12px;
-    }
 
     .match-info-header {
       display: flex;
@@ -491,9 +477,6 @@
       font-weight: bold;
     }
 
-    .match-info-header-winner .name a,
-    .match-info-header-winner .name { color: var(--radiant-green) !important; }
-
     .match-info-header-scoreholder {
       display: flex;
       align-items: center;
@@ -509,157 +492,106 @@
 
     .match-info-header-scoreholder-score.match-info-header-winner { color: var(--accent-gold); }
 
-    .match-info-header-scoreholder-lower {
-      display: block;
-      text-align: center;
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    /* Filas de Partidas */
-    .brkts-popup-body-grid-row {
+    /* ESTILOS DE DRAFT DE OPENDOTA COMPATIBLES CON HUD */
+    .opendota-search-box {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #090d13;
-      border: 1px solid #1c2430;
-      border-radius: 4px;
-      padding: 6px 10px;
-      margin-bottom: 8px;
+      gap: 8px;
+      margin: 10px 0;
     }
 
-    .brkts-popup-body-grid-row-detail {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-    }
-
-    .brkts-popup-body-element-thumbs { display: flex; gap: 3px; }
-
-    .brkts-popup-side-color img, .brkts-champion-icon img {
-      width: 38px;
-      height: 22px;
-      object-fit: cover;
-      border-radius: 2px;
-      background: #18202c;
-    }
-
-    .brkts-popup-side-color--radiant img { border-bottom: 2px solid var(--radiant-green); }
-    .brkts-popup-side-color--dire img { border-bottom: 2px solid var(--dire-red); }
-
-    .brkts-popup-spaced {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-family: monospace;
-    }
-
-    /* Veto / Bans Collapsible Section */
-    .brkts-popup-veto-wrapper, .general-collapsible {
-      background: #080b10;
-      border: 1px solid var(--border-metallic);
-      border-radius: 4px;
-      padding: 8px 10px;
-      margin-top: 12px;
-    }
-
-    .brkts-popup-veto-header, .general-collapsible-default-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--accent-gold);
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    .button--extrasmall, .general-collapsible-expand-button, .general-collapsible-collapse-button {
-      background: #18202c;
+    .opendota-input {
+      flex: 1;
+      background: #06090e;
       border: 1px solid var(--border-metallic);
       color: var(--text);
-      padding: 2px 8px;
-      border-radius: 3px;
-      cursor: pointer;
-      font-size: 11px;
-    }
-
-    .button--extrasmall:hover {
-      border-color: var(--accent-gold);
-      color: var(--accent-gold);
-    }
-
-    .should-collapse.brkts-popup-veto, .brkts-popup-veto {
-      display: none;
-      margin-top: 8px;
-      border-top: 1px solid rgba(62, 49, 30, 0.4);
-      padding-top: 8px;
-    }
-
-    .should-collapse.brkts-popup-veto.show, .brkts-popup-veto.show { display: block !important; }
-
-    .brkts-popup-veto-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .brkts-popup-veto-row .brkts-popup-body-element-thumbs img {
-      width: 26px;
-      height: 15px;
-      opacity: 0.6;
-      filter: grayscale(80%);
-    }
-
-    .brkts-popup-comment {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 8px;
-    }
-
-    .brkts-popup-comment a { color: var(--accent-gold-bright); text-decoration: none; }
-    .brkts-popup-comment img.flag, .brkts-popup-comment img { width: 16px; vertical-align: middle; }
-
-    .brkts-popup-footer {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(62, 49, 30, 0.4);
-      overflow-x: auto;
-    }
-
-    .brkts-popup-footer img {
-      width: 24px;
-      height: 24px;
-      opacity: 0.8;
-      transition: opacity 0.2s;
-    }
-
-    .brkts-popup-footer img:hover { opacity: 1; }
-
-    .match-info-links { margin-top: 12px; }
-
-    .button--primary.match-page-button, .match-page-button .button {
-      width: 100%;
-      background: linear-gradient(180deg, #e5c158 0%, #a88228 100%);
-      color: #000;
-      border: 1px solid #ffe899;
-      padding: 8px;
+      padding: 6px 10px;
       border-radius: 4px;
-      font-weight: bold;
-      text-align: center;
-      cursor: pointer;
-      text-transform: uppercase;
       font-size: 12px;
-      text-decoration: none;
-      display: block;
     }
 
-    .button--primary.match-page-button:hover {
-      background: linear-gradient(180deg, #fff0aa 0%, #c49a33 100%);
+    .opendota-btn {
+      background: var(--border-metallic);
+      color: var(--accent-gold);
+      border: 1px solid var(--accent-gold);
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 11px;
+    }
+
+    .opendota-btn:hover { background: var(--accent-gold); color: #000; }
+
+    .draft-container {
+      background: #090d13;
+      border: 1px solid #1c2430;
+      border-radius: 6px;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .draft-team-header {
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .draft-team-header.radiant { background: rgba(46, 204, 113, 0.2); color: var(--radiant-green); }
+    .draft-team-header.dire { background: rgba(231, 76, 60, 0.2); color: var(--dire-red); }
+
+    .hero-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .hero-card {
+      position: relative;
+      width: 48px;
+      height: 27px;
+      border-radius: 3px;
+      overflow: hidden;
+      border: 1px solid #2a3442;
+    }
+
+    .hero-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-card.ban img {
+      filter: grayscale(100%);
+      opacity: 0.4;
+    }
+
+    .hero-card.ban::after {
+      content: '✖';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--dire-red);
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .hero-card .hero-name-tooltip {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.8);
+      font-size: 8px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #fff;
     }
   </style>
 </head>
@@ -744,8 +676,26 @@
   </div>
 
   <script>
-    // Almacenamiento Global para Popups
     window.MATCH_POPUPS_CACHE = [];
+    window.OPENDOTA_HEROES = {};
+
+    // 1. Cargar catálogo de héroes de OpenDota al iniciar
+    async function loadOpenDotaHeroes() {
+      try {
+        const res = await fetch('https://api.opendota.com/api/heroes');
+        if (!res.ok) return;
+        const data = await res.json();
+        data.forEach(h => {
+          const formattedName = h.name.replace('npc_dota_hero_', '');
+          window.OPENDOTA_HEROES[h.id] = {
+            name: h.localized_name,
+            img: `https://api.opendota.com/apps/dota2/images/dota_react/heroes/${formattedName}.png`
+          };
+        });
+      } catch (e) {
+        console.warn('No se pudo cargar el catálogo de héroes de OpenDota', e);
+      }
+    }
 
     function setStreamMode(mode) {
       const grid = document.getElementById('streams-grid-container');
@@ -891,7 +841,6 @@
         }
       }
 
-      // Buscar si Liquipedia incluyó el popup completo dentro de la celda
       const nativePopupEl = tdCell.querySelector('.brkts-popup, .match-info-popup, .brkts-match-info-popup');
       let nativeHtml = nativePopupEl ? fixLiquipediaUrls(nativePopupEl.outerHTML) : null;
 
@@ -1043,6 +992,68 @@
       }
     }
 
+    // 2. Consulta dinámica a OpenDota desde el cliente para obtener Drafts
+    async function fetchOpenDotaMatchDraft(matchId) {
+      const targetContainer = document.getElementById('opendota-draft-result');
+      if (!matchId) {
+        targetContainer.innerHTML = '<div style="color:var(--dire-red);">Ingresa un Match ID válido.</div>';
+        return;
+      }
+
+      targetContainer.innerHTML = '<div style="color:var(--accent-gold);">Consultando OpenDota API...</div>';
+
+      try {
+        const res = await fetch(`https://api.opendota.com/api/matches/${matchId}`);
+        if (!res.ok) throw new Error('Partida no encontrada');
+
+        const match = await res.json();
+        const picksBans = match.picks_bans;
+
+        if (!picksBans || picksBans.length === 0) {
+          targetContainer.innerHTML = '<div style="color:var(--text-muted);">Esta partida no registra picks/bans en OpenDota.</div>';
+          return;
+        }
+
+        const radiantPicks = picksBans.filter(p => p.team === 0 && p.is_pick);
+        const radiantBans = picksBans.filter(p => p.team === 0 && !p.is_pick);
+        const direPicks = picksBans.filter(p => p.team === 1 && p.is_pick);
+        const direBans = picksBans.filter(p => p.team === 1 && !p.is_pick);
+
+        const renderHeroCard = (step) => {
+          const hero = window.OPENDOTA_HEROES[step.hero_id] || { name: `Hero ${step.hero_id}`, img: '' };
+          const isBan = !step.is_pick;
+          return `
+            <div class="hero-card ${isBan ? 'ban' : ''}" title="${step.is_pick ? 'Pick' : 'Ban'}: ${hero.name}">
+              ${hero.img ? `<img src="${hero.img}" alt="${hero.name}">` : ''}
+              <div class="hero-name-tooltip">${hero.name}</div>
+            </div>`;
+        };
+
+        targetContainer.innerHTML = `
+          <div class="draft-container">
+            <div class="draft-team-header radiant">
+              <span>RADIANT: ${match.radiant_name || 'Equipo 1'}</span>
+              <span>${match.radiant_win ? '🏆 VICTORIA' : ''}</span>
+            </div>
+            <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">Picks:</div>
+            <div class="hero-grid">${radiantPicks.map(renderHeroCard).join('')}</div>
+            <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">Bans:</div>
+            <div class="hero-grid">${radiantBans.map(renderHeroCard).join('')}</div>
+
+            <div class="draft-team-header dire" style="margin-top:10px;">
+              <span>DIRE: ${match.dire_name || 'Equipo 2'}</span>
+              <span>${!match.radiant_win ? '🏆 VICTORIA' : ''}</span>
+            </div>
+            <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">Picks:</div>
+            <div class="hero-grid">${direPicks.map(renderHeroCard).join('')}</div>
+            <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">Bans:</div>
+            <div class="hero-grid">${direBans.map(renderHeroCard).join('')}</div>
+          </div>`;
+      } catch (e) {
+        targetContainer.innerHTML = `<div style="color:var(--dire-red);">Error: ${e.message}</div>`;
+      }
+    }
+
     /* Mostrar Popup Dinámico por Partido */
     function showMatchPopup(index) {
       const match = window.MATCH_POPUPS_CACHE[index];
@@ -1051,10 +1062,8 @@
       const container = document.getElementById('match-modal-container');
 
       if (match.nativeHtml) {
-        // Usar HTML original de Liquipedia extraído del API
         container.innerHTML = match.nativeHtml;
       } else {
-        // Fallback dinámico específico para este partido
         const s = (match.score || '0:0').split(':').map(x => x.trim());
         const score1 = s[0] || '0';
         const score2 = s[1] || '0';
@@ -1086,9 +1095,16 @@
                 </div>
               </div>
             </div>
-            <div class="status-text" style="padding:15px; font-size:12px;">
-              Detalles de héroes no disponibles en tiempo real para este mapa.
+
+            <!-- Integración de Buscador OpenDota -->
+            <div style="font-size:11px; color:var(--accent-gold); font-weight:bold; margin-top:8px;">
+              Consultar Drafts vía OpenDota
             </div>
+            <div class="opendota-search-box">
+              <input type="text" id="opendota-match-id-input" class="opendota-input" placeholder="Ingresa Match ID (ej. 7890123456)">
+              <button class="opendota-btn" onclick="fetchOpenDotaMatchDraft(document.getElementById('opendota-match-id-input').value.trim())">Buscar Draft</button>
+            </div>
+            <div id="opendota-draft-result"></div>
           </div>`;
       }
 
@@ -1101,17 +1117,16 @@
       modal.classList.remove('active');
     }
 
-    // Delegación de Eventos para Cierre y Acordeón de Bans (Show/Hide)
     document.addEventListener('DOMContentLoaded', () => {
+      loadOpenDotaHeroes();
+
       const modal = document.getElementById('match-modal');
       
       modal.addEventListener('click', (e) => {
-        // Cerrar al hacer clic en el fondo oscuro o en el botón de cerrar
         if (e.target === modal || e.target.closest('.brkts-popup-close-button, .popup-close-btn')) {
           closeMatchModal();
         }
 
-        // Mostrar / Ocultar Bans (Accordion)
         const toggleBtn = e.target.closest('.brkts-popup-veto-header, .general-collapsible-default-header, .general-collapsible-expand-button, .general-collapsible-collapse-button');
         if (toggleBtn) {
           const wrapper = toggleBtn.closest('.brkts-popup-veto-wrapper, .general-collapsible');

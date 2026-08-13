@@ -67,7 +67,6 @@
       letter-spacing: 1px;
     }
 
-    /* Títulos de sección con barra vertical dorada */
     .section-title {
       font-size: 1.3rem;
       color: var(--accent-gold);
@@ -94,7 +93,6 @@
       }
     }
 
-    /* Tarjetas de Stream estilo HUD Item Box */
     .stream-card {
       background: var(--card-bg);
       border: 1px solid var(--border-metallic);
@@ -182,7 +180,6 @@
       100% { opacity: 1; }
     }
 
-    /* Botón estilo Dota 2 UI */
     .refresh-btn {
       background: linear-gradient(180deg, #e5c158 0%, #a88228 100%);
       color: #000;
@@ -234,14 +231,61 @@
       border-bottom: 1px solid rgba(62, 49, 30, 0.4);
     }
 
-    .standings-table tr:hover {
-      background-color: rgba(229, 193, 88, 0.05);
+    /* Estilos de Resaltado (Clasificados / Eliminados) */
+    .tr-qualified {
+      background-color: rgba(46, 204, 113, 0.08) !important;
+    }
+
+    .tr-qualified:hover {
+      background-color: rgba(46, 204, 113, 0.15) !important;
+    }
+
+    .tr-eliminated {
+      background-color: rgba(231, 76, 60, 0.08) !important;
+    }
+
+    .tr-eliminated:hover {
+      background-color: rgba(231, 76, 60, 0.15) !important;
     }
 
     .team-cell {
       text-align: left;
       font-weight: bold;
       color: var(--accent-gold-bright);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Estilo del Logo del Equipo */
+    .team-logo {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+    }
+
+    .status-tag {
+      font-size: 0.72rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .tag-qualified {
+      background: rgba(46, 204, 113, 0.2);
+      color: var(--radiant-green);
+      border: 1px solid var(--radiant-green);
+      box-shadow: 0 0 6px rgba(46, 204, 113, 0.3);
+    }
+
+    .tag-eliminated {
+      background: rgba(231, 76, 60, 0.2);
+      color: var(--dire-red);
+      border: 1px solid var(--dire-red);
+      box-shadow: 0 0 6px rgba(231, 76, 60, 0.3);
     }
 
     .pos-badge {
@@ -254,6 +298,16 @@
       border: 1px solid var(--border-metallic);
       font-weight: bold;
       color: var(--accent-gold);
+    }
+
+    .pos-badge.qualified-badge {
+      border-color: var(--radiant-green);
+      color: var(--radiant-green);
+    }
+
+    .pos-badge.eliminated-badge {
+      border-color: var(--dire-red);
+      color: var(--dire-red);
     }
 
     .score-cell {
@@ -508,6 +562,35 @@
           const matches = row.cells[2]?.textContent.trim() || '-';
           const games = row.cells[3]?.textContent.trim() || '-';
 
+          // Extracción del Logo del Equipo
+          const logoImg = row.querySelector('.block-team img');
+          let logoSrc = logoImg ? (logoImg.getAttribute('src') || '') : '';
+          if (logoSrc && logoSrc.startsWith('/')) {
+            logoSrc = 'https://liquipedia.net' + logoSrc;
+          }
+          const logoHtml = logoSrc ? `<img src="${logoSrc}" class="team-logo" alt="${teamName}">` : '';
+
+          // Evaluación de Estado (Clasificado / Eliminado)
+          let rowClass = '';
+          let badgeClass = '';
+          let statusTag = '';
+
+          const matchParts = matches.split('-').map(s => parseInt(s.trim()));
+          if (matchParts.length === 2 && !isNaN(matchParts[0]) && !isNaN(matchParts[1])) {
+            const wins = matchParts[0];
+            const losses = matchParts[1];
+
+            if (wins >= 3) {
+              rowClass = 'tr-qualified';
+              badgeClass = 'qualified-badge';
+              statusTag = '<span class="status-tag tag-qualified">Clasificado</span>';
+            } else if (losses >= 3) {
+              rowClass = 'tr-eliminated';
+              badgeClass = 'eliminated-badge';
+              statusTag = '<span class="status-tag tag-eliminated">Eliminado</span>';
+            }
+          }
+
           const r1 = parseRoundCell(row.cells[4]);
           const r2 = parseRoundCell(row.cells[5]);
           const r3 = parseRoundCell(row.cells[6]);
@@ -515,9 +598,13 @@
           const r5 = parseRoundCell(row.cells[8]);
 
           tableHtml += `
-            <tr>
-              <td><span class="pos-badge">${pos}</span></td>
-              <td class="team-cell">${teamName}</td>
+            <tr class="${rowClass}">
+              <td><span class="pos-badge ${badgeClass}">${pos}</span></td>
+              <td class="team-cell">
+                ${logoHtml}
+                <span>${teamName}</span>
+                ${statusTag}
+              </td>
               <td class="score-cell">${matches}</td>
               <td>${games}</td>
               <td>${r1}</td>

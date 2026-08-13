@@ -286,20 +286,12 @@
       vertical-align: middle;
     }
 
-    .tr-qualified {
-      background-color: rgba(46, 204, 113, 0.08) !important;
+    .standings-table tbody tr {
+      transition: filter 0.2s;
     }
 
-    .tr-qualified:hover {
-      background-color: rgba(46, 204, 113, 0.15) !important;
-    }
-
-    .tr-eliminated {
-      background-color: rgba(231, 76, 60, 0.08) !important;
-    }
-
-    .tr-eliminated:hover {
-      background-color: rgba(231, 76, 60, 0.15) !important;
+    .standings-table tbody tr:hover {
+      filter: brightness(1.35);
     }
 
     .team-cell {
@@ -308,7 +300,7 @@
       color: var(--accent-gold-bright);
     }
 
-    /* Estructura Flex interna sin romper la celda <td> */
+    /* Estructura Flex interna para no romper la celda td */
     .team-cell-content {
       display: flex;
       align-items: center;
@@ -332,14 +324,14 @@
     }
 
     .tag-qualified {
-      background: rgba(46, 204, 113, 0.2);
+      background: rgba(46, 204, 113, 0.25);
       color: var(--radiant-green);
       border: 1px solid var(--radiant-green);
       box-shadow: 0 0 6px rgba(46, 204, 113, 0.3);
     }
 
     .tag-eliminated {
-      background: rgba(231, 76, 60, 0.2);
+      background: rgba(231, 76, 60, 0.25);
       color: var(--dire-red);
       border: 1px solid var(--dire-red);
       box-shadow: 0 0 6px rgba(231, 76, 60, 0.3);
@@ -380,6 +372,7 @@
       gap: 4px;
     }
 
+    /* Estilos dinámicos para los puntajes de ronda */
     .r-score {
       font-weight: bold;
       background: #06080c;
@@ -388,6 +381,18 @@
       border: 1px solid var(--border-metallic);
       color: var(--accent-gold);
       font-size: 0.85rem;
+    }
+
+    .r-score.win {
+      color: var(--radiant-green) !important;
+      border-color: rgba(46, 204, 113, 0.5);
+      background: rgba(46, 204, 113, 0.1);
+    }
+
+    .r-score.loss {
+      color: var(--dire-red) !important;
+      border-color: rgba(231, 76, 60, 0.5);
+      background: rgba(231, 76, 60, 0.1);
     }
 
     .r-opp-box {
@@ -601,6 +606,24 @@
       const scoreEl = matchOverview.querySelector('.generic-label, .label--standings-result');
       const score = scoreEl ? scoreEl.textContent.trim() : '';
 
+      // Determinar si es victoria o derrota
+      let scoreClass = '';
+      if (scoreEl) {
+        const labelType = scoreEl.getAttribute('data-label-type');
+        if (labelType === 'result-win') {
+          scoreClass = 'win';
+        } else if (labelType === 'result-loss') {
+          scoreClass = 'loss';
+        } else {
+          // Evaluación manual si no existe atributo data-label-type
+          const parts = score.split(':').map(s => parseInt(s.trim()));
+          if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+            if (parts[0] > parts[1]) scoreClass = 'win';
+            else if (parts[0] < parts[1]) scoreClass = 'loss';
+          }
+        }
+      }
+
       const teamIcon = matchOverview.querySelector('.team-template-team-icon, .team-template-image-icon');
       let opponent = '';
       let oppLogoSrc = '';
@@ -624,7 +647,7 @@
       if (score || opponent) {
         return `
           <div class="round-cell-box">
-            ${score ? `<span class="r-score">${score}</span>` : ''}
+            ${score ? `<span class="r-score ${scoreClass}">${score}</span>` : ''}
             <div class="r-opp-box">
               ${oppLogoHtml}
               ${opponent ? `<span class="r-opp">vs ${opponent}</span>` : ''}
@@ -647,7 +670,19 @@
         return;
       }
 
-      const rows = standingsTable.querySelectorAll('tr.table2__row--body');
+      // Filtrar filas válidas descartando encabezados no deseados
+      const rawRows = Array.from(standingsTable.querySelectorAll('tr.table2__row--body'));
+      const validRows = rawRows.filter(row => {
+        if (row.classList.contains('table2__row--head') || row.querySelector('th')) return false;
+        const pos = row.querySelector('.label--placement')?.textContent.trim() || row.cells[0]?.textContent.trim();
+        const teamName = row.querySelector('.block-team .name.hidden-xs')?.textContent.trim() || 
+                         row.querySelector('.block-team a')?.textContent.trim() || 
+                         row.cells[1]?.textContent.trim();
+        return pos && teamName && pos !== '#' && teamName.toLowerCase() !== 'participant';
+      });
+
+      const totalRows = validRows.length;
+
       let tableHtml = `
         <div class="table-responsive">
           <table class="standings-table">
@@ -666,76 +701,72 @@
             </thead>
             <tbody>`;
 
-      let rowCount = 0;
-
-      rows.forEach(row => {
-        // Ignorar encabezados internos
-        if (row.classList.contains('table2__row--head') || row.querySelector('th')) return;
-
+      validRows.forEach((row, idx) => {
         const pos = row.querySelector('.label--placement')?.textContent.trim() || row.cells[0]?.textContent.trim();
         const teamName = row.querySelector('.block-team .name.hidden-xs')?.textContent.trim() || 
                          row.querySelector('.block-team a')?.textContent.trim() || 
                          row.cells[1]?.textContent.trim();
 
-        if (pos && teamName && pos !== '#' && teamName.toLowerCase() !== 'participant') {
-          rowCount++;
-          const matches = row.cells[2]?.textContent.trim() || '-';
-          const games = row.cells[3]?.textContent.trim() || '-';
+        const matches = row.cells[2]?.textContent.trim() || '-';
+        const games = row.cells[3]?.textContent.trim() || '-';
 
-          // Extracción de Logo Principal
-          const logoImg = row.querySelector('.block-team img');
-          let logoSrc = logoImg ? (logoImg.getAttribute('src') || '') : '';
-          if (logoSrc && logoSrc.startsWith('/')) {
-            logoSrc = 'https://liquipedia.net' + logoSrc;
-          }
-          const logoHtml = logoSrc ? `<img src="${logoSrc}" class="team-logo" alt="${teamName}">` : '';
-
-          // Evaluación de Estado
-          let rowClass = '';
-          let badgeClass = '';
-          let statusTag = '';
-
-          const matchParts = matches.split('-').map(s => parseInt(s.trim()));
-          if (matchParts.length === 2 && !isNaN(matchParts[0]) && !isNaN(matchParts[1])) {
-            const wins = matchParts[0];
-            const losses = matchParts[1];
-
-            if (wins >= 3) {
-              rowClass = 'tr-qualified';
-              badgeClass = 'qualified-badge';
-              statusTag = '<span class="status-tag tag-qualified">Clasificado</span>';
-            } else if (losses >= 3) {
-              rowClass = 'tr-eliminated';
-              badgeClass = 'eliminated-badge';
-              statusTag = '<span class="status-tag tag-eliminated">Eliminado</span>';
-            }
-          }
-
-          const r1 = parseRoundCell(row.cells[4]);
-          const r2 = parseRoundCell(row.cells[5]);
-          const r3 = parseRoundCell(row.cells[6]);
-          const r4 = parseRoundCell(row.cells[7]);
-          const r5 = parseRoundCell(row.cells[8]);
-
-          tableHtml += `
-            <tr class="${rowClass}">
-              <td><span class="pos-badge ${badgeClass}">${pos}</span></td>
-              <td class="team-cell">
-                <div class="team-cell-content">
-                  ${logoHtml}
-                  <span>${teamName}</span>
-                  ${statusTag}
-                </div>
-              </td>
-              <td class="score-cell">${matches}</td>
-              <td>${games}</td>
-              <td>${r1}</td>
-              <td>${r2}</td>
-              <td>${r3}</td>
-              <td>${r4}</td>
-              <td>${r5}</td>
-            </tr>`;
+        // Extracción de Logo
+        const logoImg = row.querySelector('.block-team img');
+        let logoSrc = logoImg ? (logoImg.getAttribute('src') || '') : '';
+        if (logoSrc && logoSrc.startsWith('/')) {
+          logoSrc = 'https://liquipedia.net' + logoSrc;
         }
+        const logoHtml = logoSrc ? `<img src="${logoSrc}" class="team-logo" alt="${teamName}">` : '';
+
+        // Evaluación de Estado
+        let badgeClass = '';
+        let statusTag = '';
+
+        const matchParts = matches.split('-').map(s => parseInt(s.trim()));
+        if (matchParts.length === 2 && !isNaN(matchParts[0]) && !isNaN(matchParts[1])) {
+          const wins = matchParts[0];
+          const losses = matchParts[1];
+
+          if (wins >= 3) {
+            badgeClass = 'qualified-badge';
+            statusTag = '<span class="status-tag tag-qualified">Clasificado</span>';
+          } else if (losses >= 3) {
+            badgeClass = 'eliminated-badge';
+            statusTag = '<span class="status-tag tag-eliminated">Eliminado</span>';
+          }
+        }
+
+        // Degradado de color de fondo (Heatmap) de Verde (arriba) a Rojo (abajo)
+        const ratio = totalRows > 1 ? idx / (totalRows - 1) : 0;
+        const r = Math.round(46 + ratio * (231 - 46));
+        const g = Math.round(204 + ratio * (76 - 204));
+        const b = Math.round(113 + ratio * (60 - 113));
+        const rowBgStyle = `background-color: rgba(${r}, ${g}, ${b}, 0.12) !important;`;
+
+        const r1 = parseRoundCell(row.cells[4]);
+        const r2 = parseRoundCell(row.cells[5]);
+        const r3 = parseRoundCell(row.cells[6]);
+        const r4 = parseRoundCell(row.cells[7]);
+        const r5 = parseRoundCell(row.cells[8]);
+
+        tableHtml += `
+          <tr style="${rowBgStyle}">
+            <td><span class="pos-badge ${badgeClass}">${pos}</span></td>
+            <td class="team-cell">
+              <div class="team-cell-content">
+                ${logoHtml}
+                <span>${teamName}</span>
+                ${statusTag}
+              </div>
+            </td>
+            <td class="score-cell">${matches}</td>
+            <td>${games}</td>
+            <td>${r1}</td>
+            <td>${r2}</td>
+            <td>${r3}</td>
+            <td>${r4}</td>
+            <td>${r5}</td>
+          </tr>`;
       });
 
       tableHtml += `
@@ -743,7 +774,7 @@
           </table>
         </div>`;
 
-      if (rowCount > 0) {
+      if (totalRows > 0) {
         container.innerHTML = tableHtml;
       } else {
         container.innerHTML = `

@@ -27,12 +27,18 @@
 
     body {
       font-family: 'Radiance', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      background-image: radial-gradient(circle at 50% 0%, #151d2a 0%, #07090e 70%);
+      
+      /* Capa negra al 70% de opacidad sobre tu imagen */
+      background-image: linear-gradient(rgba(7, 9, 14, 0.75), rgba(7, 9, 14, 0.85)), url('img/fondo.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      
       color: var(--text);
       margin: 0;
       padding: 20px;
-    }
+    }  
 
     .container {
       max-width: 1600px;

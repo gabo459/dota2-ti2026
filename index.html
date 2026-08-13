@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
   <title>The International 2026 - Dota 2 HUD Multistream</title>
   
   <style>
@@ -371,7 +372,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 3px;
+      gap: 4px;
     }
 
     .r-score {
@@ -382,6 +383,20 @@
       border: 1px solid var(--border-metallic);
       color: var(--accent-gold);
       font-size: 0.85rem;
+    }
+
+    .r-opp-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .opp-logo {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
     }
 
     .r-opp {
@@ -586,30 +601,39 @@
 
       const teamIcon = matchOverview.querySelector('.team-template-team-icon, .team-template-image-icon');
       let opponent = '';
+      let oppLogoSrc = '';
 
       if (teamIcon) {
         opponent = teamIcon.getAttribute('data-highlighting-class') || 
                    teamIcon.querySelector('a')?.getAttribute('title') || 
                    teamIcon.querySelector('img')?.getAttribute('alt') || '';
+
+        const imgEl = teamIcon.querySelector('img');
+        if (imgEl) {
+          oppLogoSrc = imgEl.getAttribute('src') || '';
+          if (oppLogoSrc && oppLogoSrc.startsWith('/')) {
+            oppLogoSrc = 'https://liquipedia.net' + oppLogoSrc;
+          }
+        }
       }
 
-      if (score && opponent) {
+      const oppLogoHtml = oppLogoSrc ? `<img src="${oppLogoSrc}" class="opp-logo" alt="${opponent}">` : '';
+
+      if (score || opponent) {
         return `
           <div class="round-cell-box">
-            <span class="r-score">${score}</span>
-            <span class="r-opp">vs ${opponent}</span>
+            ${score ? `<span class="r-score">${score}</span>` : ''}
+            <div class="r-opp-box">
+              ${oppLogoHtml}
+              ${opponent ? `<span class="r-opp">vs ${opponent}</span>` : ''}
+            </div>
           </div>`;
-      } else if (score) {
-        return `<span class="r-score">${score}</span>`;
-      } else if (opponent) {
-        return `<span class="r-opp">vs ${opponent}</span>`;
       }
 
       return tdCell.textContent.trim() || '-';
     }
 
     function renderStandingsTable(doc, container) {
-      // Selector exclusivo para extraer UNICAMENTE la tabla de Swiss Standings
       const standingsTable = doc.querySelector('div[data-analytics-name="Swiss standings table"] table') || 
                              doc.querySelector('.standings-swiss table');
 
@@ -653,7 +677,7 @@
           const matches = row.cells[2]?.textContent.trim() || '-';
           const games = row.cells[3]?.textContent.trim() || '-';
 
-          // Extracción de Logo
+          // Extracción de Logo Principal del Equipo
           const logoImg = row.querySelector('.block-team img');
           let logoSrc = logoImg ? (logoImg.getAttribute('src') || '') : '';
           if (logoSrc && logoSrc.startsWith('/')) {
@@ -661,7 +685,7 @@
           }
           const logoHtml = logoSrc ? `<img src="${logoSrc}" class="team-logo" alt="${teamName}">` : '';
 
-          // Evaluación de Estado
+          // Evaluación de Estado (Clasificado / Eliminado)
           let rowClass = '';
           let badgeClass = '';
           let statusTag = '';

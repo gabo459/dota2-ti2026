@@ -501,31 +501,11 @@
       margin-top: 12px;
     }
 
-    .opendota-section-title {
-      font-size: 11px;
-      color: var(--accent-gold);
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-
     .opendota-quick-buttons {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-bottom: 10px;
-    }
-
-    .opendota-select-box {
-      width: 100%;
-      background: #04060a;
-      border: 1px solid var(--border-metallic);
-      color: var(--text);
-      padding: 6px;
-      border-radius: 4px;
-      font-size: 11px;
-      margin-bottom: 8px;
+      margin-top: 4px;
     }
 
     .opendota-search-box {
@@ -557,6 +537,12 @@
     }
 
     .opendota-btn:hover { background: var(--accent-gold); color: #000; }
+    
+    .opendota-btn.active {
+      background: var(--accent-gold) !important;
+      color: #000 !important;
+      box-shadow: 0 0 8px rgba(229, 193, 88, 0.5);
+    }
 
     /* PESTAÑAS DRAFT / JUGADORES */
     .opendota-tabs {
@@ -1273,6 +1259,14 @@
       if (activeContent) activeContent.classList.add('active');
     }
 
+    function highlightGameBtn(btn) {
+      const parent = btn.parentElement;
+      if (parent) {
+        parent.querySelectorAll('.opendota-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+    }
+
     // 4. Obtener Picks, Bans e Ítems de una partida mediante OpenDota API
     async function fetchOpenDotaMatchDraft(matchId) {
       const targetContainer = document.getElementById('opendota-draft-result');
@@ -1408,7 +1402,7 @@
       }
     }
 
-    /* Mostrar Popup Dinámico por Partido */
+    /* Mostrar Popup Dinámico por Partido con Auto-Carga Directa */
     function showMatchPopup(index) {
       const match = window.MATCH_POPUPS_CACHE[index];
       if (!match) return;
@@ -1422,29 +1416,30 @@
         const score1 = s[0] || '0';
         const score2 = s[1] || '0';
 
-        const t1 = (match.team1 || '').toLowerCase();
-        const t2 = (match.team2 || '').toLowerCase();
+        const t1 = (match.team1 || '').toLowerCase().trim();
+        const t2 = (match.team2 || '').toLowerCase().trim();
 
+        // FILTRO ESTRICTO: Ambos equipos deben formar parte de la misma partida
         const relatedMatches = window.OPENDOTA_TI_MATCHES.filter(m => {
           const rName = (m.radiant_name || '').toLowerCase();
           const dName = (m.dire_name || '').toLowerCase();
-          return (rName.includes(t1) || dName.includes(t1) || rName.includes(t2) || dName.includes(t2));
+          
+          const t1InRadiant = t1 && rName.includes(t1);
+          const t1InDire = t1 && dName.includes(t1);
+          const t2InRadiant = t2 && rName.includes(t2);
+          const t2InDire = t2 && dName.includes(t2);
+
+          return (t1InRadiant && t2InDire) || (t1InDire && t2InRadiant);
         });
 
         let quickButtonsHtml = '';
         if (relatedMatches.length > 0) {
           quickButtonsHtml = relatedMatches.map((m, idx) => `
-            <button class="opendota-btn" onclick="fetchOpenDotaMatchDraft(${m.match_id})">
-              Juego ${idx + 1} (${m.radiant_name || 'Rad'} vs ${m.dire_name || 'Dire'})
+            <button class="opendota-btn ${idx === 0 ? 'active' : ''}" onclick="fetchOpenDotaMatchDraft(${m.match_id}); highlightGameBtn(this);">
+              Juego ${idx + 1}
             </button>
           `).join('');
         }
-
-        let selectOptionsHtml = window.OPENDOTA_TI_MATCHES.map(m => `
-          <option value="${m.match_id}">
-            [ID: ${m.match_id}] ${m.radiant_name || 'Radiant'} vs ${m.dire_name || 'Dire'}
-          </option>
-        `).join('');
 
         container.innerHTML = `
           <div class="brkts-popup brkts-popup-container brkts-match-info-popup">
@@ -1474,32 +1469,37 @@
               </div>
             </div>
 
-            <!-- Sección Integrada de OpenDota -->
+            <!-- Sección de Control de Partidas Directas -->
             <div class="opendota-section">
-              <div class="opendota-section-title">Análisis de Partida (OpenDota API)</div>
-              
               ${relatedMatches.length > 0 ? `
-                <div style="font-size:10px; color:var(--text-muted); margin-bottom:4px;">Partidas detectadas de este enfrentamiento:</div>
+                <div style="font-size:11px; color:var(--accent-gold); font-weight:bold; margin-bottom:4px;">
+                  Partidas registradas (${match.team1} vs ${match.team2}):
+                </div>
                 <div class="opendota-quick-buttons">${quickButtonsHtml}</div>
-              ` : ''}
+              ` : `
+                <div style="font-size:11px; color:var(--text-muted);">
+                  No se detectaron partidas automáticas registradas para este enfrentamiento específico.
+                </div>
+              `}
 
-              ${selectOptionsHtml ? `
-                <div style="font-size:10px; color:var(--text-muted); margin-bottom:4px;">Seleccionar de partidas recientes de TI 2026:</div>
-                <select class="opendota-select-box" onchange="if(this.value) fetchOpenDotaMatchDraft(this.value)">
-                  <option value="">-- Elige una partida de la lista --</option>
-                  ${selectOptionsHtml}
-                </select>
-              ` : ''}
-
-              <div style="font-size:10px; color:var(--text-muted); margin-bottom:4px;">O ingresa Match ID manualmente:</div>
-              <div class="opendota-search-box">
-                <input type="text" id="opendota-match-id-input" class="opendota-input" placeholder="Ej. 7890123456">
-                <button class="opendota-btn" onclick="fetchOpenDotaMatchDraft(document.getElementById('opendota-match-id-input').value.trim())">Buscar</button>
-              </div>
+              <details style="margin-top:8px; font-size:10px; color:var(--text-muted);">
+                <summary style="cursor:pointer; color:var(--accent-gold); font-weight:bold;">🔍 Búsqueda manual por Match ID</summary>
+                <div class="opendota-search-box" style="margin-top:6px;">
+                  <input type="text" id="opendota-match-id-input" class="opendota-input" placeholder="Ej. 7890123456">
+                  <button class="opendota-btn" onclick="fetchOpenDotaMatchDraft(document.getElementById('opendota-match-id-input').value.trim())">Buscar</button>
+                </div>
+              </details>
             </div>
 
             <div id="opendota-draft-result"></div>
           </div>`;
+
+        // Auto-cargar el Juego 1 inmediatamente al abrir el modal
+        if (relatedMatches.length > 0) {
+          setTimeout(() => {
+            fetchOpenDotaMatchDraft(relatedMatches[0].match_id);
+          }, 50);
+        }
       }
 
       const modal = document.getElementById('match-modal');

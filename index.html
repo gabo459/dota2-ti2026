@@ -6,6 +6,9 @@
   <meta name="referrer" content="no-referrer">
   <title>The International 2026 - Dota 2 HUD Multistream</title>
   
+  <!-- Carga de Font Awesome para los íconos nativos de Liquipedia (Cierre, VODs, Swords, etc.) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
     :root {
       --bg-color: #07090e;
@@ -28,7 +31,7 @@
     body {
       font-family: 'Radiance', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       
-      /* Capa negra al 75% de opacidad sobre imagen de fondo */
+      /* Capa oscura al 80% sobre imagen de fondo */
       background-image: linear-gradient(rgba(7, 9, 14, 0.75), rgba(7, 9, 14, 0.85)), url('img/fondo.jpg');
       background-size: cover;
       background-position: center;
@@ -46,7 +49,7 @@
       width: 95%;
     }
 
-    /* Encabezado estilo Banner de Dota 2 */
+    /* Encabezado estilo Banner Dota 2 */
     header {
       text-align: center;
       padding: 20px 0;
@@ -95,7 +98,7 @@
       text-shadow: 0 0 8px rgba(229, 193, 88, 0.3);
     }
 
-    /* Botones de control de reproductor */
+    /* Botones de control */
     .stream-controls {
       display: flex;
       gap: 10px;
@@ -127,7 +130,7 @@
       box-shadow: 0 0 10px rgba(229, 193, 88, 0.4);
     }
 
-    /* Grid de transmisiones */
+    /* Grid Transmisiones */
     .streams-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
@@ -259,7 +262,7 @@
       box-shadow: 0 0 12px rgba(229, 193, 88, 0.6);
     }
 
-    /* Tabla de Posiciones estilo Scoreboard Dota 2 */
+    /* Tabla Scoreboard */
     .table-responsive {
       overflow-x: auto;
       background: var(--card-bg);
@@ -354,20 +357,10 @@
       color: var(--accent-gold);
     }
 
-    .pos-badge.qualified-badge {
-      border-color: var(--radiant-green);
-      color: var(--radiant-green);
-    }
+    .pos-badge.qualified-badge { border-color: var(--radiant-green); color: var(--radiant-green); }
+    .pos-badge.eliminated-badge { border-color: var(--dire-red); color: var(--dire-red); }
 
-    .pos-badge.eliminated-badge {
-      border-color: var(--dire-red);
-      color: var(--dire-red);
-    }
-
-    .score-cell {
-      font-weight: bold;
-      color: #fff;
-    }
+    .score-cell { font-weight: bold; color: #fff; }
 
     .round-cell-box {
       display: flex;
@@ -382,8 +375,8 @@
     }
 
     .round-cell-box:hover {
-      background: rgba(229, 193, 88, 0.1);
-      transform: scale(1.03);
+      background: rgba(229, 193, 88, 0.15);
+      transform: scale(1.04);
     }
 
     .r-score {
@@ -438,203 +431,301 @@
     }
 
     /* ========================================================
-       ESTILOS DEL MODAL POPUP ESTILO LIQUIPEDIA (DOTA 2 HUD)
+       ESTILOS EXACTOS LIQUIPEDIA BRACKETS MATCH POPUP (DOTA HUD)
        ======================================================== */
-    .match-popup-overlay {
+    .popup-modal-overlay {
       display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(5, 7, 10, 0.85);
-      z-index: 2000;
+      background: rgba(3, 5, 8, 0.85);
+      z-index: 2500;
       justify-content: center;
       align-items: center;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(5px);
     }
 
-    .match-popup-overlay.active {
+    .popup-modal-overlay.active {
       display: flex;
     }
 
-    .match-popup-content {
-      background: linear-gradient(180deg, #141a24 0%, #0d121a 100%);
-      color: var(--text);
-      width: 600px;
-      max-width: 95%;
-      border-radius: 6px;
-      padding: 20px;
-      position: relative;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(229, 193, 88, 0.15);
+    /* Contenedor Popup con Clases Originales Liquipedia */
+    .brkts-popup.brkts-match-info-popup {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      width: 440px !important;
+      max-width: 95vw;
+      background: #11161f;
       border: 1px solid var(--border-metallic);
+      border-radius: 6px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.9), 0 0 15px rgba(229, 193, 88, 0.1);
+      padding: 16px;
+      color: var(--text);
+      font-size: 13px;
     }
 
-    .popup-close-btn {
+    .brkts-popup-close-button {
       position: absolute;
       top: 10px;
-      right: 15px;
+      right: 12px;
       background: none;
       border: none;
       color: var(--text-muted);
-      font-size: 26px;
+      font-size: 18px;
       cursor: pointer;
-      line-height: 1;
       transition: color 0.2s;
     }
 
-    .popup-close-btn:hover {
+    .brkts-popup-close-button:hover {
       color: var(--accent-gold);
     }
 
-    /* Encabezado del Popup */
-    .popup-header {
+    .match-info-countdown {
+      text-align: center;
+      display: block;
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    /* Header del Match (Equipos + Score) */
+    .match-info-header {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border-metallic);
-      padding-bottom: 15px;
-      margin-bottom: 15px;
+      border-bottom: 1px solid rgba(62, 49, 30, 0.5);
+      padding-bottom: 12px;
+      margin-bottom: 12px;
     }
 
-    .header-team {
+    .match-info-header-opponent {
+      flex: 1;
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-weight: bold;
-      width: 40%;
-      font-size: 1.05rem;
     }
 
-    .header-team.right {
+    .match-info-header-opponent-left {
       justify-content: flex-end;
     }
 
-    .header-team img {
-      width: 32px;
-      height: 32px;
+    .block-team {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .block-team.flipped {
+      flex-direction: row-reverse;
+    }
+
+    .block-team img {
+      max-height: 32px;
+      width: auto;
       object-fit: contain;
     }
 
-    .header-team.winner {
+    .block-team .name a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .match-info-header-winner .name a {
       color: var(--radiant-green);
     }
 
-    .header-score {
-      text-align: center;
-      width: 20%;
+    .match-info-header-scoreholder {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
     }
 
-    .header-score .score {
-      display: block;
-      font-size: 24px;
+    .match-info-header-scoreholder-upper {
+      font-size: 20px;
       font-weight: bold;
+      color: var(--text-muted);
+    }
+
+    .match-info-header-scoreholder-score.match-info-header-winner {
       color: var(--accent-gold);
     }
 
-    .header-score .format {
-      font-size: 11px;
+    .match-info-header-scoreholder-lower {
+      display: block;
+      text-align: center;
+      font-size: 10px;
       color: var(--text-muted);
-      text-transform: uppercase;
     }
 
-    /* Filas de Héroes por Juego */
-    .game-row {
+    /* Filas de Partidas (Games & Hero Icons) */
+    .brkts-popup-body-grid-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #090c10;
-      margin-bottom: 10px;
-      padding: 8px 12px;
+      background: #0b0e14;
+      border: 1px solid #1f2733;
       border-radius: 4px;
-      border: 1px solid var(--border-metallic);
+      padding: 6px 10px;
+      margin-bottom: 8px;
     }
 
-    .heroes-container {
+    .brkts-popup-body-grid-row-detail {
       display: flex;
-      gap: 4px;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
     }
 
-    .heroes-container img {
+    .brkts-popup-body-element-thumbs {
+      display: flex;
+      gap: 3px;
+    }
+
+    .brkts-popup-side-color img, .brkts-champion-icon img {
       width: 38px;
-      height: 24px;
-      border-radius: 2px;
+      height: 22px;
       object-fit: cover;
-      background-color: #1a202a;
+      border-radius: 2px;
+      background: #18202c;
     }
 
-    .heroes-container.radiant img {
+    .brkts-popup-side-color--radiant img {
       border-bottom: 2px solid var(--radiant-green);
     }
 
-    .heroes-container.dire img {
+    .brkts-popup-side-color--dire img {
       border-bottom: 2px solid var(--dire-red);
     }
 
-    .game-duration {
-      font-size: 12px;
+    .brkts-popup-spaced {
+      font-size: 11px;
       color: var(--text-muted);
       font-family: monospace;
     }
 
-    .result-badge {
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-weight: bold;
-    }
-
-    .result-badge.win {
-      background-color: var(--radiant-green);
-      color: #000;
-    }
-
-    .result-badge.loss {
-      background-color: #3e444c;
-      color: #aaa;
-    }
-
-    /* Acordeón de Bans / Selección */
-    .veto-accordion {
-      margin-top: 15px;
-      font-size: 13px;
-      background: #080a0e;
-      border-radius: 4px;
-      padding: 10px;
+    /* Veto / Bans Collapsible Section */
+    .brkts-popup-veto-wrapper {
+      background: #090c10;
       border: 1px solid var(--border-metallic);
+      border-radius: 4px;
+      padding: 8px 10px;
+      margin-top: 12px;
     }
 
-    .veto-accordion summary {
-      cursor: pointer;
-      color: var(--accent-gold);
-      font-weight: bold;
-      outline: none;
-    }
-
-    .veto-content {
-      margin-top: 10px;
+    .brkts-popup-veto-header {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--accent-gold);
+      font-size: 12px;
     }
 
-    .veto-game {
+    .button--extrasmall {
+      background: #18202c;
+      border: 1px solid var(--border-metallic);
+      color: var(--text);
+      padding: 2px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    .button--extrasmall:hover {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+    }
+
+    .should-collapse.brkts-popup-veto {
+      display: none;
+      margin-top: 8px;
+      border-top: 1px solid rgba(62, 49, 30, 0.4);
+      padding-top: 8px;
+    }
+
+    .should-collapse.brkts-popup-veto.show {
+      display: block;
+    }
+
+    .brkts-popup-veto-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
     }
 
-    .ban-list {
+    .brkts-popup-veto-row .brkts-popup-body-element-thumbs img {
+      width: 26px;
+      height: 15px;
+      opacity: 0.6;
+      filter: grayscale(80%);
+    }
+
+    /* Comentarios y Casters */
+    .brkts-popup-comment {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .brkts-popup-comment a {
+      color: var(--accent-gold-bright);
+      text-decoration: none;
+    }
+
+    .brkts-popup-comment img.flag {
+      width: 16px;
+      vertical-align: middle;
+    }
+
+    /* Footer con íconos VOD / Stats / Dotabuff */
+    .brkts-popup-footer {
       display: flex;
-      gap: 4px;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(62, 49, 30, 0.4);
+      overflow-x: auto;
     }
 
-    .ban-list img {
-      width: 28px;
-      height: 16px;
-      opacity: 0.5;
-      filter: grayscale(100%);
-      background-color: #1c222d;
+    .brkts-popup-footer img {
+      width: 24px;
+      height: 24px;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .brkts-popup-footer img:hover {
+      opacity: 1;
+    }
+
+    /* Botón final Ver Detalles */
+    .match-info-links {
+      margin-top: 12px;
+    }
+
+    .button--primary.match-page-button {
+      width: 100%;
+      background: linear-gradient(180deg, #e5c158 0%, #a88228 100%);
+      color: #000;
+      border: 1px solid #ffe899;
+      padding: 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    .button--primary.match-page-button:hover {
+      background: linear-gradient(180deg, #fff0aa 0%, #c49a33 100%);
     }
   </style>
 </head>
@@ -657,7 +748,6 @@
     </div>
 
     <div id="streams-grid-container" class="streams-grid">
-      
       <!-- Twitch Player -->
       <div id="card-twitch" class="stream-card">
         <div class="stream-header">
@@ -697,10 +787,9 @@
           </iframe>
         </div>
       </div>
-
     </div>
 
-    <!-- Tabla Swiss Standings Exclusiva -->
+    <!-- Tabla Swiss Standings -->
     <div class="section-title" style="margin-bottom:18px;">Tabla de Posiciones - Swiss Stage (Liquipedia)</div>
     <div class="status-bar">
       <div class="live-indicator">
@@ -716,92 +805,147 @@
   </div>
 
   <!-- ========================================================
-       MODAL POPUP DE DETALLES DEL MATCH (DOTA 2 HUD)
+       MODAL POPUP CON LA ESTRUCTURA HTML DE LIQUIPEDIA
        ======================================================== -->
-  <div class="match-popup-overlay" id="match-modal">
-    <div class="match-popup-content">
-      <button class="popup-close-btn" onclick="closeMatchModal()">&times;</button>
+  <div class="popup-modal-overlay" id="match-modal">
+    <div class="brkts-popup brkts-popup-container brkts-match-info-popup" data-analytics-name="Match popup">
+      <button class="brkts-popup-close-button" onclick="closeMatchModal()"><i class="far fa-times"></i></button>
       
-      <!-- Encabezado del Popup -->
-      <div class="popup-header">
-        <div class="header-team winner" id="modal-team1">
-          <img id="modal-logo1" src="https://via.placeholder.com/32" alt="Team 1">
-          <span id="modal-name1">Equipo A</span>
+      <span class="match-info-countdown">
+        <span class="timer-object timer-object-datetime-only">
+          <span class="timer-object-date" id="popup-date">August 12, 2026 - 22:30 <abbr title="UTC-5:00">UTC-5</abbr></span>
+        </span>
+      </span>
+
+      <div class="match-info-header">
+        <div class="match-info-header-opponent match-info-header-opponent-left match-info-header-winner" id="header-left">
+          <div class="block-team flipped">
+            <span class="team-template-image-icon"><img id="popup-logo1" src="https://liquipedia.net/commons/images/thumb/0/05/BoomBoys_allmode.png/78px-BoomBoys_allmode.png" alt=""></span>
+            <span class="name"><a href="#" id="popup-name1">BoomBoys</a></span>
+          </div>
         </div>
-        <div class="header-score">
-          <span class="score" id="modal-score">2 : 1</span>
-          <span class="format">(Bo3)</span>
+
+        <div class="match-info-header-scoreholder">
+          <span class="match-info-header-scoreholder-icon"><i class="fas fa-caret-left"></i></span>
+          <span class="match-info-header-scoreholder-scorewrapper">
+            <span class="match-info-header-scoreholder-upper">
+              <span class="match-info-header-scoreholder-score match-info-header-winner" id="popup-score1">2</span>
+              <span class="match-info-header-scoreholder-divider">:</span>
+              <span class="match-info-header-scoreholder-score" id="popup-score2">0</span>
+            </span>
+            <span class="match-info-header-scoreholder-lower">(Bo3)</span>
+          </span>
+          <span class="match-info-header-scoreholder-icon"></span>
         </div>
-        <div class="header-team right" id="modal-team2">
-          <span id="modal-name2">Equipo B</span>
-          <img id="modal-logo2" src="https://via.placeholder.com/32" alt="Team 2">
+
+        <div class="match-info-header-opponent match-info-header-loser" id="header-right">
+          <div class="block-team">
+            <span class="team-template-image-icon"><img id="popup-logo2" src="https://liquipedia.net/commons/images/thumb/7/7b/OG_2026_allmode.png/36px-OG_2026_allmode.png" alt=""></span>
+            <span class="name"><a href="#" id="popup-name2">OG</a></span>
+          </div>
         </div>
       </div>
 
-      <!-- Cuerpo del Popup: Lista de Juegos -->
-      <div class="popup-body">
-        
-        <!-- GAME 1 -->
-        <div class="game-row">
-          <div class="result-badge win">G3</div>
-          <div class="heroes-container radiant" title="Radiant Picks">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Huskar" alt="Pick 1">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=CM" alt="Pick 2">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=SD" alt="Pick 3">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Mars" alt="Pick 4">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Alch" alt="Pick 5">
-          </div>
+      <div class="brkts-popup-body">
+        <div class="brkts-popup-body-grid">
           
-          <div class="game-duration">38:42</div>
-          
-          <div class="heroes-container dire" title="Dire Picks">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Hood" alt="Pick 6">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=WR" alt="Pick 7">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Tusk" alt="Pick 8">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=PL" alt="Pick 9">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Snap" alt="Pick 10">
-          </div>
-          <div class="result-badge loss">P</div>
-        </div>
-
-        <!-- GAME 2 -->
-        <div class="game-row">
-          <div class="result-badge loss">P</div>
-          <div class="heroes-container radiant" title="Radiant Picks">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Necro" alt="Pick 1">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Mirana" alt="Pick 2">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Tiny" alt="Pick 3">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=SD" alt="Pick 4">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Pango" alt="Pick 5">
-          </div>
-          
-          <div class="game-duration">42:15</div>
-          
-          <div class="heroes-container dire" title="Dire Picks">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Clock" alt="Pick 6">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Lina" alt="Pick 7">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=SB" alt="Pick 8">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=DS" alt="Pick 9">
-            <img src="https://via.placeholder.com/38x24/1a202a/fff?text=Gyro" alt="Pick 10">
-          </div>
-          <div class="result-badge win">G3</div>
-        </div>
-
-        <!-- Acordeón de Bans -->
-        <details class="veto-accordion">
-          <summary>Bans / Fase de Selecciones</summary>
-          <div class="veto-content">
-            <div class="veto-game">
-              <span>Bans Juego 1:</span>
-              <div class="ban-list">
-                <img src="https://via.placeholder.com/28x16/222/888?text=B1" alt="Ban 1">
-                <img src="https://via.placeholder.com/28x16/222/888?text=B2" alt="Ban 2">
-                <img src="https://via.placeholder.com/28x16/222/888?text=B3" alt="Ban 3">
+          <!-- GAME 1 -->
+          <div class="brkts-popup-body-grid-row">
+            <div class="brkts-popup-body-grid-row-detail">
+              <div class="brkts-popup-spaced">
+                <div class="brkts-popup-body-element-thumbs brkts-champion-icon">
+                  <div class="brkts-popup-side-color brkts-popup-side-color--radiant"><img alt="Undying" src="https://liquipedia.net/commons/images/thumb/0/00/Undying_icon_dota2_gameasset.png/60px-Undying_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--radiant"><img alt="Windranger" src="https://liquipedia.net/commons/images/thumb/c/c5/Windranger_icon_dota2_gameasset.png/60px-Windranger_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--radiant"><img alt="Lone Druid" src="https://liquipedia.net/commons/images/thumb/5/5c/Lone_Druid_icon_dota2_gameasset.png/60px-Lone_Druid_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--radiant"><img alt="Ember Spirit" src="https://liquipedia.net/commons/images/thumb/9/97/Ember_Spirit_icon_dota2_gameasset.png/60px-Ember_Spirit_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--radiant"><img alt="Legion Commander" src="https://liquipedia.net/commons/images/thumb/2/28/Legion_Commander_icon_dota2_gameasset.png/60px-Legion_Commander_icon_dota2_gameasset.png"></div>
+                </div>
+              </div>
+              <div class="brkts-popup-spaced">45:22</div>
+              <div class="brkts-popup-spaced">
+                <div class="brkts-popup-body-element-thumbs brkts-champion-icon">
+                  <div class="brkts-popup-side-color brkts-popup-side-color--dire"><img alt="Hoodwink" src="https://liquipedia.net/commons/images/thumb/5/5b/Hoodwink_icon_dota2_gameasset.png/60px-Hoodwink_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--dire"><img alt="Lina" src="https://liquipedia.net/commons/images/thumb/6/6c/Lina_icon_dota2_gameasset.png/60px-Lina_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--dire"><img alt="Mirana" src="https://liquipedia.net/commons/images/thumb/0/01/Mirana_icon_dota2_gameasset.png/60px-Mirana_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--dire"><img alt="Enigma" src="https://liquipedia.net/commons/images/thumb/6/65/Enigma_icon_dota2_gameasset.png/60px-Enigma_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--dire"><img alt="Kez" src="https://liquipedia.net/commons/images/thumb/b/b1/Kez_icon_dota2_gameasset.png/60px-Kez_icon_dota2_gameasset.png"></div>
+                </div>
               </div>
             </div>
           </div>
-        </details>
 
+          <!-- GAME 2 -->
+          <div class="brkts-popup-body-grid-row">
+            <div class="brkts-popup-body-grid-row-detail">
+              <div class="brkts-popup-spaced">
+                <div class="brkts-popup-body-element-thumbs brkts-champion-icon">
+                  <div class="brkts-popup-side-color brkts-popup-side-color--dire"><img alt="Lina" src="https://liquipedia.net/commons/images/thumb/6/6c/Lina_icon_dota2_gameasset.png/60px-Lina_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--dire"><img alt="Undying" src="https://liquipedia.net/commons/images/thumb/0/00/Undying_icon_dota2_gameasset.png/60px-Undying_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--dire"><img alt="Dark Willow" src="https://liquipedia.net/commons/images/thumb/a/a8/Dark_Willow_icon_dota2_gameasset.png/60px-Dark_Willow_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--dire"><img alt="Necrophos" src="https://liquipedia.net/commons/images/thumb/e/eb/Necrophos_icon_dota2_gameasset.png/60px-Necrophos_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--dire"><img alt="Centaur" src="https://liquipedia.net/commons/images/thumb/8/8b/Centaur_Warrunner_icon_dota2_gameasset.png/60px-Centaur_Warrunner_icon_dota2_gameasset.png"></div>
+                </div>
+              </div>
+              <div class="brkts-popup-spaced">36:55</div>
+              <div class="brkts-popup-spaced">
+                <div class="brkts-popup-body-element-thumbs brkts-champion-icon">
+                  <div class="brkts-popup-side-color brkts-popup-side-color--radiant"><img alt="Tiny" src="https://liquipedia.net/commons/images/thumb/0/07/Tiny_icon_dota2_gameasset.png/60px-Tiny_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--radiant"><img alt="Hoodwink" src="https://liquipedia.net/commons/images/thumb/5/5b/Hoodwink_icon_dota2_gameasset.png/60px-Hoodwink_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--radiant"><img alt="Axe" src="https://liquipedia.net/commons/images/thumb/0/08/Axe_icon_dota2_gameasset.png/60px-Axe_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--radiant"><img alt="Bounty Hunter" src="https://liquipedia.net/commons/images/thumb/0/04/Bounty_Hunter_icon_dota2_gameasset.png/60px-Bounty_Hunter_icon_dota2_gameasset.png"></div>
+                  <div class="brkts-popup-side-color brkts-popup-side-color--radiant"><img alt="TA" src="https://liquipedia.net/commons/images/thumb/d/df/Templar_Assassin_icon_dota2_gameasset.png/60px-Templar_Assassin_icon_dota2_gameasset.png"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Seccion Collapsible / Bans -->
+        <div class="general-collapsible brkts-popup-veto-wrapper">
+          <div class="general-collapsible-default-header brkts-popup-veto-header">
+            <b class="general-collapsible-default-title">Bans</b>
+            <span class="general-collapsible-default-toggle">
+              <button class="button button--secondary button--extrasmall" type="button" id="veto-toggle-btn" onclick="toggleVetoSection()">
+                <span id="veto-toggle-btn-text"><i class="far fa-eye"></i> Show</span>
+              </button>
+            </span>
+          </div>
+          <div class="should-collapse brkts-popup-veto" id="veto-container">
+            <div class="brkts-popup-veto-row">
+              <div class="brkts-popup-body-element-thumbs brkts-champion-icon">
+                <img alt="Treant" src="https://liquipedia.net/commons/images/thumb/6/6d/Treant_Protector_icon_dota2_gameasset.png/60px-Treant_Protector_icon_dota2_gameasset.png">
+                <img alt="NP" src="https://liquipedia.net/commons/images/thumb/6/69/Nature%27s_Prophet_icon_dota2_gameasset.png/60px-Nature%27s_Prophet_icon_dota2_gameasset.png">
+                <img alt="KOTL" src="https://liquipedia.net/commons/images/thumb/d/d0/Keeper_of_the_Light_icon_dota2_gameasset.png/60px-Keeper_of_the_Light_icon_dota2_gameasset.png">
+              </div>
+              <div>Game 1</div>
+              <div class="brkts-popup-body-element-thumbs brkts-champion-icon">
+                <img alt="WW" src="https://liquipedia.net/commons/images/thumb/7/79/Winter_Wyvern_icon_dota2_gameasset.png/60px-Winter_Wyvern_icon_dota2_gameasset.png">
+                <img alt="Bane" src="https://liquipedia.net/commons/images/thumb/1/1c/Bane_icon_dota2_gameasset.png/60px-Bane_icon_dota2_gameasset.png">
+                <img alt="Slardar" src="https://liquipedia.net/commons/images/thumb/5/5b/Slardar_icon_dota2_gameasset.png/60px-Slardar_icon_dota2_gameasset.png">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Casters -->
+        <div class="brkts-popup-comment">
+          <b>Casters: </b><img alt="US" src="https://liquipedia.net/commons/images/thumb/3/3b/Us_hd.png/36px-Us_hd.png" class="flag"> Bkop, <img alt="BA" src="https://liquipedia.net/commons/images/thumb/4/4d/Ba_hd.png/36px-Ba_hd.png" class="flag"> lizZard
+        </div>
+
+        <!-- Links Footer VODs / Stats -->
+        <div class="brkts-popup-footer">
+          <a href="https://youtu.be/YZkB98EwkHI" target="_blank" title="Watch Game 1"><img src="https://liquipedia.net/commons/images/6/65/Vod-1.svg" alt="VOD 1"></a>
+          <a href="https://youtu.be/VA0gFohnFjw" target="_blank" title="Watch Game 2"><img src="https://liquipedia.net/commons/images/c/c1/Vod-2.svg" alt="VOD 2"></a>
+          <a href="https://www.datdota.com" target="_blank" title="datDota"><img src="https://liquipedia.net/commons/images/thumb/c/c4/DatDota-icon.png/32px-DatDota-icon.png" alt="datDota"></a>
+          <a href="https://www.dotabuff.com" target="_blank" title="DOTABUFF"><img src="https://liquipedia.net/commons/images/thumb/5/50/DOTABUFF-icon.png/32px-DOTABUFF-icon.png" alt="Dotabuff"></a>
+        </div>
+      </div>
+
+      <div class="match-info-links">
+        <div class="button button--primary match-page-button" role="button">
+          <i class="far fa-swords"></i> View match details
+        </div>
       </div>
     </div>
   </div>
@@ -910,7 +1054,6 @@
       const scoreEl = matchOverview.querySelector('.generic-label, .label--standings-result');
       const score = scoreEl ? scoreEl.textContent.trim() : '';
 
-      // Determinar si es victoria o derrota
       let scoreClass = '';
       if (scoreEl) {
         const labelType = scoreEl.getAttribute('data-label-type');
@@ -948,7 +1091,6 @@
       const oppLogoHtml = oppLogoSrc ? `<img src="${oppLogoSrc}" class="opp-logo" alt="${opponent}">` : '';
 
       if (score || opponent) {
-        // Al hacer clic, abre la ventana emergente con la info del match
         const safeTeam1 = escapeQuotes(mainTeamName);
         const safeTeam2 = escapeQuotes(opponent);
         const safeLogo1 = escapeQuotes(mainTeamLogo);
@@ -1023,7 +1165,6 @@
         const matches = row.cells[2]?.textContent.trim() || '-';
         const games = row.cells[3]?.textContent.trim() || '-';
 
-        // Extracción de Logo
         const logoImg = row.querySelector('.block-team img');
         let logoSrc = logoImg ? (logoImg.getAttribute('src') || '') : '';
         if (logoSrc && logoSrc.startsWith('/')) {
@@ -1031,7 +1172,6 @@
         }
         const logoHtml = logoSrc ? `<img src="${logoSrc}" class="team-logo" alt="${teamName}">` : '';
 
-        // Evaluación de Estado
         let badgeClass = '';
         let statusTag = '';
 
@@ -1049,7 +1189,6 @@
           }
         }
 
-        // Degradado Heatmap
         const ratio = totalRows > 1 ? idx / (totalRows - 1) : 0;
         const r = Math.round(46 + ratio * (231 - 46));
         const g = Math.round(204 + ratio * (76 - 204));
@@ -1097,16 +1236,18 @@
       }
     }
 
-    /* Lógica del Modal Popup */
-    function openMatchDetails(team1, logo1, team2, logo2, score) {
-      document.getElementById('modal-name1').textContent = team1 || 'Equipo 1';
-      document.getElementById('modal-name2').textContent = team2 || 'Equipo 2';
+    /* Funciones del Popup / Modal */
+    function openMatchDetails(team1, logo1, team2, logo2, scoreStr) {
+      document.getElementById('popup-name1').textContent = team1 || 'Equipo 1';
+      document.getElementById('popup-name2').textContent = team2 || 'Equipo 2';
       
-      document.getElementById('modal-logo1').src = logo1 || 'https://via.placeholder.com/32';
-      document.getElementById('modal-logo2').src = logo2 || 'https://via.placeholder.com/32';
-      
-      document.getElementById('modal-score').textContent = score || 'VS';
-      
+      if (logo1) document.getElementById('popup-logo1').src = logo1;
+      if (logo2) document.getElementById('popup-logo2').src = logo2;
+
+      const scores = (scoreStr || '0:0').split(':').map(s => s.trim());
+      document.getElementById('popup-score1').textContent = scores[0] || '0';
+      document.getElementById('popup-score2').textContent = scores[1] || '0';
+
       const modal = document.getElementById('match-modal');
       modal.classList.add('active');
     }
@@ -1116,7 +1257,19 @@
       modal.classList.remove('active');
     }
 
-    // Cerrar modal al hacer clic en el overlay o presionar Esc
+    function toggleVetoSection() {
+      const vetoBox = document.getElementById('veto-container');
+      const btnText = document.getElementById('veto-toggle-btn-text');
+      
+      if (vetoBox.classList.contains('show')) {
+        vetoBox.classList.remove('show');
+        btnText.innerHTML = '<i class="far fa-eye"></i> Show';
+      } else {
+        vetoBox.classList.add('show');
+        btnText.innerHTML = '<i class="far fa-eye-slash"></i> Hide';
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const modal = document.getElementById('match-modal');
       modal.addEventListener('click', (e) => {

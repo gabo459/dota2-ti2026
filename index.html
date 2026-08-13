@@ -283,6 +283,7 @@
     .standings-table td {
       padding: 12px 10px;
       border-bottom: 1px solid rgba(62, 49, 30, 0.4);
+      vertical-align: middle;
     }
 
     .tr-qualified {
@@ -305,6 +306,10 @@
       text-align: left;
       font-weight: bold;
       color: var(--accent-gold-bright);
+    }
+
+    /* Estructura Flex interna sin romper la celda <td> */
+    .team-cell-content {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -493,7 +498,6 @@
   </div>
 
   <script>
-    // 1. Control de vistas de reproducción
     function setStreamMode(mode) {
       const grid = document.getElementById('streams-grid-container');
       const cardTwitch = document.getElementById('card-twitch');
@@ -524,13 +528,11 @@
       }
     }
 
-    // 2. Dominio dinámico para Twitch
     const currentHost = window.location.hostname || 'localhost';
     const twitchIframe = document.getElementById('twitch-iframe');
     const targetParent = (currentHost === '' || currentHost === 'file') ? 'localhost' : currentHost;
     twitchIframe.src = `https://player.twitch.tv/?channel=dota2ti_es&parent=${targetParent}&parent=localhost&parent=127.0.0.1&muted=true`;
 
-    // 3. Petición API a Liquipedia
     const PAGES = [
       'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026/Group_Stage&format=json',
       'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026&format=json'
@@ -645,7 +647,7 @@
         return;
       }
 
-      const rows = standingsTable.querySelectorAll('tr.table2__row--body, tbody tr');
+      const rows = standingsTable.querySelectorAll('tr.table2__row--body');
       let tableHtml = `
         <div class="table-responsive">
           <table class="standings-table">
@@ -667,17 +669,20 @@
       let rowCount = 0;
 
       rows.forEach(row => {
+        // Ignorar encabezados internos
+        if (row.classList.contains('table2__row--head') || row.querySelector('th')) return;
+
         const pos = row.querySelector('.label--placement')?.textContent.trim() || row.cells[0]?.textContent.trim();
         const teamName = row.querySelector('.block-team .name.hidden-xs')?.textContent.trim() || 
                          row.querySelector('.block-team a')?.textContent.trim() || 
                          row.cells[1]?.textContent.trim();
 
-        if (pos && teamName) {
+        if (pos && teamName && pos !== '#' && teamName.toLowerCase() !== 'participant') {
           rowCount++;
           const matches = row.cells[2]?.textContent.trim() || '-';
           const games = row.cells[3]?.textContent.trim() || '-';
 
-          // Extracción de Logo Principal del Equipo
+          // Extracción de Logo Principal
           const logoImg = row.querySelector('.block-team img');
           let logoSrc = logoImg ? (logoImg.getAttribute('src') || '') : '';
           if (logoSrc && logoSrc.startsWith('/')) {
@@ -685,7 +690,7 @@
           }
           const logoHtml = logoSrc ? `<img src="${logoSrc}" class="team-logo" alt="${teamName}">` : '';
 
-          // Evaluación de Estado (Clasificado / Eliminado)
+          // Evaluación de Estado
           let rowClass = '';
           let badgeClass = '';
           let statusTag = '';
@@ -716,9 +721,11 @@
             <tr class="${rowClass}">
               <td><span class="pos-badge ${badgeClass}">${pos}</span></td>
               <td class="team-cell">
-                ${logoHtml}
-                <span>${teamName}</span>
-                ${statusTag}
+                <div class="team-cell-content">
+                  ${logoHtml}
+                  <span>${teamName}</span>
+                  ${statusTag}
+                </div>
               </td>
               <td class="score-cell">${matches}</td>
               <td>${games}</td>

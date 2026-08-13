@@ -67,10 +67,19 @@
       letter-spacing: 1px;
     }
 
+    .section-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 18px;
+    }
+
     .section-title {
       font-size: 1.3rem;
       color: var(--accent-gold);
-      margin-bottom: 18px;
+      margin: 0;
       border-left: 4px solid var(--accent-gold);
       padding-left: 12px;
       font-weight: bold;
@@ -79,12 +88,52 @@
       text-shadow: 0 0 8px rgba(229, 193, 88, 0.3);
     }
 
+    /* Botones de control de reproductor */
+    .stream-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .hud-btn {
+      background: linear-gradient(180deg, #1c2533 0%, #0d121a 100%);
+      color: var(--text-muted);
+      border: 1px solid var(--border-metallic);
+      padding: 7px 16px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+
+    .hud-btn:hover {
+      border-color: var(--border-highlight);
+      color: var(--accent-gold-bright);
+    }
+
+    .hud-btn.active {
+      background: linear-gradient(180deg, #e5c158 0%, #a88228 100%);
+      color: #000;
+      border-color: #ffe899;
+      box-shadow: 0 0 10px rgba(229, 193, 88, 0.4);
+    }
+
     /* Grid de transmisiones */
     .streams-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
       gap: 25px;
       margin-bottom: 35px;
+      transition: all 0.3s ease;
+    }
+
+    .streams-grid.single-stream {
+      grid-template-columns: 1fr !important;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     @media (max-width: 680px) {
@@ -100,6 +149,10 @@
       overflow: hidden;
       box-shadow: 0 6px 20px rgba(0,0,0,0.7), inset 0 0 2px var(--border-highlight);
       transition: border-color 0.3s;
+    }
+
+    .stream-card.hidden {
+      display: none !important;
     }
 
     .stream-card:hover {
@@ -231,7 +284,6 @@
       border-bottom: 1px solid rgba(62, 49, 30, 0.4);
     }
 
-    /* Estilos de Resaltado (Clasificados / Eliminados) */
     .tr-qualified {
       background-color: rgba(46, 204, 113, 0.08) !important;
     }
@@ -257,7 +309,6 @@
       gap: 10px;
     }
 
-    /* Estilo del Logo del Equipo */
     .team-logo {
       width: 28px;
       height: 28px;
@@ -357,12 +408,20 @@
       <p>Centro de Transmisiones Multistream & Standings Dota 2</p>
     </header>
 
-    <!-- Transmisiones -->
-    <div class="section-title">Transmisiones en Vivo</div>
-    <div class="streams-grid">
+    <!-- Header Transmisiones con Botones de Selección -->
+    <div class="section-header-flex">
+      <div class="section-title">Transmisiones en Vivo</div>
+      <div class="stream-controls">
+        <button id="btn-both" class="hud-btn active" onclick="setStreamMode('both')">Ambos (2)</button>
+        <button id="btn-twitch" class="hud-btn" onclick="setStreamMode('twitch')">Solo Twitch (1)</button>
+        <button id="btn-kick" class="hud-btn" onclick="setStreamMode('kick')">Solo Kick (1)</button>
+      </div>
+    </div>
+
+    <div id="streams-grid-container" class="streams-grid">
       
       <!-- Twitch Player -->
-      <div class="stream-card">
+      <div id="card-twitch" class="stream-card">
         <div class="stream-header">
           <div>
             <span>Dota 2 TI Español</span>
@@ -382,7 +441,7 @@
       </div>
 
       <!-- Kick Player -->
-      <div class="stream-card">
+      <div id="card-kick" class="stream-card">
         <div class="stream-header">
           <div>
             <span>MrChoco</span>
@@ -404,7 +463,7 @@
     </div>
 
     <!-- Tabla Swiss Standings -->
-    <div class="section-title">Tabla de Posiciones - Swiss Stage (Liquipedia)</div>
+    <div class="section-title" style="margin-bottom:18px;">Tabla de Posiciones - Swiss Stage (Liquipedia)</div>
     <div class="status-bar">
       <div class="live-indicator">
         <div class="dot"></div>
@@ -419,14 +478,46 @@
   </div>
 
   <script>
-    // 1. Configuración dinámica para Twitch
+    // 1. Alternar entre 1 o 2 Reproductores
+    function setStreamMode(mode) {
+      const grid = document.getElementById('streams-grid-container');
+      const cardTwitch = document.getElementById('card-twitch');
+      const cardKick = document.getElementById('card-kick');
+      const btnBoth = document.getElementById('btn-both');
+      const btnTwitch = document.getElementById('btn-twitch');
+      const btnKick = document.getElementById('btn-kick');
+
+      // Resetear clases de botones
+      btnBoth.classList.remove('active');
+      btnTwitch.classList.remove('active');
+      btnKick.classList.remove('active');
+
+      if (mode === 'both') {
+        grid.classList.remove('single-stream');
+        cardTwitch.classList.remove('hidden');
+        cardKick.classList.remove('hidden');
+        btnBoth.classList.add('active');
+      } else if (mode === 'twitch') {
+        grid.classList.add('single-stream');
+        cardTwitch.classList.remove('hidden');
+        cardKick.classList.add('hidden');
+        btnTwitch.classList.add('active');
+      } else if (mode === 'kick') {
+        grid.classList.add('single-stream');
+        cardTwitch.classList.add('hidden');
+        cardKick.classList.remove('hidden');
+        btnKick.classList.add('active');
+      }
+    }
+
+    // 2. Configuración dinámica para Twitch
     const currentHost = window.location.hostname || 'localhost';
     const twitchIframe = document.getElementById('twitch-iframe');
     
     const targetParent = (currentHost === '' || currentHost === 'file') ? 'localhost' : currentHost;
     twitchIframe.src = `https://player.twitch.tv/?channel=dota2ti_es&parent=${targetParent}&parent=localhost&parent=127.0.0.1&muted=true`;
 
-    // 2. Consulta API Liquipedia
+    // 3. Consulta API Liquipedia
     const PAGES = [
       'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026/Group_Stage&format=json',
       'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026&format=json'
@@ -562,7 +653,7 @@
           const matches = row.cells[2]?.textContent.trim() || '-';
           const games = row.cells[3]?.textContent.trim() || '-';
 
-          // Extracción del Logo del Equipo
+          // Extracción de Logo
           const logoImg = row.querySelector('.block-team img');
           let logoSrc = logoImg ? (logoImg.getAttribute('src') || '') : '';
           if (logoSrc && logoSrc.startsWith('/')) {
@@ -570,7 +661,7 @@
           }
           const logoHtml = logoSrc ? `<img src="${logoSrc}" class="team-logo" alt="${teamName}">` : '';
 
-          // Evaluación de Estado (Clasificado / Eliminado)
+          // Evaluación de Estado
           let rowClass = '';
           let badgeClass = '';
           let statusTag = '';

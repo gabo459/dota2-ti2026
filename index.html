@@ -423,7 +423,7 @@
       position: relative !important;
       top: auto !important;
       left: auto !important;
-      width: 520px !important;
+      width: 540px !important;
       max-width: 95vw;
       max-height: 90vh;
       overflow-y: auto;
@@ -492,11 +492,46 @@
 
     .match-info-header-scoreholder-score.match-info-header-winner { color: var(--accent-gold); }
 
-    /* ESTILOS DE DRAFT DE OPENDOTA COMPATIBLES CON HUD */
+    /* ESTILOS DE OPENDOTA AUTO-DETECCIÓN Y SELECCIÓN */
+    .opendota-section {
+      background: #080c12;
+      border: 1px solid var(--border-metallic);
+      border-radius: 5px;
+      padding: 10px;
+      margin-top: 12px;
+    }
+
+    .opendota-section-title {
+      font-size: 11px;
+      color: var(--accent-gold);
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .opendota-quick-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .opendota-select-box {
+      width: 100%;
+      background: #04060a;
+      border: 1px solid var(--border-metallic);
+      color: var(--text);
+      padding: 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
     .opendota-search-box {
       display: flex;
       gap: 8px;
-      margin: 10px 0;
+      margin: 8px 0;
     }
 
     .opendota-input {
@@ -506,7 +541,7 @@
       color: var(--text);
       padding: 6px 10px;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .opendota-btn {
@@ -518,6 +553,7 @@
       cursor: pointer;
       font-weight: bold;
       font-size: 11px;
+      transition: all 0.2s;
     }
 
     .opendota-btn:hover { background: var(--accent-gold); color: #000; }
@@ -678,8 +714,9 @@
   <script>
     window.MATCH_POPUPS_CACHE = [];
     window.OPENDOTA_HEROES = {};
+    window.OPENDOTA_TI_MATCHES = [];
 
-    // 1. Cargar catálogo de héroes de OpenDota al iniciar
+    // 1. Cargar catálogo de héroes de OpenDota
     async function loadOpenDotaHeroes() {
       try {
         const res = await fetch('https://api.opendota.com/api/heroes');
@@ -694,6 +731,22 @@
         });
       } catch (e) {
         console.warn('No se pudo cargar el catálogo de héroes de OpenDota', e);
+      }
+    }
+
+    // 2. Cargar automáticamente partidas pro de TI 2026 desde OpenDota
+    async function loadOpenDotaTIMatches() {
+      try {
+        const res = await fetch('https://api.opendota.com/api/proMatches');
+        if (!res.ok) return;
+        const matches = await res.json();
+        
+        // Filtrar partidas por liga / torneo
+        window.OPENDOTA_TI_MATCHES = matches.filter(m => 
+          m.league_name && (m.league_name.includes('The International 2026') || m.league_name.includes('The International'))
+        );
+      } catch (e) {
+        console.warn('No se pudieron obtener las partidas pro de OpenDota', e);
       }
     }
 
@@ -992,11 +1045,11 @@
       }
     }
 
-    // 2. Consulta dinámica a OpenDota desde el cliente para obtener Drafts
+    // 3. Obtener Picks y Bans de una partida mediante OpenDota API
     async function fetchOpenDotaMatchDraft(matchId) {
       const targetContainer = document.getElementById('opendota-draft-result');
       if (!matchId) {
-        targetContainer.innerHTML = '<div style="color:var(--dire-red);">Ingresa un Match ID válido.</div>';
+        targetContainer.innerHTML = '<div style="color:var(--dire-red);">Ingresa o selecciona un Match ID válido.</div>';
         return;
       }
 
@@ -1068,6 +1121,31 @@
         const score1 = s[0] || '0';
         const score2 = s[1] || '0';
 
+        // Filtrar partidas detectadas de OpenDota vinculadas a los equipos del partido
+        const t1 = (match.team1 || '').toLowerCase();
+        const t2 = (match.team2 || '').toLowerCase();
+
+        const relatedMatches = window.OPENDOTA_TI_MATCHES.filter(m => {
+          const rName = (m.radiant_name || '').toLowerCase();
+          const dName = (m.dire_name || '').toLowerCase();
+          return (rName.includes(t1) || dName.includes(t1) || rName.includes(t2) || dName.includes(t2));
+        });
+
+        let quickButtonsHtml = '';
+        if (relatedMatches.length > 0) {
+          quickButtonsHtml = relatedMatches.map((m, idx) => `
+            <button class="opendota-btn" onclick="fetchOpenDotaMatchDraft(${m.match_id})">
+              Juego ${idx + 1} (${m.radiant_name || 'Rad'} vs ${m.dire_name || 'Dire'})
+            </button>
+          `).join('');
+        }
+
+        let selectOptionsHtml = window.OPENDOTA_TI_MATCHES.map(m => `
+          <option value="${m.match_id}">
+            [ID: ${m.match_id}] ${m.radiant_name || 'Radiant'} vs ${m.dire_name || 'Dire'}
+          </option>
+        `).join('');
+
         container.innerHTML = `
           <div class="brkts-popup brkts-popup-container brkts-match-info-popup">
             <button class="brkts-popup-close-button"><i class="far fa-times"></i></button>
@@ -1096,14 +1174,30 @@
               </div>
             </div>
 
-            <!-- Integración de Buscador OpenDota -->
-            <div style="font-size:11px; color:var(--accent-gold); font-weight:bold; margin-top:8px;">
-              Consultar Drafts vía OpenDota
+            <!-- Sección Integrada de OpenDota -->
+            <div class="opendota-section">
+              <div class="opendota-section-title">Análisis de Drafts (OpenDota API)</div>
+              
+              ${relatedMatches.length > 0 ? `
+                <div style="font-size:10px; color:var(--text-muted); margin-bottom:4px;">Partidas detectadas de este enfrentamiento:</div>
+                <div class="opendota-quick-buttons">${quickButtonsHtml}</div>
+              ` : ''}
+
+              ${selectOptionsHtml ? `
+                <div style="font-size:10px; color:var(--text-muted); margin-bottom:4px;">Seleccionar de partidas recientes de TI 2026:</div>
+                <select class="opendota-select-box" onchange="if(this.value) fetchOpenDotaMatchDraft(this.value)">
+                  <option value="">-- Elige una partida de la lista --</option>
+                  ${selectOptionsHtml}
+                </select>
+              ` : ''}
+
+              <div style="font-size:10px; color:var(--text-muted); margin-bottom:4px;">O ingresa Match ID manualmente:</div>
+              <div class="opendota-search-box">
+                <input type="text" id="opendota-match-id-input" class="opendota-input" placeholder="Ej. 7890123456">
+                <button class="opendota-btn" onclick="fetchOpenDotaMatchDraft(document.getElementById('opendota-match-id-input').value.trim())">Buscar</button>
+              </div>
             </div>
-            <div class="opendota-search-box">
-              <input type="text" id="opendota-match-id-input" class="opendota-input" placeholder="Ingresa Match ID (ej. 7890123456)">
-              <button class="opendota-btn" onclick="fetchOpenDotaMatchDraft(document.getElementById('opendota-match-id-input').value.trim())">Buscar Draft</button>
-            </div>
+
             <div id="opendota-draft-result"></div>
           </div>`;
       }
@@ -1119,6 +1213,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       loadOpenDotaHeroes();
+      loadOpenDotaTIMatches();
 
       const modal = document.getElementById('match-modal');
       

@@ -27,9 +27,11 @@
       padding: 20px;
     }
 
+    /* Aumentado el ancho máximo del contenedor principal a 1600px */
     .container {
-      max-width: 1200px;
+      max-width: 1600px;
       margin: 0 auto;
+      width: 95%;
     }
 
     header {
@@ -61,15 +63,15 @@
       font-weight: bold;
     }
 
-    /* Grid para reproductores de Video */
+    /* Grid aumentado con minmax de 600px para reproductores más grandes */
     .streams-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+      gap: 25px;
       margin-bottom: 35px;
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 680px) {
       .streams-grid {
         grid-template-columns: 1fr;
       }
@@ -80,6 +82,7 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
 
     .stream-header {
@@ -224,7 +227,7 @@
     <div class="section-title">Transmisiones en Vivo</div>
     <div class="streams-grid">
       
-      <!-- Twitch Player con Detección Dinámica de Dominio -->
+      <!-- Twitch Player con Permisos de Audio y Autoplay -->
       <div class="stream-card">
         <div class="stream-header">
           <span>Dota 2 TI Español</span>
@@ -235,12 +238,13 @@
             id="twitch-iframe"
             frameborder="0" 
             scrolling="no" 
-            allowfullscreen="true">
+            allowfullscreen="true"
+            allow="autoplay; fullscreen; picture-in-picture; encrypted-media">
           </iframe>
         </div>
       </div>
 
-      <!-- Kick Player -->
+      <!-- Kick Player con Habilitación Explícita de Audio -->
       <div class="stream-card">
         <div class="stream-header">
           <span>MrChoco</span>
@@ -248,10 +252,11 @@
         </div>
         <div class="video-container">
           <iframe 
-            src="https://player.kick.com/mrchoco" 
+            src="https://player.kick.com/mrchoco?autoplay=true&muted=false" 
             frameborder="0" 
             scrolling="no" 
-            allowfullscreen="true">
+            allowfullscreen="true"
+            allow="autoplay; fullscreen; picture-in-picture; encrypted-media">
           </iframe>
         </div>
       </div>
@@ -259,7 +264,7 @@
     </div>
 
     <!-- Sección de Resultados -->
-    <div class="section-title">Puntajes desde Liquipedia</div>
+    <div class="section-title">Resultados de Group Stage (Liquipedia)</div>
     <div class="status-bar">
       <div class="live-indicator">
         <div class="dot"></div>
@@ -274,16 +279,15 @@
   </div>
 
   <script>
-    // 1. Detección automática del dominio actual para solucionar el bloqueo de Twitch
+    // 1. Detección automática del dominio para Twitch
     const currentHost = window.location.hostname || 'localhost';
     const twitchIframe = document.getElementById('twitch-iframe');
     
-    // Si se abre directo como archivo local file:///, sugerir o usar localhost
     const targetParent = (currentHost === '' || currentHost === 'file') ? 'localhost' : currentHost;
-    twitchIframe.src = `https://player.twitch.tv/?channel=dota2ti_es&parent=${targetParent}&parent=localhost&parent=127.0.0.1`;
+    twitchIframe.src = `https://player.twitch.tv/?channel=dota2ti_es&parent=${targetParent}&parent=localhost&parent=127.0.0.1&muted=true`;
 
-    // 2. Consulta API Liquipedia
-    const TARGET_PAGE = 'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026&format=json';
+    // 2. Consulta API Liquipedia apuntando específicamente al Group Stage
+    const TARGET_PAGE = 'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026/Group_Stage&format=json';
     const CORS_PROXY = 'https://api.allorigins.win/get?url=';
 
     async function loadLiquipediaData() {
@@ -313,16 +317,16 @@
     }
 
     function renderMatches(doc, container) {
-      const matchRows = doc.querySelectorAll('.match-row, .wikitable tr');
+      const matchRows = doc.querySelectorAll('.match-row, .matchbox, .match-table tr, .wikitable tr');
       let htmlContent = '';
       let count = 0;
 
       matchRows.forEach(row => {
-        const teamLeft = row.querySelector('.team-left, .team-left-short')?.textContent.trim();
-        const teamRight = row.querySelector('.team-right, .team-right-short')?.textContent.trim();
-        const score = row.querySelector('.versus, .score')?.textContent.trim();
+        const teamLeft = row.querySelector('.team-left, .team-left-short, .team-1, td:nth-child(1)')?.textContent.trim();
+        const teamRight = row.querySelector('.team-right, .team-right-short, .team-2, td:nth-child(3)')?.textContent.trim();
+        const score = row.querySelector('.versus, .score, .match-score, td:nth-child(2)')?.textContent.trim();
 
-        if (teamLeft && teamRight) {
+        if (teamLeft && teamRight && teamLeft !== teamRight && !teamLeft.includes('Participant')) {
           count++;
           htmlContent += `
             <div class="match-card">
@@ -338,12 +342,12 @@
       } else {
         container.innerHTML = `
           <div class="status-text">
-            Sincronizado con Liquipedia. Los enfrentamientos aparecerán aquí durante la emisión oficial de las partidas.
+            Sincronizado con Liquipedia (Group Stage). Los marcadores se actualizarán automáticamente al iniciar cada serie.
           </div>`;
       }
     }
 
-    // Carga inicial y temporizador de 1 minuto
+    // Carga inicial y temporizador
     loadLiquipediaData();
     setInterval(loadLiquipediaData, 60000);
   </script>

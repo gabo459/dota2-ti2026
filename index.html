@@ -13,6 +13,8 @@
       --text: #e1e6ed;
       --text-muted: #8c96a5;
       --border: #232a36;
+      --win-color: #2ecc71;
+      --loss-color: #e74c3c;
     }
 
     * {
@@ -97,7 +99,6 @@
     .badge-twitch { color: #a970ff; font-weight: bold; }
     .badge-kick { color: #53FC18; font-weight: bold; }
 
-    /* Contenedor Adaptativo Proporción 16:9 */
     .video-container {
       position: relative;
       padding-bottom: 56.25%;
@@ -115,7 +116,6 @@
       border: none;
     }
 
-    /* Nota informativa audio */
     .audio-note {
       font-size: 0.85rem;
       color: var(--text-muted);
@@ -123,7 +123,7 @@
       font-weight: normal;
     }
 
-    /* Sección de Marcador de Liquipedia */
+    /* Sección de Marcador/Tabla de Liquipedia */
     .status-bar {
       display: flex;
       justify-content: space-between;
@@ -174,43 +174,64 @@
       color: #fff;
     }
 
-    .matches-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .match-card {
+    /* Estilos para la Tabla de Posiciones (Swiss Standings) */
+    .table-responsive {
+      overflow-x: auto;
       background-color: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 14px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
-    .team {
+    .standings-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .standings-table th {
+      background-color: #11151c;
+      color: var(--accent-gold);
+      padding: 14px 10px;
+      font-weight: bold;
+      border-bottom: 1px solid var(--border);
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    .standings-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .standings-table tr:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .team-cell {
+      text-align: left;
+      font-weight: bold;
       display: flex;
       align-items: center;
       gap: 10px;
-      width: 40%;
-      font-weight: 600;
     }
 
-    .team.right {
-      justify-content: flex-end;
-    }
-
-    .score-box {
+    .pos-badge {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
       background: #0a0d12;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-weight: bold;
+      border-radius: 50%;
       border: 1px solid var(--border);
+      font-weight: bold;
       color: var(--accent-gold);
-      min-width: 60px;
-      text-align: center;
+    }
+
+    .score-cell {
+      font-weight: bold;
+      color: var(--text);
     }
 
     .status-text {
@@ -228,7 +249,7 @@
   <div class="container">
     <header>
       <h1>The International 2026</h1>
-      <p>Centro de Transmisiones en Vivo y Marcador Liquipedia</p>
+      <p>Centro de Transmisiones en Vivo y Tabla de Posiciones Swiss</p>
     </header>
 
     <!-- Sección de Transmisiones -->
@@ -260,7 +281,7 @@
         <div class="stream-header">
           <div>
             <span>MrChoco</span>
-            <div class="audio-note">Haz clic dentro del reproductor para ver controles de Kick</div>
+            <div class="audio-note">Haz clic dentro del reproductor para activar sonido</div>
           </div>
           <span class="badge-kick">Kick</span>
         </div>
@@ -277,18 +298,18 @@
 
     </div>
 
-    <!-- Sección de Resultados -->
-    <div class="section-title">Resultados desde Liquipedia</div>
+    <!-- Sección de Resultados (Swiss Standings) -->
+    <div class="section-title">Tabla de Posiciones - Swiss Stage (Liquipedia)</div>
     <div class="status-bar">
       <div class="live-indicator">
         <div class="dot"></div>
         <span>Sincronización Automática (Cada 60s)</span>
       </div>
-      <button class="refresh-btn" onclick="loadLiquipediaData()">Actualizar Puntajes</button>
+      <button class="refresh-btn" onclick="loadLiquipediaData()">Actualizar Tabla</button>
     </div>
 
-    <div id="content" class="matches-list">
-      <div class="status-text">Conectando con Liquipedia API...</div>
+    <div id="content">
+      <div class="status-text">Cargando Tabla de Posiciones de Liquipedia...</div>
     </div>
   </div>
 
@@ -300,7 +321,7 @@
     const targetParent = (currentHost === '' || currentHost === 'file') ? 'localhost' : currentHost;
     twitchIframe.src = `https://player.twitch.tv/?channel=dota2ti_es&parent=${targetParent}&parent=localhost&parent=127.0.0.1&muted=true`;
 
-    // 2. Consulta API Liquipedia con respaldo de múltiple Proxy y Páginas
+    // 2. Consulta API Liquipedia dirigida a la tabla de posiciones Swiss Stage
     const PAGES = [
       'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026/Group_Stage&format=json',
       'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026&format=json'
@@ -331,7 +352,7 @@
 
             if (htmlRaw) return htmlRaw;
           } catch (e) {
-            console.warn('Proxy o Endpoint falló, intentando el siguiente...', e);
+            console.warn('Proxy falló, intentando siguiente...', e);
           }
         }
       }
@@ -340,56 +361,103 @@
 
     async function loadLiquipediaData() {
       const container = document.getElementById('content');
-      container.innerHTML = '<div class="status-text">Cargando datos actualizados de Liquipedia...</div>';
+      container.innerHTML = '<div class="status-text">Obteniendo Swiss Standings desde Liquipedia...</div>';
 
       const htmlRaw = await fetchWithFallback();
 
       if (!htmlRaw) {
         container.innerHTML = `
           <div class="status-text" style="color: #e74c3c;">
-            No se pudo conectar con Liquipedia. Presiona "Actualizar Puntajes" para volver a intentar.
+            No se pudieron obtener los datos. Presiona "Actualizar Tabla".
           </div>`;
         return;
       }
 
       const parser = new DOMParser();
       const doc = parser.parseFromString(htmlRaw, 'text/html');
-      renderMatches(doc, container);
+      renderStandingsTable(doc, container);
     }
 
-    function renderMatches(doc, container) {
-      let htmlContent = '';
-      let count = 0;
+    function renderStandingsTable(doc, container) {
+      // Buscar específicamente la tabla de Swiss Standings por clase o selector
+      const standingsTable = doc.querySelector('.standings-swiss table, .table2--generic table, .wikitable');
 
-      const matchRows = doc.querySelectorAll('.match-row, .matchbox, .match-table tr, .wikitable tr, .bracket-match');
+      if (!standingsTable) {
+        container.innerHTML = `
+          <div class="status-text">
+            Sincronizado con Liquipedia. La tabla de posiciones aparecerá aquí tan pronto como esté publicada.
+          </div>`;
+        return;
+      }
 
-      matchRows.forEach(row => {
-        const teamLeft = row.querySelector('.team-left, .team-left-short, .team-1, .match-team-left, td:nth-child(1)')?.textContent.trim();
-        const teamRight = row.querySelector('.team-right, .team-right-short, .team-2, .match-team-right, td:nth-child(3)')?.textContent.trim();
-        const score = row.querySelector('.versus, .score, .match-score, td:nth-child(2)')?.textContent.trim();
+      const rows = standingsTable.querySelectorAll('tr.table2__row--body, tbody tr');
+      let tableHtml = `
+        <div class="table-responsive">
+          <table class="standings-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th style="text-align:left;">Equipo</th>
+                <th>Partidas (W-L)</th>
+                <th>Juegos (W-L)</th>
+                <th>Ronda 1</th>
+                <th>Ronda 2</th>
+                <th>Ronda 3</th>
+                <th>Ronda 4</th>
+                <th>Ronda 5</th>
+              </tr>
+            </thead>
+            <tbody>`;
 
-        if (teamLeft && teamRight && teamLeft !== teamRight && !teamLeft.toLowerCase().includes('participant') && !teamLeft.toLowerCase().includes('team')) {
-          count++;
-          htmlContent += `
-            <div class="match-card">
-              <div class="team">${teamLeft}</div>
-              <div class="score-box">${score || 'VS'}</div>
-              <div class="team right">${teamRight}</div>
-            </div>`;
+      let rowCount = 0;
+
+      rows.forEach(row => {
+        const pos = row.querySelector('.label--placement')?.textContent.trim() || row.cells[0]?.textContent.trim();
+        const teamName = row.querySelector('.block-team .name.hidden-xs')?.textContent.trim() || 
+                         row.querySelector('.block-team a')?.textContent.trim() || 
+                         row.cells[1]?.textContent.trim();
+
+        if (pos && teamName) {
+          rowCount++;
+          const matches = row.cells[2]?.textContent.trim() || '-';
+          const games = row.cells[3]?.textContent.trim() || '-';
+          const r1 = row.cells[4]?.textContent.trim() || '-';
+          const r2 = row.cells[5]?.textContent.trim() || '-';
+          const r3 = row.cells[6]?.textContent.trim() || '-';
+          const r4 = row.cells[7]?.textContent.trim() || '-';
+          const r5 = row.cells[8]?.textContent.trim() || '-';
+
+          tableHtml += `
+            <tr>
+              <td><span class="pos-badge">${pos}</span></td>
+              <td class="team-cell">${teamName}</td>
+              <td class="score-cell">${matches}</td>
+              <td>${games}</td>
+              <td>${r1}</td>
+              <td>${r2}</td>
+              <td>${r3}</td>
+              <td>${r4}</td>
+              <td>${r5}</td>
+            </tr>`;
         }
       });
 
-      if (count > 0) {
-        container.innerHTML = htmlContent;
+      tableHtml += `
+            </tbody>
+          </table>
+        </div>`;
+
+      if (rowCount > 0) {
+        container.innerHTML = tableHtml;
       } else {
         container.innerHTML = `
           <div class="status-text">
-            Conexión establecida con Liquipedia. Los marcadores y enfrentamientos se actualizarán automáticamente cuando arranquen las partidas en vivo.
+            No se pudieron formatear las filas de la tabla de posiciones.
           </div>`;
       }
     }
 
-    // Carga inicial y temporizador de 1 minuto
+    // Carga inicial y temporizador
     loadLiquipediaData();
     setInterval(loadLiquipediaData, 60000);
   </script>

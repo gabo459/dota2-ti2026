@@ -186,7 +186,7 @@
       width: 100%;
       border-collapse: collapse;
       text-align: center;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
     }
 
     .standings-table th {
@@ -201,7 +201,7 @@
     }
 
     .standings-table td {
-      padding: 12px 10px;
+      padding: 10px 8px;
       border-bottom: 1px solid var(--border);
     }
 
@@ -212,9 +212,6 @@
     .team-cell {
       text-align: left;
       font-weight: bold;
-      display: flex;
-      align-items: center;
-      gap: 10px;
     }
 
     .pos-badge {
@@ -232,6 +229,31 @@
     .score-cell {
       font-weight: bold;
       color: var(--text);
+    }
+
+    /* Formato de celdas de Ronda (Puntaje + Rival) */
+    .round-cell-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+
+    .r-score {
+      font-weight: bold;
+      background: #0a0d12;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--accent-gold);
+      font-size: 0.85rem;
+    }
+
+    .r-opp {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      white-space: nowrap;
     }
 
     .status-text {
@@ -321,7 +343,7 @@
     const targetParent = (currentHost === '' || currentHost === 'file') ? 'localhost' : currentHost;
     twitchIframe.src = `https://player.twitch.tv/?channel=dota2ti_es&parent=${targetParent}&parent=localhost&parent=127.0.0.1&muted=true`;
 
-    // 2. Consulta API Liquipedia dirigida a la tabla de posiciones Swiss Stage
+    // 2. Consulta API Liquipedia
     const PAGES = [
       'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026/Group_Stage&format=json',
       'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026&format=json'
@@ -378,8 +400,46 @@
       renderStandingsTable(doc, container);
     }
 
+    // Extraer resultado y rival de cada celda de ronda
+    function parseRoundCell(tdCell) {
+      if (!tdCell) return '-';
+
+      const matchOverview = tdCell.querySelector('.standings-match-overview');
+      if (!matchOverview) {
+        const txt = tdCell.textContent.trim();
+        return txt || '-';
+      }
+
+      // Extraer marcador (ej: 2:0, 1:2)
+      const scoreEl = matchOverview.querySelector('.generic-label, .label--standings-result');
+      const score = scoreEl ? scoreEl.textContent.trim() : '';
+
+      // Extraer rival de los distintos posibles contenedores
+      const teamIcon = matchOverview.querySelector('.team-template-team-icon, .team-template-image-icon');
+      let opponent = '';
+
+      if (teamIcon) {
+        opponent = teamIcon.getAttribute('data-highlighting-class') || 
+                   teamIcon.querySelector('a')?.getAttribute('title') || 
+                   teamIcon.querySelector('img')?.getAttribute('alt') || '';
+      }
+
+      if (score && opponent) {
+        return `
+          <div class="round-cell-box">
+            <span class="r-score">${score}</span>
+            <span class="r-opp">vs ${opponent}</span>
+          </div>`;
+      } else if (score) {
+        return `<span class="r-score">${score}</span>`;
+      } else if (opponent) {
+        return `<span class="r-opp">vs ${opponent}</span>`;
+      }
+
+      return tdCell.textContent.trim() || '-';
+    }
+
     function renderStandingsTable(doc, container) {
-      // Buscar específicamente la tabla de Swiss Standings por clase o selector
       const standingsTable = doc.querySelector('.standings-swiss table, .table2--generic table, .wikitable');
 
       if (!standingsTable) {
@@ -421,11 +481,13 @@
           rowCount++;
           const matches = row.cells[2]?.textContent.trim() || '-';
           const games = row.cells[3]?.textContent.trim() || '-';
-          const r1 = row.cells[4]?.textContent.trim() || '-';
-          const r2 = row.cells[5]?.textContent.trim() || '-';
-          const r3 = row.cells[6]?.textContent.trim() || '-';
-          const r4 = row.cells[7]?.textContent.trim() || '-';
-          const r5 = row.cells[8]?.textContent.trim() || '-';
+
+          // Parsear de forma inteligente cada ronda (Ronda 1 a Ronda 5)
+          const r1 = parseRoundCell(row.cells[4]);
+          const r2 = parseRoundCell(row.cells[5]);
+          const r3 = parseRoundCell(row.cells[6]);
+          const r4 = parseRoundCell(row.cells[7]);
+          const r5 = parseRoundCell(row.cells[8]);
 
           tableHtml += `
             <tr>

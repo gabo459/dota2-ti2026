@@ -492,7 +492,7 @@
 
     .match-info-header-scoreholder-score.match-info-header-winner { color: var(--accent-gold); }
 
-    /* ESTILOS DE OPENDOTA AUTO-DETECCIÓN Y SELECCIÓN */
+    /* ESTILOS DE OPENDOTA Y DRAFT DE HÉROES */
     .opendota-section {
       background: #080c12;
       border: 1px solid var(--border-metallic);
@@ -562,22 +562,23 @@
       background: #090d13;
       border: 1px solid #1c2430;
       border-radius: 6px;
-      padding: 10px;
+      padding: 12px;
       margin-top: 10px;
     }
 
     .draft-team-header {
       font-weight: bold;
-      padding: 4px 8px;
+      padding: 5px 10px;
       border-radius: 3px;
       font-size: 11px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
+      letter-spacing: 0.5px;
     }
 
-    .draft-team-header.radiant { background: rgba(46, 204, 113, 0.2); color: var(--radiant-green); }
-    .draft-team-header.dire { background: rgba(231, 76, 60, 0.2); color: var(--dire-red); }
+    .draft-team-header.radiant { background: rgba(46, 204, 113, 0.2); color: var(--radiant-green); border-left: 3px solid var(--radiant-green); }
+    .draft-team-header.dire { background: rgba(231, 76, 60, 0.2); color: var(--dire-red); border-left: 3px solid var(--dire-red); }
 
     .hero-grid {
       display: flex;
@@ -588,22 +589,25 @@
 
     .hero-card {
       position: relative;
-      width: 48px;
-      height: 27px;
-      border-radius: 3px;
+      width: 52px;
+      height: 30px;
+      border-radius: 4px;
       overflow: hidden;
       border: 1px solid #2a3442;
+      background: #000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
 
     .hero-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
     .hero-card.ban img {
-      filter: grayscale(100%);
-      opacity: 0.4;
+      filter: grayscale(100%) contrast(1.2);
+      opacity: 0.35;
     }
 
     .hero-card.ban::after {
@@ -613,21 +617,23 @@
       left: 50%;
       transform: translate(-50%, -50%);
       color: var(--dire-red);
-      font-size: 14px;
+      font-size: 16px;
       font-weight: bold;
+      text-shadow: 0 0 4px #000;
     }
 
     .hero-card .hero-name-tooltip {
       position: absolute;
       bottom: 0;
       width: 100%;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.85);
       font-size: 8px;
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       color: #fff;
+      padding: 1px 0;
     }
   </style>
 </head>
@@ -716,7 +722,7 @@
     window.OPENDOTA_HEROES = {};
     window.OPENDOTA_TI_MATCHES = [];
 
-    // 1. Cargar catálogo de héroes de OpenDota
+    // 1. Cargar catálogo de héroes utilizando CDN oficial de Steam Cloudflare
     async function loadOpenDotaHeroes() {
       try {
         const res = await fetch('https://api.opendota.com/api/heroes');
@@ -726,7 +732,8 @@
           const formattedName = h.name.replace('npc_dota_hero_', '');
           window.OPENDOTA_HEROES[h.id] = {
             name: h.localized_name,
-            img: `https://api.opendota.com/apps/dota2/images/dota_react/heroes/${formattedName}.png`
+            formattedName: formattedName,
+            img: `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/${formattedName}.png`
           };
         });
       } catch (e) {
@@ -741,7 +748,6 @@
         if (!res.ok) return;
         const matches = await res.json();
         
-        // Filtrar partidas por liga / torneo
         window.OPENDOTA_TI_MATCHES = matches.filter(m => 
           m.league_name && (m.league_name.includes('The International 2026') || m.league_name.includes('The International'))
         );
@@ -825,8 +831,11 @@
     function fixLiquipediaUrls(html) {
       if (!html) return '';
       return html
+        .replace(/src="\/\//g, 'src="https://')
         .replace(/src="\//g, 'src="https://liquipedia.net/')
+        .replace(/href="\/\//g, 'href="https://')
         .replace(/href="\//g, 'href="https://liquipedia.net/')
+        .replace(/srcset="\/\//g, 'srcset="https://')
         .replace(/srcset="\//g, 'srcset="https://liquipedia.net/');
     }
 
@@ -1049,13 +1058,18 @@
     async function fetchOpenDotaMatchDraft(matchId) {
       const targetContainer = document.getElementById('opendota-draft-result');
       if (!matchId) {
-        targetContainer.innerHTML = '<div style="color:var(--dire-red);">Ingresa o selecciona un Match ID válido.</div>';
+        targetContainer.innerHTML = '<div style="color:var(--dire-red); padding: 8px 0;">Ingresa o selecciona un Match ID válido.</div>';
         return;
       }
 
-      targetContainer.innerHTML = '<div style="color:var(--accent-gold);">Consultando OpenDota API...</div>';
+      targetContainer.innerHTML = '<div style="color:var(--accent-gold); padding: 8px 0;">Consultando OpenDota API...</div>';
 
       try {
+        // Garantizar que los héroes estén cargados antes de renderizar
+        if (!window.OPENDOTA_HEROES || Object.keys(window.OPENDOTA_HEROES).length === 0) {
+          await loadOpenDotaHeroes();
+        }
+
         const res = await fetch(`https://api.opendota.com/api/matches/${matchId}`);
         if (!res.ok) throw new Error('Partida no encontrada');
 
@@ -1063,7 +1077,7 @@
         const picksBans = match.picks_bans;
 
         if (!picksBans || picksBans.length === 0) {
-          targetContainer.innerHTML = '<div style="color:var(--text-muted);">Esta partida no registra picks/bans en OpenDota.</div>';
+          targetContainer.innerHTML = '<div style="color:var(--text-muted); padding: 10px 0;">Esta partida no registra picks/bans en OpenDota.</div>';
           return;
         }
 
@@ -1073,11 +1087,14 @@
         const direBans = picksBans.filter(p => p.team === 1 && !p.is_pick);
 
         const renderHeroCard = (step) => {
-          const hero = window.OPENDOTA_HEROES[step.hero_id] || { name: `Hero ${step.hero_id}`, img: '' };
+          const hero = window.OPENDOTA_HEROES[step.hero_id] || { 
+            name: `Héroe ${step.hero_id}`, 
+            img: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/statbar/hero_placeholder.png' 
+          };
           const isBan = !step.is_pick;
           return `
             <div class="hero-card ${isBan ? 'ban' : ''}" title="${step.is_pick ? 'Pick' : 'Ban'}: ${hero.name}">
-              ${hero.img ? `<img src="${hero.img}" alt="${hero.name}">` : ''}
+              <img src="${hero.img}" alt="${hero.name}" onerror="this.onerror=null; this.src='https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/statbar/hero_placeholder.png';">
               <div class="hero-name-tooltip">${hero.name}</div>
             </div>`;
         };
@@ -1088,22 +1105,22 @@
               <span>RADIANT: ${match.radiant_name || 'Equipo 1'}</span>
               <span>${match.radiant_win ? '🏆 VICTORIA' : ''}</span>
             </div>
-            <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">Picks:</div>
+            <div style="font-size:10px; color:var(--text-muted); margin-bottom:3px;">Picks:</div>
             <div class="hero-grid">${radiantPicks.map(renderHeroCard).join('')}</div>
-            <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">Bans:</div>
+            <div style="font-size:10px; color:var(--text-muted); margin-bottom:3px;">Bans:</div>
             <div class="hero-grid">${radiantBans.map(renderHeroCard).join('')}</div>
 
-            <div class="draft-team-header dire" style="margin-top:10px;">
+            <div class="draft-team-header dire" style="margin-top:12px;">
               <span>DIRE: ${match.dire_name || 'Equipo 2'}</span>
               <span>${!match.radiant_win ? '🏆 VICTORIA' : ''}</span>
             </div>
-            <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">Picks:</div>
+            <div style="font-size:10px; color:var(--text-muted); margin-bottom:3px;">Picks:</div>
             <div class="hero-grid">${direPicks.map(renderHeroCard).join('')}</div>
-            <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">Bans:</div>
+            <div style="font-size:10px; color:var(--text-muted); margin-bottom:3px;">Bans:</div>
             <div class="hero-grid">${direBans.map(renderHeroCard).join('')}</div>
           </div>`;
       } catch (e) {
-        targetContainer.innerHTML = `<div style="color:var(--dire-red);">Error: ${e.message}</div>`;
+        targetContainer.innerHTML = `<div style="color:var(--dire-red); padding: 8px 0;">Error: ${e.message}</div>`;
       }
     }
 
@@ -1121,7 +1138,6 @@
         const score1 = s[0] || '0';
         const score2 = s[1] || '0';
 
-        // Filtrar partidas detectadas de OpenDota vinculadas a los equipos del partido
         const t1 = (match.team1 || '').toLowerCase();
         const t2 = (match.team2 || '').toLowerCase();
 

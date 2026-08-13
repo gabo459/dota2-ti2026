@@ -3,795 +3,418 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="referrer" content="no-referrer">
-  <title>The International 2026 - Dota 2 HUD Multistream</title>
-  
+  <title>Liquipedia Match Card Demo</title>
   <style>
-    :root {
-      --bg-color: #07090e;
-      --card-bg: linear-gradient(180deg, #141a24 0%, #0d121a 100%);
-      --header-bg: linear-gradient(180deg, #1c2533 0%, #111722 100%);
-      --accent-gold: #e5c158;
-      --accent-gold-bright: #fff0aa;
-      --border-metallic: #3e311e;
-      --border-highlight: #6e5733;
-      --text: #dbe4ee;
-      --text-muted: #7e8b9b;
-      --radiant-green: #2ecc71;
-      --dire-red: #e74c3c;
-    }
-
+    /* Reset básico y fondo oscuro estilo Liquipedia */
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     body {
-      font-family: 'Radiance', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      
-      /* Capa negra al 70% de opacidad sobre tu imagen */
-      background-image: linear-gradient(rgba(7, 9, 14, 0.75), rgba(7, 9, 14, 0.85)), url('img/fondo.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      
-      color: var(--text);
-      margin: 0;
-      padding: 20px;
-    }  
-
-    .container {
-      max-width: 1600px;
-      margin: 0 auto;
-      width: 95%;
-    }
-
-    /* Encabezado estilo Banner de Dota 2 */
-    header {
-      text-align: center;
-      padding: 20px 0;
-      background: var(--header-bg);
-      border: 1px solid var(--border-metallic);
-      border-bottom: 2px solid var(--accent-gold);
-      border-radius: 6px;
-      margin-bottom: 30px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(229, 193, 88, 0.1);
-    }
-
-    header h1 {
-      margin: 0;
-      color: var(--accent-gold);
-      font-size: 2.5rem;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      text-shadow: 0 0 10px rgba(229, 193, 88, 0.4), 2px 2px 4px #000;
-    }
-
-    header p {
-      color: var(--text-muted);
-      margin-top: 6px;
-      font-size: 0.95rem;
-      letter-spacing: 1px;
-    }
-
-    .section-header-flex {
+      background-color: #0f1215;
+      color: #fff;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-bottom: 18px;
+      min-height: 100vh;
     }
 
-    .section-title {
-      font-size: 1.3rem;
-      color: var(--accent-gold);
-      margin: 0;
-      border-left: 4px solid var(--accent-gold);
-      padding-left: 12px;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      text-shadow: 0 0 8px rgba(229, 193, 88, 0.3);
-    }
-
-    /* Botones de control de reproductor */
-    .stream-controls {
+    /* Estilo del Botón / Tarjeta del Match */
+    .match-card {
       display: flex;
-      gap: 10px;
-    }
-
-    .hud-btn {
-      background: linear-gradient(180deg, #1c2533 0%, #0d121a 100%);
-      color: var(--text-muted);
-      border: 1px solid var(--border-metallic);
-      padding: 7px 16px;
-      border-radius: 4px;
-      font-weight: bold;
+      align-items: center;
+      justify-content: space-between;
+      width: 320px;
+      background-color: #1e2328;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: all 0.2s;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      border: 1px solid #32383e;
+      user-select: none;
     }
 
-    .hud-btn:hover {
-      border-color: var(--border-highlight);
-      color: var(--accent-gold-bright);
+    .match-card:hover {
+      background-color: #2a3038;
+      border-color: #454d55;
     }
 
-    .hud-btn.active {
-      background: linear-gradient(180deg, #e5c158 0%, #a88228 100%);
-      color: #000;
-      border-color: #ffe899;
-      box-shadow: 0 0 10px rgba(229, 193, 88, 0.4);
+    .match-card:active {
+      transform: scale(0.99);
     }
 
-    /* Grid de transmisiones */
-    .streams-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
-      gap: 25px;
-      margin-bottom: 35px;
-      transition: all 0.3s ease;
-    }
-
-    .streams-grid.single-stream {
-      grid-template-columns: 1fr !important;
-      max-width: 1000px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    @media (max-width: 680px) {
-      .streams-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .stream-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-metallic);
-      border-radius: 6px;
-      overflow: hidden;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.7), inset 0 0 2px var(--border-highlight);
-      transition: border-color 0.3s;
-    }
-
-    .stream-card.hidden {
-      display: none !important;
-    }
-
-    .stream-card:hover {
-      border-color: var(--border-highlight);
-    }
-
-    .stream-header {
-      padding: 12px 18px;
-      background: #0d1218;
-      font-weight: bold;
+    .team {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--border-metallic);
+      gap: 8px;
     }
 
-    .badge-twitch { color: #a970ff; font-weight: bold; text-shadow: 0 0 6px rgba(169, 112, 255, 0.4); }
-    .badge-kick { color: #53FC18; font-weight: bold; text-shadow: 0 0 6px rgba(83, 252, 24, 0.4); }
-
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      background-color: #000;
+    .team img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
     }
 
-    .video-container iframe {
-      position: absolute;
+    .team.winner {
+      font-weight: bold;
+      color: #4cd964;
+    }
+
+    .vs-divider {
+      color: #6c757d;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    /* Modal / Popup Overlay */
+    .match-popup-overlay {
+      display: none; /* Oculto por defecto */
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100% !important;
-      height: 100% !important;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(2px);
+    }
+
+    .match-popup-overlay.active {
+      display: flex;
+    }
+
+    .match-popup-content {
+      background-color: #121519;
+      color: #e1e1e1;
+      width: 580px;
+      max-width: 95%;
+      border-radius: 8px;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      border: 1px solid #2a2e33;
+    }
+
+    .popup-close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: none;
       border: none;
-    }
-
-    .audio-note {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 3px;
-      font-weight: normal;
-    }
-
-    /* Barra de estado */
-    .status-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--card-bg);
-      padding: 14px 20px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      border: 1px solid var(--border-metallic);
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    .live-indicator {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: bold;
-      color: var(--radiant-green);
-      text-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      background-color: var(--radiant-green);
-      border-radius: 50%;
-      box-shadow: 0 0 10px var(--radiant-green);
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.3; }
-      100% { opacity: 1; }
-    }
-
-    .refresh-btn {
-      background: linear-gradient(180deg, #e5c158 0%, #a88228 100%);
-      color: #000;
-      border: 1px solid #ffe899;
-      padding: 9px 22px;
-      border-radius: 4px;
-      font-weight: bold;
+      color: #aaa;
+      font-size: 24px;
       cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-      transition: all 0.2s;
+      line-height: 1;
     }
 
-    .refresh-btn:hover {
-      background: linear-gradient(180deg, #fff0aa 0%, #c49a33 100%);
-      box-shadow: 0 0 12px rgba(229, 193, 88, 0.6);
-    }
-
-    /* Tabla de Posiciones estilo Scoreboard Dota 2 */
-    .table-responsive {
-      overflow-x: auto;
-      background: var(--card-bg);
-      border: 1px solid var(--border-metallic);
-      border-radius: 6px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.8);
-    }
-
-    .standings-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: center;
-      font-size: 0.92rem;
-    }
-
-    .standings-table th {
-      background: #0a0e14;
-      color: var(--accent-gold);
-      padding: 14px 10px;
-      font-weight: bold;
-      border-bottom: 2px solid var(--border-metallic);
-      text-transform: uppercase;
-      font-size: 0.85rem;
-      letter-spacing: 1px;
-    }
-
-    .standings-table td {
-      padding: 12px 10px;
-      border-bottom: 1px solid rgba(62, 49, 30, 0.4);
-      vertical-align: middle;
-    }
-
-    .standings-table tbody tr {
-      transition: filter 0.2s;
-    }
-
-    .standings-table tbody tr:hover {
-      filter: brightness(1.35);
-    }
-
-    .team-cell {
-      text-align: left;
-      font-weight: bold;
-      color: var(--accent-gold-bright);
-    }
-
-    /* Estructura Flex interna para no romper la celda td */
-    .team-cell-content {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .team-logo {
-      width: 28px;
-      height: 28px;
-      object-fit: contain;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
-    }
-
-    .status-tag {
-      font-size: 0.72rem;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    .tag-qualified {
-      background: rgba(46, 204, 113, 0.25);
-      color: var(--radiant-green);
-      border: 1px solid var(--radiant-green);
-      box-shadow: 0 0 6px rgba(46, 204, 113, 0.3);
-    }
-
-    .tag-eliminated {
-      background: rgba(231, 76, 60, 0.25);
-      color: var(--dire-red);
-      border: 1px solid var(--dire-red);
-      box-shadow: 0 0 6px rgba(231, 76, 60, 0.3);
-    }
-
-    .pos-badge {
-      display: inline-block;
-      width: 28px;
-      height: 28px;
-      line-height: 28px;
-      background: #07090d;
-      border-radius: 50%;
-      border: 1px solid var(--border-metallic);
-      font-weight: bold;
-      color: var(--accent-gold);
-    }
-
-    .pos-badge.qualified-badge {
-      border-color: var(--radiant-green);
-      color: var(--radiant-green);
-    }
-
-    .pos-badge.eliminated-badge {
-      border-color: var(--dire-red);
-      color: var(--dire-red);
-    }
-
-    .score-cell {
-      font-weight: bold;
+    .popup-close-btn:hover {
       color: #fff;
     }
 
-    .round-cell-box {
+    /* Header del Popup */
+    .popup-header {
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
+      border-bottom: 1px solid #2a2e33;
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+    }
+
+    .header-team {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+      width: 40%;
+    }
+
+    .header-team.right {
+      justify-content: flex-end;
+    }
+
+    .header-team img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .header-score {
+      text-align: center;
+      width: 20%;
+    }
+
+    .header-score .score {
+      display: block;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .header-score .format {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+    }
+
+    /* Filas de Héroes Pickeados por Juego */
+    .game-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #1a1d22;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 1px solid #23272d;
+    }
+
+    .heroes-container {
+      display: flex;
       gap: 4px;
     }
 
-    /* Estilos dinámicos para los puntajes de ronda */
-    .r-score {
+    .heroes-container img {
+      width: 36px;
+      height: 22px;
+      border-radius: 2px;
+      object-fit: cover;
+      background-color: #2a2e33;
+    }
+
+    /* Indicadores Radiant / Dire */
+    .heroes-container.radiant img {
+      border-bottom: 2px solid #28a745;
+    }
+
+    .heroes-container.dire img {
+      border-bottom: 2px solid #dc3545;
+    }
+
+    .game-duration {
+      font-size: 12px;
+      color: #888;
+      font-family: monospace;
+    }
+
+    .result-badge {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 3px;
       font-weight: bold;
-      background: #06080c;
-      padding: 2px 8px;
+    }
+
+    .result-badge.win {
+      background-color: #28a745;
+      color: #fff;
+    }
+
+    .result-badge.loss {
+      background-color: #495057;
+      color: #aaa;
+    }
+
+    /* Acordeón Veto / Bans */
+    .veto-accordion {
+      margin-top: 15px;
+      font-size: 13px;
+      background: #181b20;
       border-radius: 4px;
-      border: 1px solid var(--border-metallic);
-      color: var(--accent-gold);
-      font-size: 0.85rem;
+      padding: 10px;
+      border: 1px solid #23272d;
     }
 
-    .r-score.win {
-      color: var(--radiant-green) !important;
-      border-color: rgba(46, 204, 113, 0.5);
-      background: rgba(46, 204, 113, 0.1);
+    .veto-accordion summary {
+      cursor: pointer;
+      color: #888;
+      font-weight: bold;
     }
 
-    .r-score.loss {
-      color: var(--dire-red) !important;
-      border-color: rgba(231, 76, 60, 0.5);
-      background: rgba(231, 76, 60, 0.1);
+    .veto-content {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    .r-opp-box {
+    .veto-game {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 5px;
+      gap: 10px;
     }
 
-    .opp-logo {
-      width: 20px;
-      height: 20px;
-      object-fit: contain;
-      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+    .ban-list {
+      display: flex;
+      gap: 4px;
     }
 
-    .r-opp {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .status-text {
-      text-align: center;
-      padding: 25px;
-      color: var(--text-muted);
-      background: var(--card-bg);
-      border-radius: 6px;
-      border: 1px solid var(--border-metallic);
+    .ban-list img {
+      width: 28px;
+      height: 16px;
+      opacity: 0.5;
+      filter: grayscale(100%);
+      background-color: #2a2e33;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <header>
-      <h1>The International 2026</h1>
-      <p>Centro de Transmisiones Multistream & Standings Dota 2</p>
-    </header>
-
-    <!-- Transmisiones -->
-    <div class="section-header-flex">
-      <div class="section-title">Transmisiones en Vivo</div>
-      <div class="stream-controls">
-        <button id="btn-both" class="hud-btn active" onclick="setStreamMode('both')">Ambos (2)</button>
-        <button id="btn-twitch" class="hud-btn" onclick="setStreamMode('twitch')">Solo Twitch (1)</button>
-        <button id="btn-kick" class="hud-btn" onclick="setStreamMode('kick')">Solo Kick (1)</button>
-      </div>
+  <!-- Tarjeta del Partido (Match Card) -->
+  <div class="match-card" data-match="match-1">
+    <div class="team winner">
+      <img src="https://via.placeholder.com/24/28a745/ffffff?text=F" alt="Team Falcons">
+      <span class="name">Falcons</span>
+      <span class="score">2</span>
     </div>
-
-    <div id="streams-grid-container" class="streams-grid">
-      
-      <!-- Twitch Player -->
-      <div id="card-twitch" class="stream-card">
-        <div class="stream-header">
-          <div>
-            <span>Dota 2 TI Español</span>
-            <div class="audio-note">Haz clic para activar el audio</div>
-          </div>
-          <span class="badge-twitch">Twitch</span>
-        </div>
-        <div class="video-container">
-          <iframe 
-            id="twitch-iframe"
-            frameborder="0" 
-            scrolling="no" 
-            allowfullscreen="true"
-            allow="autoplay; fullscreen; picture-in-picture; encrypted-media">
-          </iframe>
-        </div>
-      </div>
-
-      <!-- Kick Player -->
-      <div id="card-kick" class="stream-card">
-        <div class="stream-header">
-          <div>
-            <span>MrChoco</span>
-            <div class="audio-note">Haz clic para activar el audio</div>
-          </div>
-          <span class="badge-kick">Kick</span>
-        </div>
-        <div class="video-container">
-          <iframe 
-            src="https://player.kick.com/mrchoco" 
-            frameborder="0" 
-            scrolling="no" 
-            allowfullscreen="true"
-            allow="autoplay; autoplay *; fullscreen; picture-in-picture; encrypted-media; media-playback; accelerometer; gyroscope">
-          </iframe>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Tabla Swiss Standings Exclusiva -->
-    <div class="section-title" style="margin-bottom:18px;">Tabla de Posiciones - Swiss Stage (Liquipedia)</div>
-    <div class="status-bar">
-      <div class="live-indicator">
-        <div class="dot"></div>
-        <span>Sincronización Automática (Cada 60s)</span>
-      </div>
-      <button class="refresh-btn" onclick="loadLiquipediaData()">Actualizar Tabla</button>
-    </div>
-
-    <div id="content">
-      <div class="status-text">Cargando Tabla de Posiciones de Liquipedia...</div>
+    <div class="vs-divider">:</div>
+    <div class="team">
+      <span class="score">1</span>
+      <span class="name">LGD</span>
+      <img src="https://via.placeholder.com/24/dc3545/ffffff?text=L" alt="LGD Gaming">
     </div>
   </div>
 
-  <script>
-    function setStreamMode(mode) {
-      const grid = document.getElementById('streams-grid-container');
-      const cardTwitch = document.getElementById('card-twitch');
-      const cardKick = document.getElementById('card-kick');
-      const btnBoth = document.getElementById('btn-both');
-      const btnTwitch = document.getElementById('btn-twitch');
-      const btnKick = document.getElementById('btn-kick');
+  <!-- Modal / Popup de Detalles del Match -->
+  <div class="match-popup-overlay" id="popup-match-1">
+    <div class="match-popup-content">
+      <button class="popup-close-btn" aria-label="Cerrar">&times;</button>
+      
+      <!-- Encabezado del Popup -->
+      <div class="popup-header">
+        <div class="header-team winner">
+          <img src="https://via.placeholder.com/32/28a745/ffffff?text=F" alt="Team Falcons">
+          <span>Team Falcons</span>
+        </div>
+        <div class="header-score">
+          <span class="score">2 : 1</span>
+          <span class="format">(Bo3)</span>
+        </div>
+        <div class="header-team right">
+          <span>LGD Gaming</span>
+          <img src="https://via.placeholder.com/32/dc3545/ffffff?text=L" alt="LGD Gaming">
+        </div>
+      </div>
 
-      btnBoth.classList.remove('active');
-      btnTwitch.classList.remove('active');
-      btnKick.classList.remove('active');
+      <!-- Cuerpo del Popup: Lista de Juegos -->
+      <div class="popup-body">
+        
+        <!-- JUEGO 1 -->
+        <div class="game-row">
+          <div class="result-badge win">G3</div>
+          <div class="heroes-container radiant" title="Radiant (Falcons)">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H1" alt="Hero 1">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H2" alt="Hero 2">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H3" alt="Hero 3">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H4" alt="Hero 4">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H5" alt="Hero 5">
+          </div>
+          
+          <div class="game-duration">40:46</div>
+          
+          <div class="heroes-container dire" title="Dire (LGD)">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H6" alt="Hero 6">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H7" alt="Hero 7">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H8" alt="Hero 8">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H9" alt="Hero 9">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H10" alt="Hero 10">
+          </div>
+          <div class="result-badge loss">P</div>
+        </div>
 
-      if (mode === 'both') {
-        grid.classList.remove('single-stream');
-        cardTwitch.classList.remove('hidden');
-        cardKick.classList.remove('hidden');
-        btnBoth.classList.add('active');
-      } else if (mode === 'twitch') {
-        grid.classList.add('single-stream');
-        cardTwitch.classList.remove('hidden');
-        cardKick.classList.add('hidden');
-        btnTwitch.classList.add('active');
-      } else if (mode === 'kick') {
-        grid.classList.add('single-stream');
-        cardTwitch.classList.add('hidden');
-        cardKick.classList.remove('hidden');
-        btnKick.classList.add('active');
-      }
-    }
+        <!-- JUEGO 2 -->
+        <div class="game-row">
+          <div class="result-badge loss">P</div>
+          <div class="heroes-container radiant" title="Radiant (Falcons)">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H1" alt="Hero 1">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H2" alt="Hero 2">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H3" alt="Hero 3">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H4" alt="Hero 4">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H5" alt="Hero 5">
+          </div>
+          
+          <div class="game-duration">37:36</div>
+          
+          <div class="heroes-container dire" title="Dire (LGD)">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H6" alt="Hero 6">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H7" alt="Hero 7">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H8" alt="Hero 8">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H9" alt="Hero 9">
+            <img src="https://via.placeholder.com/36x22/333/fff?text=H10" alt="Hero 10">
+          </div>
+          <div class="result-badge win">G3</div>
+        </div>
 
-    const currentHost = window.location.hostname || 'localhost';
-    const twitchIframe = document.getElementById('twitch-iframe');
-    const targetParent = (currentHost === '' || currentHost === 'file') ? 'localhost' : currentHost;
-    twitchIframe.src = `https://player.twitch.tv/?channel=dota2ti_es&parent=${targetParent}&parent=localhost&parent=127.0.0.1&muted=true`;
-
-    const PAGES = [
-      'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026/Group_Stage&format=json',
-      'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026&format=json'
-    ];
-
-    const PROXIES = [
-      (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-      (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`
-    ];
-
-    async function fetchWithFallback() {
-      for (const pageUrl of PAGES) {
-        for (const proxyFn of PROXIES) {
-          try {
-            const endpoint = proxyFn(pageUrl);
-            const response = await fetch(endpoint);
-            if (!response.ok) continue;
-
-            let htmlRaw = '';
-            if (endpoint.includes('allorigins')) {
-              const wrapper = await response.json();
-              const json = JSON.parse(wrapper.contents);
-              htmlRaw = json?.parse?.text?.['*'] || '';
-            } else {
-              const json = await response.json();
-              htmlRaw = json?.parse?.text?.['*'] || '';
-            }
-
-            if (htmlRaw) return htmlRaw;
-          } catch (e) {
-            console.warn('Proxy falló, reintentando...', e);
-          }
-        }
-      }
-      return null;
-    }
-
-    async function loadLiquipediaData() {
-      const container = document.getElementById('content');
-      container.innerHTML = '<div class="status-text">Obteniendo Swiss Standings desde Liquipedia...</div>';
-
-      const htmlRaw = await fetchWithFallback();
-
-      if (!htmlRaw) {
-        container.innerHTML = `
-          <div class="status-text" style="color: var(--dire-red);">
-            No se pudieron obtener los datos. Presiona "Actualizar Tabla".
-          </div>`;
-        return;
-      }
-
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(htmlRaw, 'text/html');
-      renderStandingsTable(doc, container);
-    }
-
-    function parseRoundCell(tdCell) {
-      if (!tdCell) return '-';
-
-      const matchOverview = tdCell.querySelector('.standings-match-overview');
-      if (!matchOverview) {
-        const txt = tdCell.textContent.trim();
-        return txt || '-';
-      }
-
-      const scoreEl = matchOverview.querySelector('.generic-label, .label--standings-result');
-      const score = scoreEl ? scoreEl.textContent.trim() : '';
-
-      // Determinar si es victoria o derrota
-      let scoreClass = '';
-      if (scoreEl) {
-        const labelType = scoreEl.getAttribute('data-label-type');
-        if (labelType === 'result-win') {
-          scoreClass = 'win';
-        } else if (labelType === 'result-loss') {
-          scoreClass = 'loss';
-        } else {
-          // Evaluación manual si no existe atributo data-label-type
-          const parts = score.split(':').map(s => parseInt(s.trim()));
-          if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-            if (parts[0] > parts[1]) scoreClass = 'win';
-            else if (parts[0] < parts[1]) scoreClass = 'loss';
-          }
-        }
-      }
-
-      const teamIcon = matchOverview.querySelector('.team-template-team-icon, .team-template-image-icon');
-      let opponent = '';
-      let oppLogoSrc = '';
-
-      if (teamIcon) {
-        opponent = teamIcon.getAttribute('data-highlighting-class') || 
-                   teamIcon.querySelector('a')?.getAttribute('title') || 
-                   teamIcon.querySelector('img')?.getAttribute('alt') || '';
-
-        const imgEl = teamIcon.querySelector('img');
-        if (imgEl) {
-          oppLogoSrc = imgEl.getAttribute('src') || '';
-          if (oppLogoSrc && oppLogoSrc.startsWith('/')) {
-            oppLogoSrc = 'https://liquipedia.net' + oppLogoSrc;
-          }
-        }
-      }
-
-      const oppLogoHtml = oppLogoSrc ? `<img src="${oppLogoSrc}" class="opp-logo" alt="${opponent}">` : '';
-
-      if (score || opponent) {
-        return `
-          <div class="round-cell-box">
-            ${score ? `<span class="r-score ${scoreClass}">${score}</span>` : ''}
-            <div class="r-opp-box">
-              ${oppLogoHtml}
-              ${opponent ? `<span class="r-opp">vs ${opponent}</span>` : ''}
-            </div>
-          </div>`;
-      }
-
-      return tdCell.textContent.trim() || '-';
-    }
-
-    function renderStandingsTable(doc, container) {
-      const standingsTable = doc.querySelector('div[data-analytics-name="Swiss standings table"] table') || 
-                             doc.querySelector('.standings-swiss table');
-
-      if (!standingsTable) {
-        container.innerHTML = `
-          <div class="status-text">
-            Sincronizado con Liquipedia. La tabla Swiss Standings aparecerá aquí en cuanto esté publicada.
-          </div>`;
-        return;
-      }
-
-      // Filtrar filas válidas descartando encabezados no deseados
-      const rawRows = Array.from(standingsTable.querySelectorAll('tr.table2__row--body'));
-      const validRows = rawRows.filter(row => {
-        if (row.classList.contains('table2__row--head') || row.querySelector('th')) return false;
-        const pos = row.querySelector('.label--placement')?.textContent.trim() || row.cells[0]?.textContent.trim();
-        const teamName = row.querySelector('.block-team .name.hidden-xs')?.textContent.trim() || 
-                         row.querySelector('.block-team a')?.textContent.trim() || 
-                         row.cells[1]?.textContent.trim();
-        return pos && teamName && pos !== '#' && teamName.toLowerCase() !== 'participant';
-      });
-
-      const totalRows = validRows.length;
-
-      let tableHtml = `
-        <div class="table-responsive">
-          <table class="standings-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th style="text-align:left;">Equipo</th>
-                <th>Partidas (W-L)</th>
-                <th>Juegos (W-L)</th>
-                <th>Ronda 1</th>
-                <th>Ronda 2</th>
-                <th>Ronda 3</th>
-                <th>Ronda 4</th>
-                <th>Ronda 5</th>
-              </tr>
-            </thead>
-            <tbody>`;
-
-      validRows.forEach((row, idx) => {
-        const pos = row.querySelector('.label--placement')?.textContent.trim() || row.cells[0]?.textContent.trim();
-        const teamName = row.querySelector('.block-team .name.hidden-xs')?.textContent.trim() || 
-                         row.querySelector('.block-team a')?.textContent.trim() || 
-                         row.cells[1]?.textContent.trim();
-
-        const matches = row.cells[2]?.textContent.trim() || '-';
-        const games = row.cells[3]?.textContent.trim() || '-';
-
-        // Extracción de Logo
-        const logoImg = row.querySelector('.block-team img');
-        let logoSrc = logoImg ? (logoImg.getAttribute('src') || '') : '';
-        if (logoSrc && logoSrc.startsWith('/')) {
-          logoSrc = 'https://liquipedia.net' + logoSrc;
-        }
-        const logoHtml = logoSrc ? `<img src="${logoSrc}" class="team-logo" alt="${teamName}">` : '';
-
-        // Evaluación de Estado
-        let badgeClass = '';
-        let statusTag = '';
-
-        const matchParts = matches.split('-').map(s => parseInt(s.trim()));
-        if (matchParts.length === 2 && !isNaN(matchParts[0]) && !isNaN(matchParts[1])) {
-          const wins = matchParts[0];
-          const losses = matchParts[1];
-
-          if (wins >= 3) {
-            badgeClass = 'qualified-badge';
-            statusTag = '<span class="status-tag tag-qualified">Clasificado</span>';
-          } else if (losses >= 3) {
-            badgeClass = 'eliminated-badge';
-            statusTag = '<span class="status-tag tag-eliminated">Eliminado</span>';
-          }
-        }
-
-        // Degradado de color de fondo (Heatmap) de Verde (arriba) a Rojo (abajo)
-        const ratio = totalRows > 1 ? idx / (totalRows - 1) : 0;
-        const r = Math.round(46 + ratio * (231 - 46));
-        const g = Math.round(204 + ratio * (76 - 204));
-        const b = Math.round(113 + ratio * (60 - 113));
-        const rowBgStyle = `background-color: rgba(${r}, ${g}, ${b}, 0.12) !important;`;
-
-        const r1 = parseRoundCell(row.cells[4]);
-        const r2 = parseRoundCell(row.cells[5]);
-        const r3 = parseRoundCell(row.cells[6]);
-        const r4 = parseRoundCell(row.cells[7]);
-        const r5 = parseRoundCell(row.cells[8]);
-
-        tableHtml += `
-          <tr style="${rowBgStyle}">
-            <td><span class="pos-badge ${badgeClass}">${pos}</span></td>
-            <td class="team-cell">
-              <div class="team-cell-content">
-                ${logoHtml}
-                <span>${teamName}</span>
-                ${statusTag}
+        <!-- Acordeón de Bans / Vetos -->
+        <details class="veto-accordion">
+          <summary>Bans / Fase de Selección</summary>
+          <div class="veto-content">
+            <div class="veto-game">
+              <span>Juego 1 Bans:</span>
+              <div class="ban-list">
+                <img src="https://via.placeholder.com/28x16/222/888?text=B1" alt="Ban 1">
+                <img src="https://via.placeholder.com/28x16/222/888?text=B2" alt="Ban 2">
+                <img src="https://via.placeholder.com/28x16/222/888?text=B3" alt="Ban 3">
               </div>
-            </td>
-            <td class="score-cell">${matches}</td>
-            <td>${games}</td>
-            <td>${r1}</td>
-            <td>${r2}</td>
-            <td>${r3}</td>
-            <td>${r4}</td>
-            <td>${r5}</td>
-          </tr>`;
+            </div>
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript para la interactividad -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Abrir modal al hacer clic en la tarjeta del match
+      const matchCards = document.querySelectorAll('.match-card');
+      
+      matchCards.forEach(card => {
+        card.addEventListener('click', () => {
+          const matchId = card.getAttribute('data-match');
+          const popup = document.getElementById(`popup-${matchId}`);
+          if (popup) {
+            popup.classList.add('active');
+          }
+        });
       });
 
-      tableHtml += `
-            </tbody>
-          </table>
-        </div>`;
+      // Cerrar modal con el botón X
+      const closeBtns = document.querySelectorAll('.popup-close-btn');
+      closeBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const popup = btn.closest('.match-popup-overlay');
+          if (popup) {
+            popup.classList.remove('active');
+          }
+        });
+      });
 
-      if (totalRows > 0) {
-        container.innerHTML = tableHtml;
-      } else {
-        container.innerHTML = `
-          <div class="status-text">
-            No se pudieron formatear las filas de la tabla de posiciones.
-          </div>`;
-      }
-    }
+      // Cerrar modal al hacer clic en el fondo oscuro
+      const overlays = document.querySelectorAll('.match-popup-overlay');
+      overlays.forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) {
+            overlay.classList.remove('active');
+          }
+        });
+      });
 
-    loadLiquipediaData();
-    setInterval(loadLiquipediaData, 60000);
+      // Cerrar modal con la tecla Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.match-popup-overlay.active').forEach(popup => {
+            popup.classList.remove('active');
+          });
+        }
+      });
+    });
   </script>
+
 </body>
 </html>

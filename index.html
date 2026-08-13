@@ -27,7 +27,6 @@
       padding: 20px;
     }
 
-    /* Aumentado el ancho máximo del contenedor principal a 1600px */
     .container {
       max-width: 1600px;
       margin: 0 auto;
@@ -63,7 +62,7 @@
       font-weight: bold;
     }
 
-    /* Grid aumentado con minmax de 600px para reproductores más grandes */
+    /* Grid de transmisiones */
     .streams-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
@@ -113,6 +112,15 @@
       left: 0;
       width: 100% !important;
       height: 100% !important;
+      border: none;
+    }
+
+    /* Nota informativa audio */
+    .audio-note {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: normal;
     }
 
     /* Sección de Marcador de Liquipedia */
@@ -227,10 +235,13 @@
     <div class="section-title">Transmisiones en Vivo</div>
     <div class="streams-grid">
       
-      <!-- Twitch Player con Permisos de Audio y Autoplay -->
+      <!-- Twitch Player -->
       <div class="stream-card">
         <div class="stream-header">
-          <span>Dota 2 TI Español</span>
+          <div>
+            <span>Dota 2 TI Español</span>
+            <div class="audio-note">Haz clic sobre el reproductor para activar el audio</div>
+          </div>
           <span class="badge-twitch">Twitch</span>
         </div>
         <div class="video-container">
@@ -244,19 +255,22 @@
         </div>
       </div>
 
-      <!-- Kick Player con Habilitación Explícita de Audio -->
+      <!-- Kick Player -->
       <div class="stream-card">
         <div class="stream-header">
-          <span>MrChoco</span>
+          <div>
+            <span>MrChoco</span>
+            <div class="audio-note">Haz clic dentro del reproductor para ver controles de Kick</div>
+          </div>
           <span class="badge-kick">Kick</span>
         </div>
         <div class="video-container">
           <iframe 
-            src="https://player.kick.com/mrchoco?autoplay=true&muted=false" 
+            src="https://player.kick.com/mrchoco" 
             frameborder="0" 
             scrolling="no" 
             allowfullscreen="true"
-            allow="autoplay; fullscreen; picture-in-picture; encrypted-media">
+            allow="autoplay; autoplay *; fullscreen; picture-in-picture; encrypted-media; media-playback; accelerometer; gyroscope">
           </iframe>
         </div>
       </div>
@@ -264,11 +278,11 @@
     </div>
 
     <!-- Sección de Resultados -->
-    <div class="section-title">Resultados de Group Stage (Liquipedia)</div>
+    <div class="section-title">Resultados desde Liquipedia</div>
     <div class="status-bar">
       <div class="live-indicator">
         <div class="dot"></div>
-        <span>Actualización Automática (Cada 60s)</span>
+        <span>Sincronización Automática (Cada 60s)</span>
       </div>
       <button class="refresh-btn" onclick="loadLiquipediaData()">Actualizar Puntajes</button>
     </div>
@@ -279,54 +293,82 @@
   </div>
 
   <script>
-    // 1. Detección automática del dominio para Twitch
+    // 1. Configuración dinámica para Twitch
     const currentHost = window.location.hostname || 'localhost';
     const twitchIframe = document.getElementById('twitch-iframe');
     
     const targetParent = (currentHost === '' || currentHost === 'file') ? 'localhost' : currentHost;
     twitchIframe.src = `https://player.twitch.tv/?channel=dota2ti_es&parent=${targetParent}&parent=localhost&parent=127.0.0.1&muted=true`;
 
-    // 2. Consulta API Liquipedia apuntando específicamente al Group Stage
-    const TARGET_PAGE = 'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026/Group_Stage&format=json';
-    const CORS_PROXY = 'https://api.allorigins.win/get?url=';
+    // 2. Consulta API Liquipedia con respaldo de múltiple Proxy y Páginas
+    const PAGES = [
+      'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026/Group_Stage&format=json',
+      'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026&format=json'
+    ];
+
+    const PROXIES = [
+      (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+      (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`
+    ];
+
+    async function fetchWithFallback() {
+      for (const pageUrl of PAGES) {
+        for (const proxyFn of PROXIES) {
+          try {
+            const endpoint = proxyFn(pageUrl);
+            const response = await fetch(endpoint);
+            if (!response.ok) continue;
+
+            let htmlRaw = '';
+            if (endpoint.includes('allorigins')) {
+              const wrapper = await response.json();
+              const json = JSON.parse(wrapper.contents);
+              htmlRaw = json?.parse?.text?.['*'] || '';
+            } else {
+              const json = await response.json();
+              htmlRaw = json?.parse?.text?.['*'] || '';
+            }
+
+            if (htmlRaw) return htmlRaw;
+          } catch (e) {
+            console.warn('Proxy o Endpoint falló, intentando el siguiente...', e);
+          }
+        }
+      }
+      return null;
+    }
 
     async function loadLiquipediaData() {
       const container = document.getElementById('content');
-      
-      try {
-        const response = await fetch(CORS_PROXY + encodeURIComponent(TARGET_PAGE));
-        if (!response.ok) throw new Error('Error al conectar.');
+      container.innerHTML = '<div class="status-text">Cargando datos actualizados de Liquipedia...</div>';
 
-        const wrapper = await response.json();
-        const json = JSON.parse(wrapper.contents);
+      const htmlRaw = await fetchWithFallback();
 
-        if (!json?.parse?.text) throw new Error('Respuesta no válida.');
-
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(json.parse.text['*'], 'text/html');
-
-        renderMatches(doc, container);
-
-      } catch (err) {
-        console.error(err);
+      if (!htmlRaw) {
         container.innerHTML = `
           <div class="status-text" style="color: #e74c3c;">
-            No se pudieron obtener los datos en vivo en este momento. Revisa más tarde.
+            No se pudo conectar con Liquipedia. Presiona "Actualizar Puntajes" para volver a intentar.
           </div>`;
+        return;
       }
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlRaw, 'text/html');
+      renderMatches(doc, container);
     }
 
     function renderMatches(doc, container) {
-      const matchRows = doc.querySelectorAll('.match-row, .matchbox, .match-table tr, .wikitable tr');
       let htmlContent = '';
       let count = 0;
 
+      const matchRows = doc.querySelectorAll('.match-row, .matchbox, .match-table tr, .wikitable tr, .bracket-match');
+
       matchRows.forEach(row => {
-        const teamLeft = row.querySelector('.team-left, .team-left-short, .team-1, td:nth-child(1)')?.textContent.trim();
-        const teamRight = row.querySelector('.team-right, .team-right-short, .team-2, td:nth-child(3)')?.textContent.trim();
+        const teamLeft = row.querySelector('.team-left, .team-left-short, .team-1, .match-team-left, td:nth-child(1)')?.textContent.trim();
+        const teamRight = row.querySelector('.team-right, .team-right-short, .team-2, .match-team-right, td:nth-child(3)')?.textContent.trim();
         const score = row.querySelector('.versus, .score, .match-score, td:nth-child(2)')?.textContent.trim();
 
-        if (teamLeft && teamRight && teamLeft !== teamRight && !teamLeft.includes('Participant')) {
+        if (teamLeft && teamRight && teamLeft !== teamRight && !teamLeft.toLowerCase().includes('participant') && !teamLeft.toLowerCase().includes('team')) {
           count++;
           htmlContent += `
             <div class="match-card">
@@ -342,12 +384,12 @@
       } else {
         container.innerHTML = `
           <div class="status-text">
-            Sincronizado con Liquipedia (Group Stage). Los marcadores se actualizarán automáticamente al iniciar cada serie.
+            Conexión establecida con Liquipedia. Los marcadores y enfrentamientos se actualizarán automáticamente cuando arranquen las partidas en vivo.
           </div>`;
       }
     }
 
-    // Carga inicial y temporizador
+    // Carga inicial y temporizador de 1 minuto
     loadLiquipediaData();
     setInterval(loadLiquipediaData, 60000);
   </script>

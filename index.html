@@ -408,7 +408,7 @@
       <p>Centro de Transmisiones Multistream & Standings Dota 2</p>
     </header>
 
-    <!-- Header Transmisiones con Botones de Selección -->
+    <!-- Transmisiones -->
     <div class="section-header-flex">
       <div class="section-title">Transmisiones en Vivo</div>
       <div class="stream-controls">
@@ -462,7 +462,7 @@
 
     </div>
 
-    <!-- Tabla Swiss Standings -->
+    <!-- Tabla Swiss Standings Exclusiva -->
     <div class="section-title" style="margin-bottom:18px;">Tabla de Posiciones - Swiss Stage (Liquipedia)</div>
     <div class="status-bar">
       <div class="live-indicator">
@@ -478,7 +478,7 @@
   </div>
 
   <script>
-    // 1. Alternar entre 1 o 2 Reproductores
+    // 1. Control de vistas de reproducción
     function setStreamMode(mode) {
       const grid = document.getElementById('streams-grid-container');
       const cardTwitch = document.getElementById('card-twitch');
@@ -487,7 +487,6 @@
       const btnTwitch = document.getElementById('btn-twitch');
       const btnKick = document.getElementById('btn-kick');
 
-      // Resetear clases de botones
       btnBoth.classList.remove('active');
       btnTwitch.classList.remove('active');
       btnKick.classList.remove('active');
@@ -510,14 +509,13 @@
       }
     }
 
-    // 2. Configuración dinámica para Twitch
+    // 2. Dominio dinámico para Twitch
     const currentHost = window.location.hostname || 'localhost';
     const twitchIframe = document.getElementById('twitch-iframe');
-    
     const targetParent = (currentHost === '' || currentHost === 'file') ? 'localhost' : currentHost;
     twitchIframe.src = `https://player.twitch.tv/?channel=dota2ti_es&parent=${targetParent}&parent=localhost&parent=127.0.0.1&muted=true`;
 
-    // 3. Consulta API Liquipedia
+    // 3. Petición API a Liquipedia
     const PAGES = [
       'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026/Group_Stage&format=json',
       'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026&format=json'
@@ -548,7 +546,7 @@
 
             if (htmlRaw) return htmlRaw;
           } catch (e) {
-            console.warn('Proxy falló, intentando siguiente...', e);
+            console.warn('Proxy falló, reintentando...', e);
           }
         }
       }
@@ -611,12 +609,14 @@
     }
 
     function renderStandingsTable(doc, container) {
-      const standingsTable = doc.querySelector('.standings-swiss table, .table2--generic table, .wikitable');
+      // Selector exclusivo para extraer UNICAMENTE la tabla de Swiss Standings
+      const standingsTable = doc.querySelector('div[data-analytics-name="Swiss standings table"] table') || 
+                             doc.querySelector('.standings-swiss table');
 
       if (!standingsTable) {
         container.innerHTML = `
           <div class="status-text">
-            Sincronizado con Liquipedia. La tabla de posiciones aparecerá aquí tan pronto como esté publicada.
+            Sincronizado con Liquipedia. La tabla Swiss Standings aparecerá aquí en cuanto esté publicada.
           </div>`;
         return;
       }

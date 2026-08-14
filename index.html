@@ -196,6 +196,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
       background: var(--card-bg);
       padding: 14px 20px;
       border-radius: 6px;
@@ -220,6 +222,41 @@
       border-radius: 50%;
       box-shadow: 0 0 10px var(--radiant-green);
       animation: pulse 1.5s infinite;
+    }
+
+    /* ESTILOS DEL TEMPORIZADOR */
+    .next-match-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(10, 14, 20, 0.85);
+      border: 1px solid var(--border-metallic);
+      padding: 6px 14px;
+      border-radius: 4px;
+    }
+
+    .next-teams {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: var(--accent-gold-bright);
+    }
+
+    .timer-display {
+      font-family: monospace;
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #fff;
+      background: #000;
+      padding: 3px 8px;
+      border-radius: 3px;
+      border: 1px solid var(--border-highlight);
+      letter-spacing: 1px;
+    }
+
+    .timer-display.live-now {
+      color: var(--radiant-green);
+      border-color: var(--radiant-green);
+      animation: pulse 1s infinite;
     }
 
     @keyframes pulse {
@@ -860,6 +897,13 @@
         <div class="dot"></div>
         <span>Sincronizado con Base de Datos (standings.json)</span>
       </div>
+
+      <!-- Temporizador de Próxima Partida -->
+      <div id="next-match-box" class="next-match-container" style="display: none;">
+        <span id="next-match-teams" class="next-teams">Próximo: -- vs --</span>
+        <div id="countdown-timer" class="timer-display">00h 00m 00s</div>
+      </div>
+
       <button class="refresh-btn" onclick="loadLiquipediaData()">Actualizar Tabla</button>
     </div>
 
@@ -879,6 +923,53 @@
     window.OPENDOTA_ITEM_IDS = {};
     window.OPENDOTA_ITEMS = {};
     window.OPENDOTA_TI_MATCHES = [];
+    let countdownInterval = null;
+
+    // Lógica del Temporizador
+    function startNextMatchTimer(nextMatchData) {
+      const box = document.getElementById('next-match-box');
+      const teamsEl = document.getElementById('next-match-teams');
+      const timerEl = document.getElementById('countdown-timer');
+
+      if (!nextMatchData || !nextMatchData.start_time) {
+        if (box) box.style.display = 'none';
+        return;
+      }
+
+      if (box) box.style.display = 'flex';
+      if (teamsEl) teamsEl.textContent = `Próximo: ${nextMatchData.team1 || 'TBD'} vs ${nextMatchData.team2 || 'TBD'}`;
+
+      const targetTime = new Date(nextMatchData.start_time).getTime();
+
+      if (countdownInterval) clearInterval(countdownInterval);
+
+      countdownInterval = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = targetTime - now;
+
+        if (distance <= 0) {
+          clearInterval(countdownInterval);
+          if (timerEl) {
+            timerEl.textContent = '¡EN VIVO!';
+            timerEl.classList.add('live-now');
+          }
+          return;
+        }
+
+        if (timerEl) {
+          timerEl.classList.remove('live-now');
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+          const hStr = String(hours).padStart(2, '0');
+          const mStr = String(minutes).padStart(2, '0');
+          const sStr = String(seconds).padStart(2, '0');
+
+          timerEl.textContent = `${hStr}h ${mStr}m ${sStr}s`;
+        }
+      }, 1000);
+    }
 
     // 1. Cargar catálogo de héroes
     async function loadOpenDotaHeroes() {
@@ -991,6 +1082,13 @@
       if (!data || !data.teams || data.teams.length === 0) {
         container.innerHTML = '<div class="status-text">La base de datos (standings.json) está vacía o mal estructurada.</div>';
         return;
+      }
+
+      // Activar Temporizador si existen datos de próxima partida
+      if (data.next_match) {
+        startNextMatchTimer(data.next_match);
+      } else {
+        startNextMatchTimer(null);
       }
 
       window.MATCH_POPUPS_CACHE = [];

@@ -224,7 +224,6 @@
       animation: pulse 1.5s infinite;
     }
 
-    /* ESTILOS DEL TEMPORIZADOR Y MÚLTIPLES PARTIDAS */
     .next-match-container {
       display: flex;
       align-items: center;
@@ -468,7 +467,6 @@
       border: 1px solid var(--border-metallic);
     }
 
-    /* ESTILOS DEL POPUP OVERLAY */
     .popup-modal-overlay {
       display: none;
       position: fixed;
@@ -560,7 +558,6 @@
 
     .match-info-header-scoreholder-score.match-info-header-winner { color: var(--accent-gold); }
 
-    /* ESTILOS DE OPENDOTA Y DRAFT DE HÉROES */
     .opendota-section {
       background: #080c12;
       border: 1px solid var(--border-metallic);
@@ -612,7 +609,6 @@
       box-shadow: 0 0 8px rgba(229, 193, 88, 0.5);
     }
 
-    /* PESTAÑAS DRAFT / JUGADORES */
     .opendota-tabs {
       display: flex;
       gap: 8px;
@@ -721,7 +717,6 @@
       padding: 1px 0;
     }
 
-    /* ESTILOS DE LISTA DE JUGADORES E ÍTEMS */
     .player-list {
       display: flex;
       flex-direction: column;
@@ -957,7 +952,15 @@
     window.OPENDOTA_TI_MATCHES = [];
     let countdownInterval = null;
 
-    // Lógica del Temporizador para una o varias partidas simultáneas
+    // Normalizador de nombres de equipos para búsquedas flexibles
+    function normalizeTeamName(name) {
+      if (!name) return '';
+      return name.toLowerCase()
+        .replace(/\b(team|gaming|esports|e-sports|club|gg)\b/g, '')
+        .replace(/[^a-z0-9]/g, '')
+        .trim();
+    }
+
     function startNextMatchTimer(nextMatchData) {
       const box = document.getElementById('next-match-box');
       const teamsEl = document.getElementById('next-match-teams');
@@ -1025,7 +1028,6 @@
       }, 1000);
     }
 
-    // 1. Cargar catálogo de héroes
     async function loadOpenDotaHeroes() {
       try {
         const res = await fetch('https://api.opendota.com/api/heroes');
@@ -1040,11 +1042,10 @@
           };
         });
       } catch (e) {
-        console.warn('No se pudo cargar el catálogo de héroes de OpenDota', e);
+        console.warn('No se pudo cargar héroes de OpenDota', e);
       }
     }
 
-    // 2. Cargar diccionario de Ítems
     async function loadOpenDotaItems() {
       try {
         const [idsRes, itemsRes] = await Promise.all([
@@ -1054,22 +1055,19 @@
         if (idsRes.ok) window.OPENDOTA_ITEM_IDS = await idsRes.json();
         if (itemsRes.ok) window.OPENDOTA_ITEMS = await itemsRes.json();
       } catch (e) {
-        console.warn('No se pudieron cargar los ítems de OpenDota', e);
+        console.warn('No se pudieron cargar ítems de OpenDota', e);
       }
     }
 
-    // 3. Cargar partidas pro de TI 2026 desde OpenDota
     async function loadOpenDotaTIMatches() {
       try {
         const res = await fetch('https://api.opendota.com/api/proMatches');
         if (!res.ok) return;
         const matches = await res.json();
         
-        window.OPENDOTA_TI_MATCHES = matches.filter(m => 
-          m.league_name && (m.league_name.includes('The International 2026') || m.league_name.includes('The International'))
-        );
+        window.OPENDOTA_TI_MATCHES = matches;
       } catch (e) {
-        console.warn('No se pudieron obtener las partidas pro de OpenDota', e);
+        console.warn('No se pudieron obtener partidas pro de OpenDota', e);
       }
     }
 
@@ -1108,7 +1106,6 @@
     const targetParent = (currentHost === '' || currentHost === 'file') ? 'localhost' : currentHost;
     twitchIframe.src = `https://player.twitch.tv/?channel=dota2ti_es&parent=${targetParent}&parent=localhost&parent=127.0.0.1&muted=true`;
 
-    /* Cargar la base de datos JSON local desde GitHub Pages */
     async function loadLiquipediaData() {
       const container = document.getElementById('content');
       
@@ -1131,14 +1128,12 @@
       }
     }
 
-    /* Renderizar la tabla a partir del archivo JSON */
     function renderCustomStandingsTable(data, container) {
       if (!data || !data.teams || data.teams.length === 0) {
         container.innerHTML = '<div class="status-text">La base de datos (standings.json) está vacía o mal estructurada.</div>';
         return;
       }
 
-      // Activar Temporizador si existen datos de próxima partida
       if (data.next_match) {
         startNextMatchTimer(data.next_match);
       } else {
@@ -1238,7 +1233,6 @@
       container.innerHTML = tableHtml;
     }
 
-    // Helper para generar HTML de un ítem
     function getItemHtml(itemId, type = 'main') {
       if (!itemId || itemId === 0) {
         return `<div class="item-slot empty ${type}" title="Vacío"></div>`;
@@ -1279,7 +1273,6 @@
       }
     }
 
-    // 4. Obtener Picks, Bans e Ítems de una partida mediante OpenDota API
     async function fetchOpenDotaMatchDraft(matchId) {
       const targetContainer = document.getElementById('opendota-draft-result');
       if (!matchId) {
@@ -1303,6 +1296,11 @@
         const match = await res.json();
         const picksBans = match.picks_bans || [];
         const players = match.players || [];
+
+        if (players.length === 0) {
+          targetContainer.innerHTML = '<div style="color:var(--text-muted); padding: 8px 0;">La replay aún se está procesando en la red de Dota 2. Inténtalo de nuevo en unos momentos.</div>';
+          return;
+        }
 
         const radiantPicks = picksBans.filter(p => p.team === 0 && p.is_pick);
         const radiantBans = picksBans.filter(p => p.team === 0 && !p.is_pick);
@@ -1378,18 +1376,18 @@
                 <span>${match.radiant_win ? '🏆 VICTORIA' : ''}</span>
               </div>
               <div style="font-size:10px; color:var(--text-muted); margin-bottom:3px;">Picks:</div>
-              <div class="hero-grid">${radiantPicks.map(renderHeroCard).join('')}</div>
+              <div class="hero-grid">${radiantPicks.length > 0 ? radiantPicks.map(renderHeroCard).join('') : '<span style="font-size:10px; color:var(--text-muted);">Sin datos de draft</span>'}</div>
               <div style="font-size:10px; color:var(--text-muted); margin-bottom:3px;">Bans:</div>
-              <div class="hero-grid">${radiantBans.map(renderHeroCard).join('')}</div>
+              <div class="hero-grid">${radiantBans.length > 0 ? radiantBans.map(renderHeroCard).join('') : '<span style="font-size:10px; color:var(--text-muted);">Sin datos de bans</span>'}</div>
 
               <div class="draft-team-header dire" style="margin-top:12px;">
                 <span>DIRE: ${match.dire_name || 'Equipo 2'}</span>
                 <span>${!match.radiant_win ? '🏆 VICTORIA' : ''}</span>
               </div>
               <div style="font-size:10px; color:var(--text-muted); margin-bottom:3px;">Picks:</div>
-              <div class="hero-grid">${direPicks.map(renderHeroCard).join('')}</div>
+              <div class="hero-grid">${direPicks.length > 0 ? direPicks.map(renderHeroCard).join('') : '<span style="font-size:10px; color:var(--text-muted);">Sin datos de draft</span>'}</div>
               <div style="font-size:10px; color:var(--text-muted); margin-bottom:3px;">Bans:</div>
-              <div class="hero-grid">${direBans.map(renderHeroCard).join('')}</div>
+              <div class="hero-grid">${direBans.length > 0 ? direBans.map(renderHeroCard).join('') : '<span style="font-size:10px; color:var(--text-muted);">Sin datos de bans</span>'}</div>
             </div>
           </div>
 
@@ -1410,11 +1408,10 @@
             </div>
           </div>`;
       } catch (e) {
-        targetContainer.innerHTML = `<div style="color:var(--dire-red); padding: 8px 0;">Error: ${e.message}</div>`;
+        targetContainer.innerHTML = `<div style="color:var(--dire-red); padding: 8px 0;">Error al obtener la partida: ${e.message}</div>`;
       }
     }
 
-    /* Mostrar Popup Dinámico por Partido con Auto-Carga Directa */
     function showMatchPopup(index) {
       const match = window.MATCH_POPUPS_CACHE[index];
       if (!match) return;
@@ -1428,20 +1425,23 @@
         const score1 = s[0] || '0';
         const score2 = s[1] || '0';
 
-        const t1 = (match.team1 || '').toLowerCase().trim();
-        const t2 = (match.team2 || '').toLowerCase().trim();
+        const rawT1 = match.team1 || '';
+        const rawT2 = match.team2 || '';
 
-        // FILTRO ESTRICTO: Ambos equipos deben formar parte de la misma partida
+        const normT1 = normalizeTeamName(rawT1);
+        const normT2 = normalizeTeamName(rawT2);
+
+        // Búsqueda flexible en OpenDota
         const relatedMatches = window.OPENDOTA_TI_MATCHES.filter(m => {
-          const rName = (m.radiant_name || '').toLowerCase();
-          const dName = (m.dire_name || '').toLowerCase();
-          
-          const t1InRadiant = t1 && rName.includes(t1);
-          const t1InDire = t1 && dName.includes(t1);
-          const t2InRadiant = t2 && rName.includes(t2);
-          const t2InDire = t2 && dName.includes(t2);
+          const rName = normalizeTeamName(m.radiant_name || '');
+          const dName = normalizeTeamName(m.dire_name || '');
 
-          return (t1InRadiant && t2InDire) || (t1InDire && t2InRadiant);
+          if (!normT1 || !normT2) return false;
+
+          const matchNormal = (rName.includes(normT1) || normT1.includes(rName)) && (dName.includes(normT2) || normT2.includes(dName));
+          const matchReverse = (rName.includes(normT2) || normT2.includes(rName)) && (dName.includes(normT1) || normT1.includes(dName));
+
+          return matchNormal || matchReverse;
         });
 
         let quickButtonsHtml = '';
@@ -1481,20 +1481,19 @@
               </div>
             </div>
 
-            <!-- Sección de Control de Partidas Directas -->
             <div class="opendota-section">
               ${relatedMatches.length > 0 ? `
                 <div style="font-size:11px; color:var(--accent-gold); font-weight:bold; margin-bottom:4px;">
-                  Partidas registradas (${match.team1} vs ${match.team2}):
+                  Partidas encontradas en OpenDota:
                 </div>
                 <div class="opendota-quick-buttons">${quickButtonsHtml}</div>
               ` : `
                 <div style="font-size:11px; color:var(--text-muted);">
-                  No se detectaron partidas automáticas registradas para este enfrentamiento específico.
+                  No se vincularon partidas automáticas. Puedes ingresar el Match ID manualmente abajo.
                 </div>
               `}
 
-              <details style="margin-top:8px; font-size:10px; color:var(--text-muted);">
+              <details style="margin-top:8px; font-size:10px; color:var(--text-muted);" ${relatedMatches.length === 0 ? 'open' : ''}>
                 <summary style="cursor:pointer; color:var(--accent-gold); font-weight:bold;">🔍 Búsqueda manual por Match ID</summary>
                 <div class="opendota-search-box" style="margin-top:6px;">
                   <input type="text" id="opendota-match-id-input" class="opendota-input" placeholder="Ej. 7890123456">
@@ -1506,7 +1505,6 @@
             <div id="opendota-draft-result"></div>
           </div>`;
 
-        // Auto-cargar el Juego 1 inmediatamente al abrir el modal
         if (relatedMatches.length > 0) {
           setTimeout(() => {
             fetchOpenDotaMatchDraft(relatedMatches[0].match_id);
@@ -1552,7 +1550,6 @@
       });
     });
 
-    // Carga inicial y refresco cada 15 minutos (900,000 ms)
     loadLiquipediaData();
     setInterval(loadLiquipediaData, 900000);
   </script>

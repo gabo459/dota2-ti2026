@@ -1,37 +1,33 @@
-name: Actualizar Standings de Dota 2
+name: Update Standings
 
 on:
   schedule:
-    # Se ejecuta cada 15 minutos
     - cron: '*/15 * * * *'
-  # Permite ejecutarlo manualmente desde GitHub
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  update-json:
+  update-standings:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clonar Repositorio
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configurar Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '22' # <--- Actualizado a versión compatible
 
-      - name: Instalar Dependencias
+      - name: Install dependencies
         run: npm install jsdom
 
-      - name: Ejecutar Script de Extracción
+      - name: Run update script
         run: node update-standings.js
 
-      - name: Guardar y Hacer Commit en GitHub
+      - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add standings.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "bot: actualización automática de standings.json" && git push)
+          git diff --staged --quiet || git commit -m "Auto-update standings [skip ci]"
+          git push

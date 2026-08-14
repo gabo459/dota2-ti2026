@@ -90,74 +90,110 @@ function parseRoundCell(td) {
   return td.textContent.trim() || '-';
 }
 
+// Limpia el nombre del equipo evitando concatenaciones con el texto corto/sigla
+function cleanTeamName(container) {
+  if (!container) return 'TBD';
+
+  const link = container.querySelector('a[title]');
+  if (link && link.getAttribute('title')) {
+    return link.getAttribute('title').trim();
+  }
+
+  const nameSpan = container.querySelector('.team-template-text a, .name a, .team-template-text');
+  if (nameSpan && nameSpan.textContent.trim()) {
+    return nameSpan.textContent.trim();
+  }
+
+  return container.textContent.trim().replace(/\s+/g, ' ');
+}
+
 function parseNextMatches(doc) {
   try {
+    const nowInSeconds = Math.floor(Date.now() / 1000);
     const timerEls = Array.from(doc.querySelectorAll('.timer-object[data-timestamp]'));
+
     if (timerEls.length === 0) return null;
 
-    const items = timerEls.map(el => ({
+    // Solo conservar marcas de tiempo futuras o que hayan iniciado hace menos de 1 hora (3600s)
+    const validItems = timerEls.map(el => ({
       el,
       timestamp: parseInt(el.getAttribute('data-timestamp'))
-    })).filter(item => !isNaN(item.timestamp));
+    })).filter(item => !isNaN(item.timestamp) && item.timestamp > (nowInSeconds - 3600));
 
-    if (items.length === 0) return null;
+    if (validItems.length === 0) return null;
 
-    // Obtener el timestamp más cercano en el tiempo
-    const minTimestamp = Math.min(...items.map(item => item.timestamp));
+    // Encontrar la fecha/hora más próxima
+    const minTimestamp = Math.min(...validItems.map(item => item.timestamp));
     const startTime = new Date(minTimestamp * 1000).toISOString();
 
-    // Filtrar todos los partidos que ocurren exactamente a la misma hora
-    const concurrentMatchesEls = items.filter(item => item.timestamp === minTimestamp);
+    const concurrentMatchesEls = validItems.filter(item => item.timestamp === minTimestamp);
+    const matchesRaw = [];
 
-    const matches = concurrentMatchesEls.map(item => {
+    concurrentMatchesEls.forEach(item => {
       const timerEl = item.el;
       const matchBox = timerEl.closest('.match-filler, .bracket-game, .brkts-match-info-popup, .matchbox, tr') || timerEl.parentElement;
+
+      if (!matchBox) return;
 
       let team1 = 'TBD';
       let team2 = 'TBD';
       let team1Logo = '';
       let team2Logo = '';
 
-      if (matchBox) {
-        const teamLeft = matchBox.querySelector('.team-left, .match-filler-team-left, .brkts-popup-header-opponent-left');
-        const teamRight = matchBox.querySelector('.team-right, .match-filler-team-right, .brkts-popup-header-opponent-right');
+      const teamLeft = matchBox.querySelector('.team-left, .match-filler-team-left, .brkts-popup-header-opponent-left');
+      const teamRight = matchBox.querySelector('.team-right, .match-filler-team-right, .brkts-popup-header-opponent-right');
 
-        if (teamLeft && teamRight) {
-          team1 = teamLeft.querySelector('.team-template-text, .name, a')?.textContent.trim() || teamLeft.textContent.trim();
-          team2 = teamRight.querySelector('.team-template-text, .name, a')?.textContent.trim() || teamRight.textContent.trim();
+      if (teamLeft && teamRight) {
+        team1 = cleanTeamName(teamLeft);
+        team2 = cleanTeamName(teamRight);
 
-          const img1 = teamLeft.querySelector('img');
-          const img2 = teamRight.querySelector('img');
+        const img1 = teamLeft.querySelector('img');
+        const img2 = teamRight.querySelector('img');
+        if (img1) team1Logo = img1.getAttribute('src') || '';
+        if (img2) team2Logo = img2.getAttribute('src') || '';
+      } else {
+        const teamTemplates = matchBox.querySelectorAll('.team-template-team-standard, .block-team');
+        if (teamTemplates.length >= 2) {
+          team1 = cleanTeamName(teamTemplates[0]);
+          team2 = cleanTeamName(teamTemplates[1]);
+
+          const img1 = teamTemplates[0].querySelector('img');
+          const img2 = teamTemplates[1].querySelector('img');
           if (img1) team1Logo = img1.getAttribute('src') || '';
           if (img2) team2Logo = img2.getAttribute('src') || '';
-        } else {
-          const teamTemplates = matchBox.querySelectorAll('.team-template-team-standard, .block-team, .team-template-image-icon, .team-template-text');
-          if (teamTemplates.length >= 2) {
-            team1 = teamTemplates[0].querySelector('.team-template-text, .name, a')?.textContent.trim() || teamTemplates[0].textContent.trim();
-            team2 = teamTemplates[1].querySelector('.team-template-text, .name, a')?.textContent.trim() || teamTemplates[1].textContent.trim();
-
-            const img1 = teamTemplates[0].querySelector('img');
-            const img2 = teamTemplates[1].querySelector('img');
-            if (img1) team1Logo = img1.getAttribute('src') || '';
-            if (img2) team2Logo = img2.getAttribute('src') || '';
-          }
         }
       }
 
       if (team1Logo && team1Logo.startsWith('/')) team1Logo = 'https://liquipedia.net' + team1Logo;
       if (team2Logo && team2Logo.startsWith('/')) team2Logo = 'https://liquipedia.net' + team2Logo;
 
-      return {
-        team1: team1.replace(/\s+/g, ' ').trim() || 'TBD',
-        team1_logo: team1Logo,
-        team2: team2.replace(/\s+/g, ' ').trim() || 'TBD',
-        team2_logo: team2Logo
-      };
+      if (team1 !== 'TBD' || team2 !== 'TBD') {
+        matchesRaw.push({
+          team1,
+          team1_logo: team1Logo,
+          team2,
+          team2_logo: team2Logo
+        });
+      }
     });
+
+    // Desduplicar partidos idénticos capturados de diferentes versiones responsive del DOM
+    const seenKeys = new Set();
+    const uniqueMatches = [];
+
+    matchesRaw.forEach(m => {
+      const key = `${m.team1.toLowerCase()}_vs_${m.team2.toLowerCase()}`;
+      if (!seenKeys.has(key)) {
+        seenKeys.add(key);
+        uniqueMatches.push(m);
+      }
+    });
+
+    if (uniqueMatches.length === 0) return null;
 
     return {
       start_time: startTime,
-      matches: matches
+      matches: uniqueMatches
     };
   } catch (e) {
     console.warn('No se pudieron extraer las próximas partidas:', e.message);

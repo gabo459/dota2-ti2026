@@ -968,12 +968,15 @@
         return;
       }
 
+      const matchesList = nextMatchData.matches || (nextMatchData.team1 ? [nextMatchData] : []);
+      if (matchesList.length === 0) {
+        if (box) box.style.display = 'none';
+        return;
+      }
+
       if (box) box.style.display = 'flex';
 
       if (teamsEl) {
-        // Soporta tanto un único objeto de partido como un array con múltiples partidos
-        const matchesList = nextMatchData.matches || (nextMatchData.team1 ? [nextMatchData] : []);
-
         teamsEl.innerHTML = matchesList.map((m) => {
           const logo1Html = m.team1_logo ? `<img src="${m.team1_logo}" class="next-team-logo" alt="${m.team1}">` : '';
           const logo2Html = m.team2_logo ? `<img src="${m.team2_logo}" class="next-team-logo" alt="${m.team2}">` : '';

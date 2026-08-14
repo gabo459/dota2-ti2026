@@ -1,5 +1,10 @@
 {
-  "updated_at": "2026-08-14T14:08:16.182Z",
+  "updated_at": "2026-08-14T14:22:48.230Z",
+  "next_match": {
+    "team1": "TBD",
+    "team2": "TBD",
+    "start_time": "2026-08-15T02:00:00.000Z"
+  },
   "teams": [
     {
       "pos": "1",

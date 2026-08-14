@@ -1,11 +1,33 @@
 {
-  "updated_at": "2026-08-14T14:27:24.858Z",
+  "updated_at": "2026-08-14T14:39:36.428Z",
   "next_match": {
-    "team1": "TBD",
-    "team1_logo": "",
-    "team2": "TBD",
-    "team2_logo": "",
-    "start_time": "2026-08-15T02:00:00.000Z"
+    "start_time": "2026-08-13T03:00:00.000Z",
+    "matches": [
+      {
+        "team1": "Team FalconsFalcons",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
+        "team2": "TBD",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png"
+      },
+      {
+        "team1": "Iron WingIW",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
+        "team2": "TBD",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png"
+      },
+      {
+        "team1": "Team Falcons",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
+        "team2": "TBD",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png"
+      },
+      {
+        "team1": "Iron Wing",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
+        "team2": "TBD",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png"
+      }
+    ]
   },
   "teams": [
     {

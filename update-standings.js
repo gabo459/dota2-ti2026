@@ -90,21 +90,32 @@ function parseRoundCell(td) {
   return td.textContent.trim() || '-';
 }
 
-// Limpia el nombre del equipo evitando concatenaciones con el texto corto/sigla
+// Extrae el nombre del equipo eliminando explícitamente siglas o clases duplicadas
 function cleanTeamName(container) {
   if (!container) return 'TBD';
 
-  const link = container.querySelector('a[title]');
-  if (link && link.getAttribute('title')) {
-    return link.getAttribute('title').trim();
+  // Clonar para no alterar el DOM original
+  const clone = container.cloneNode(true);
+
+  // Eliminar siglas duplicadas o clases responsivas de Liquipedia
+  clone.querySelectorAll('.team-template-shortname, .shortname, .mobile-only, .sm-only, [class*="short"]').forEach(el => el.remove());
+
+  // Buscar enlace principal con título de equipo
+  const anchor = clone.querySelector('a[title]');
+  if (anchor && anchor.getAttribute('title')) {
+    const title = anchor.getAttribute('title').trim();
+    if (title && !title.startsWith('Edit') && !title.startsWith('File:')) {
+      return title;
+    }
   }
 
-  const nameSpan = container.querySelector('.team-template-text a, .name a, .team-template-text');
-  if (nameSpan && nameSpan.textContent.trim()) {
-    return nameSpan.textContent.trim();
+  const link = clone.querySelector('a');
+  if (link && link.textContent.trim()) {
+    return link.textContent.trim();
   }
 
-  return container.textContent.trim().replace(/\s+/g, ' ');
+  const rawText = clone.textContent.trim().replace(/\s+/g, ' ');
+  return rawText || 'TBD';
 }
 
 function parseNextMatches(doc) {
@@ -114,15 +125,15 @@ function parseNextMatches(doc) {
 
     if (timerEls.length === 0) return null;
 
-    // Solo conservar marcas de tiempo futuras o que hayan iniciado hace menos de 1 hora (3600s)
+    // Solo conservar partidos futuros o que hayan comenzado hace menos de 30 minutos (1800s)
     const validItems = timerEls.map(el => ({
       el,
       timestamp: parseInt(el.getAttribute('data-timestamp'))
-    })).filter(item => !isNaN(item.timestamp) && item.timestamp > (nowInSeconds - 3600));
+    })).filter(item => !isNaN(item.timestamp) && item.timestamp > (nowInSeconds - 1800));
 
     if (validItems.length === 0) return null;
 
-    // Encontrar la fecha/hora más próxima
+    // Encontrar la fecha/hora de la partida más cercana
     const minTimestamp = Math.min(...validItems.map(item => item.timestamp));
     const startTime = new Date(minTimestamp * 1000).toISOString();
 
@@ -177,12 +188,14 @@ function parseNextMatches(doc) {
       }
     });
 
-    // Desduplicar partidos idénticos capturados de diferentes versiones responsive del DOM
+    // Desduplicación estricta ignorando caracteres especiales y mayúsculas
     const seenKeys = new Set();
     const uniqueMatches = [];
 
     matchesRaw.forEach(m => {
-      const key = `${m.team1.toLowerCase()}_vs_${m.team2.toLowerCase()}`;
+      const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const key = `${normalize(m.team1)}_vs_${normalize(m.team2)}`;
+
       if (!seenKeys.has(key)) {
         seenKeys.add(key);
         uniqueMatches.push(m);

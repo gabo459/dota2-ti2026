@@ -90,63 +90,77 @@ function parseRoundCell(td) {
   return td.textContent.trim() || '-';
 }
 
-function parseNextMatch(doc) {
+function parseNextMatches(doc) {
   try {
-    const timerEl = doc.querySelector('.timer-object[data-timestamp]');
-    if (!timerEl) return null;
+    const timerEls = Array.from(doc.querySelectorAll('.timer-object[data-timestamp]'));
+    if (timerEls.length === 0) return null;
 
-    const timestamp = parseInt(timerEl.getAttribute('data-timestamp'));
-    if (isNaN(timestamp)) return null;
+    const items = timerEls.map(el => ({
+      el,
+      timestamp: parseInt(el.getAttribute('data-timestamp'))
+    })).filter(item => !isNaN(item.timestamp));
 
-    const startTime = new Date(timestamp * 1000).toISOString();
-    const matchBox = timerEl.closest('.match-filler, .bracket-game, .brkts-match-info-popup, .matchbox, tr') || timerEl.parentElement;
+    if (items.length === 0) return null;
 
-    let team1 = 'TBD';
-    let team2 = 'TBD';
-    let team1Logo = '';
-    let team2Logo = '';
+    // Obtener el timestamp más cercano en el tiempo
+    const minTimestamp = Math.min(...items.map(item => item.timestamp));
+    const startTime = new Date(minTimestamp * 1000).toISOString();
 
-    if (matchBox) {
-      const teamLeft = matchBox.querySelector('.team-left, .match-filler-team-left, .brkts-popup-header-opponent-left');
-      const teamRight = matchBox.querySelector('.team-right, .match-filler-team-right, .brkts-popup-header-opponent-right');
+    // Filtrar todos los partidos que ocurren exactamente a la misma hora
+    const concurrentMatchesEls = items.filter(item => item.timestamp === minTimestamp);
 
-      if (teamLeft && teamRight) {
-        team1 = teamLeft.querySelector('.team-template-text, .name, a')?.textContent.trim() || teamLeft.textContent.trim();
-        team2 = teamRight.querySelector('.team-template-text, .name, a')?.textContent.trim() || teamRight.textContent.trim();
+    const matches = concurrentMatchesEls.map(item => {
+      const timerEl = item.el;
+      const matchBox = timerEl.closest('.match-filler, .bracket-game, .brkts-match-info-popup, .matchbox, tr') || timerEl.parentElement;
 
-        const img1 = teamLeft.querySelector('img');
-        const img2 = teamRight.querySelector('img');
-        if (img1) team1Logo = img1.getAttribute('src') || '';
-        if (img2) team2Logo = img2.getAttribute('src') || '';
-      } else {
-        const teamTemplates = matchBox.querySelectorAll('.team-template-team-standard, .block-team, .team-template-image-icon, .team-template-text');
-        if (teamTemplates.length >= 2) {
-          team1 = teamTemplates[0].querySelector('.team-template-text, .name, a')?.textContent.trim() || teamTemplates[0].textContent.trim();
-          team2 = teamTemplates[1].querySelector('.team-template-text, .name, a')?.textContent.trim() || teamTemplates[1].textContent.trim();
+      let team1 = 'TBD';
+      let team2 = 'TBD';
+      let team1Logo = '';
+      let team2Logo = '';
 
-          const img1 = teamTemplates[0].querySelector('img');
-          const img2 = teamTemplates[1].querySelector('img');
+      if (matchBox) {
+        const teamLeft = matchBox.querySelector('.team-left, .match-filler-team-left, .brkts-popup-header-opponent-left');
+        const teamRight = matchBox.querySelector('.team-right, .match-filler-team-right, .brkts-popup-header-opponent-right');
+
+        if (teamLeft && teamRight) {
+          team1 = teamLeft.querySelector('.team-template-text, .name, a')?.textContent.trim() || teamLeft.textContent.trim();
+          team2 = teamRight.querySelector('.team-template-text, .name, a')?.textContent.trim() || teamRight.textContent.trim();
+
+          const img1 = teamLeft.querySelector('img');
+          const img2 = teamRight.querySelector('img');
           if (img1) team1Logo = img1.getAttribute('src') || '';
           if (img2) team2Logo = img2.getAttribute('src') || '';
+        } else {
+          const teamTemplates = matchBox.querySelectorAll('.team-template-team-standard, .block-team, .team-template-image-icon, .team-template-text');
+          if (teamTemplates.length >= 2) {
+            team1 = teamTemplates[0].querySelector('.team-template-text, .name, a')?.textContent.trim() || teamTemplates[0].textContent.trim();
+            team2 = teamTemplates[1].querySelector('.team-template-text, .name, a')?.textContent.trim() || teamTemplates[1].textContent.trim();
+
+            const img1 = teamTemplates[0].querySelector('img');
+            const img2 = teamTemplates[1].querySelector('img');
+            if (img1) team1Logo = img1.getAttribute('src') || '';
+            if (img2) team2Logo = img2.getAttribute('src') || '';
+          }
         }
       }
-    }
 
-    if (team1Logo && team1Logo.startsWith('/')) team1Logo = 'https://liquipedia.net' + team1Logo;
-    if (team2Logo && team2Logo.startsWith('/')) team2Logo = 'https://liquipedia.net' + team2Logo;
+      if (team1Logo && team1Logo.startsWith('/')) team1Logo = 'https://liquipedia.net' + team1Logo;
+      if (team2Logo && team2Logo.startsWith('/')) team2Logo = 'https://liquipedia.net' + team2Logo;
 
-    team1 = team1.replace(/\s+/g, ' ').trim();
-    team2 = team2.replace(/\s+/g, ' ').trim();
+      return {
+        team1: team1.replace(/\s+/g, ' ').trim() || 'TBD',
+        team1_logo: team1Logo,
+        team2: team2.replace(/\s+/g, ' ').trim() || 'TBD',
+        team2_logo: team2Logo
+      };
+    });
 
     return {
-      team1: team1 || 'TBD',
-      team1_logo: team1Logo,
-      team2: team2 || 'TBD',
-      team2_logo: team2Logo,
-      start_time: startTime
+      start_time: startTime,
+      matches: matches
     };
   } catch (e) {
-    console.warn('No se pudo extraer la próxima partida:', e.message);
+    console.warn('No se pudieron extraer las próximas partidas:', e.message);
     return null;
   }
 }
@@ -163,7 +177,7 @@ async function main() {
   const dom = new JSDOM(htmlRaw);
   const doc = dom.window.document;
 
-  const nextMatch = parseNextMatch(doc);
+  const nextMatch = parseNextMatches(doc);
 
   const table = doc.querySelector('div[data-analytics-name="Swiss standings table"] table') ||
                 doc.querySelector('.standings-swiss table');

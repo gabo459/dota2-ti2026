@@ -4,27 +4,55 @@ const { JSDOM } = require('jsdom');
 const LIQUIPEDIA_API_URL = 'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026/Group_Stage&format=json';
 const FALLBACK_URL = 'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026&format=json';
 
+// Proxy de respaldo si GitHub Actions es bloqueado por Cloudflare
+const PROXY_URL = (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`;
+
 async function fetchLiquipediaHTML() {
+  // Encabezados requeridos por las políticas de la API de Liquipedia
   const headers = {
-    'User-Agent': 'Dota2HUD-Bot/1.0 (https://github.com/)'
+    'User-Agent': 'Dota2HUDApp/1.0 (https://github.com/gabo459/dota2-ti2026; gabo459@github.com)',
+    'Api-User-Agent': 'Dota2HUDApp/1.0 (https://github.com/gabo459/dota2-ti2026)',
+    'Accept': 'application/json'
   };
 
-  try {
-    let res = await fetch(LIQUIPEDIA_API_URL, { headers });
-    let data = await res.json();
-    let html = data?.parse?.text?.['*'];
+  const urlsToTry = [
+    LIQUIPEDIA_API_URL,
+    FALLBACK_URL,
+    PROXY_URL(LIQUIPEDIA_API_URL),
+    PROXY_URL(FALLBACK_URL)
+  ];
 
-    if (!html) {
-      res = await fetch(FALLBACK_URL, { headers });
-      data = await res.json();
-      html = data?.parse?.text?.['*'];
+  for (const url of urlsToTry) {
+    try {
+      console.log(`Intentando conectar a: ${url}`);
+      const res = await fetch(url, { headers });
+
+      if (!res.ok) {
+        console.warn(`⚠️ HTTP Status ${res.status} de ${url}`);
+        continue;
+      }
+
+      const rawText = await res.text();
+
+      // Verificar si la respuesta es realmente JSON y no HTML de bloqueo
+      if (rawText.trim().startsWith('<')) {
+        console.warn(`⚠️ Respuesta HTML recibida (bloqueo/Cloudflare) desde: ${url}`);
+        continue;
+      }
+
+      const data = JSON.parse(rawText);
+      const html = data?.parse?.text?.['*'];
+
+      if (html) {
+        console.log(`✅ HTML obtenido correctamente desde: ${url}`);
+        return html;
+      }
+    } catch (err) {
+      console.warn(`⚠️ Falló el intento con ${url}: ${err.message}`);
     }
-
-    return html || null;
-  } catch (err) {
-    console.error('Error al conectar con la API de Liquipedia:', err.message);
-    return null;
   }
+
+  return null;
 }
 
 function parseRoundCell(td) {
@@ -78,11 +106,11 @@ function parseRoundCell(td) {
 }
 
 async function main() {
-  console.log('Obteniendo HTML de Liquipedia...');
+  console.log('Obteniendo datos de Liquipedia...');
   const htmlRaw = await fetchLiquipediaHTML();
 
   if (!htmlRaw) {
-    console.error('No se pudo obtener el contenido HTML.');
+    console.error('❌ No se pudo obtener el contenido HTML desde ninguna fuente.');
     process.exit(1);
   }
 
@@ -93,7 +121,7 @@ async function main() {
                 doc.querySelector('.standings-swiss table');
 
   if (!table) {
-    console.log('No se encontró la tabla Swiss Standings aún.');
+    console.log('ℹ️ La tabla Swiss Standings aún no ha sido publicada en Liquipedia.');
     return;
   }
 
@@ -134,15 +162,7 @@ async function main() {
       parseRoundCell(row.cells[8])
     ];
 
-    return {
-      pos,
-      name,
-      logo,
-      matches,
-      games,
-      status,
-      rounds
-    };
+    return { pos, name, logo, matches, games, status, rounds };
   });
 
   const outputData = {
@@ -151,7 +171,7 @@ async function main() {
   };
 
   fs.writeFileSync('standings.json', JSON.stringify(outputData, null, 2), 'utf-8');
-  console.log(`✅ standings.json actualizado con éxito (${teams.length} equipos cargados).`);
+  console.log(`✅ standings.json actualizado con éxito (${teams.length} equipos procesados).`);
 }
 
 main();

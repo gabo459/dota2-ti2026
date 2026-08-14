@@ -224,7 +224,7 @@
       animation: pulse 1.5s infinite;
     }
 
-    /* ESTILOS DEL TEMPORIZADOR */
+    /* ESTILOS DEL TEMPORIZADOR Y LOGOS */
     .next-match-container {
       display: flex;
       align-items: center;
@@ -236,9 +236,26 @@
     }
 
     .next-teams {
-      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
       font-weight: bold;
       color: var(--accent-gold-bright);
+    }
+
+    .next-team-logo {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+    }
+
+    .vs-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin: 0 2px;
+      text-transform: lowercase;
     }
 
     .timer-display {
@@ -900,7 +917,8 @@
 
       <!-- Temporizador de Próxima Partida -->
       <div id="next-match-box" class="next-match-container" style="display: none;">
-        <span id="next-match-teams" class="next-teams">Próximo: -- vs --</span>
+        <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:bold;">Próximo:</span>
+        <div id="next-match-teams" class="next-teams"></div>
         <div id="countdown-timer" class="timer-display">00h 00m 00s</div>
       </div>
 
@@ -925,7 +943,7 @@
     window.OPENDOTA_TI_MATCHES = [];
     let countdownInterval = null;
 
-    // Lógica del Temporizador
+    // Lógica del Temporizador con Logos
     function startNextMatchTimer(nextMatchData) {
       const box = document.getElementById('next-match-box');
       const teamsEl = document.getElementById('next-match-teams');
@@ -937,7 +955,19 @@
       }
 
       if (box) box.style.display = 'flex';
-      if (teamsEl) teamsEl.textContent = `Próximo: ${nextMatchData.team1 || 'TBD'} vs ${nextMatchData.team2 || 'TBD'}`;
+
+      if (teamsEl) {
+        const logo1Html = nextMatchData.team1_logo ? `<img src="${nextMatchData.team1_logo}" class="next-team-logo" alt="${nextMatchData.team1}">` : '';
+        const logo2Html = nextMatchData.team2_logo ? `<img src="${nextMatchData.team2_logo}" class="next-team-logo" alt="${nextMatchData.team2}">` : '';
+
+        teamsEl.innerHTML = `
+          ${logo1Html}
+          <span>${nextMatchData.team1 || 'TBD'}</span>
+          <span class="vs-text">vs</span>
+          <span>${nextMatchData.team2 || 'TBD'}</span>
+          ${logo2Html}
+        `;
+      }
 
       const targetTime = new Date(nextMatchData.start_time).getTime();
 

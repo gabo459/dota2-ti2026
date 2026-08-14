@@ -99,20 +99,52 @@ function parseNextMatch(doc) {
     if (isNaN(timestamp)) return null;
 
     const startTime = new Date(timestamp * 1000).toISOString();
-    const matchBox = timerEl.closest('.match-filler, .bracket-game, .brkts-match-info-popup') || timerEl.parentElement;
+    const matchBox = timerEl.closest('.match-filler, .bracket-game, .brkts-match-info-popup, .matchbox, tr') || timerEl.parentElement;
 
     let team1 = 'TBD';
     let team2 = 'TBD';
+    let team1Logo = '';
+    let team2Logo = '';
 
     if (matchBox) {
-      const teamEls = matchBox.querySelectorAll('.team-template-text, .name, .team-left, .team-right');
-      if (teamEls.length >= 2) {
-        team1 = teamEls[0].textContent.trim();
-        team2 = teamEls[1].textContent.trim();
+      const teamLeft = matchBox.querySelector('.team-left, .match-filler-team-left, .brkts-popup-header-opponent-left');
+      const teamRight = matchBox.querySelector('.team-right, .match-filler-team-right, .brkts-popup-header-opponent-right');
+
+      if (teamLeft && teamRight) {
+        team1 = teamLeft.querySelector('.team-template-text, .name, a')?.textContent.trim() || teamLeft.textContent.trim();
+        team2 = teamRight.querySelector('.team-template-text, .name, a')?.textContent.trim() || teamRight.textContent.trim();
+
+        const img1 = teamLeft.querySelector('img');
+        const img2 = teamRight.querySelector('img');
+        if (img1) team1Logo = img1.getAttribute('src') || '';
+        if (img2) team2Logo = img2.getAttribute('src') || '';
+      } else {
+        const teamTemplates = matchBox.querySelectorAll('.team-template-team-standard, .block-team, .team-template-image-icon, .team-template-text');
+        if (teamTemplates.length >= 2) {
+          team1 = teamTemplates[0].querySelector('.team-template-text, .name, a')?.textContent.trim() || teamTemplates[0].textContent.trim();
+          team2 = teamTemplates[1].querySelector('.team-template-text, .name, a')?.textContent.trim() || teamTemplates[1].textContent.trim();
+
+          const img1 = teamTemplates[0].querySelector('img');
+          const img2 = teamTemplates[1].querySelector('img');
+          if (img1) team1Logo = img1.getAttribute('src') || '';
+          if (img2) team2Logo = img2.getAttribute('src') || '';
+        }
       }
     }
 
-    return { team1, team2, start_time: startTime };
+    if (team1Logo && team1Logo.startsWith('/')) team1Logo = 'https://liquipedia.net' + team1Logo;
+    if (team2Logo && team2Logo.startsWith('/')) team2Logo = 'https://liquipedia.net' + team2Logo;
+
+    team1 = team1.replace(/\s+/g, ' ').trim();
+    team2 = team2.replace(/\s+/g, ' ').trim();
+
+    return {
+      team1: team1 || 'TBD',
+      team1_logo: team1Logo,
+      team2: team2 || 'TBD',
+      team2_logo: team2Logo,
+      start_time: startTime
+    };
   } catch (e) {
     console.warn('No se pudo extraer la próxima partida:', e.message);
     return null;

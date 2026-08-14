@@ -4,11 +4,9 @@ const { JSDOM } = require('jsdom');
 const LIQUIPEDIA_API_URL = 'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026/Group_Stage&format=json';
 const FALLBACK_URL = 'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026&format=json';
 
-// Proxy de respaldo si GitHub Actions es bloqueado por Cloudflare
 const PROXY_URL = (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`;
 
 async function fetchLiquipediaHTML() {
-  // Encabezados requeridos por las políticas de la API de Liquipedia
   const headers = {
     'User-Agent': 'Dota2HUDApp/1.0 (https://github.com/gabo459/dota2-ti2026; gabo459@github.com)',
     'Api-User-Agent': 'Dota2HUDApp/1.0 (https://github.com/gabo459/dota2-ti2026)',
@@ -27,18 +25,10 @@ async function fetchLiquipediaHTML() {
       console.log(`Intentando conectar a: ${url}`);
       const res = await fetch(url, { headers });
 
-      if (!res.ok) {
-        console.warn(`⚠️ HTTP Status ${res.status} de ${url}`);
-        continue;
-      }
+      if (!res.ok) continue;
 
       const rawText = await res.text();
-
-      // Verificar si la respuesta es realmente JSON y no HTML de bloqueo
-      if (rawText.trim().startsWith('<')) {
-        console.warn(`⚠️ Respuesta HTML recibida (bloqueo/Cloudflare) desde: ${url}`);
-        continue;
-      }
+      if (rawText.trim().startsWith('<')) continue;
 
       const data = JSON.parse(rawText);
       const html = data?.parse?.text?.['*'];
@@ -94,15 +84,39 @@ function parseRoundCell(td) {
   }
 
   if (score || opponent) {
-    return {
-      opponent,
-      opponentLogo,
-      score,
-      result
-    };
+    return { opponent, opponentLogo, score, result };
   }
 
   return td.textContent.trim() || '-';
+}
+
+function parseNextMatch(doc) {
+  try {
+    const timerEl = doc.querySelector('.timer-object[data-timestamp]');
+    if (!timerEl) return null;
+
+    const timestamp = parseInt(timerEl.getAttribute('data-timestamp'));
+    if (isNaN(timestamp)) return null;
+
+    const startTime = new Date(timestamp * 1000).toISOString();
+    const matchBox = timerEl.closest('.match-filler, .bracket-game, .brkts-match-info-popup') || timerEl.parentElement;
+
+    let team1 = 'TBD';
+    let team2 = 'TBD';
+
+    if (matchBox) {
+      const teamEls = matchBox.querySelectorAll('.team-template-text, .name, .team-left, .team-right');
+      if (teamEls.length >= 2) {
+        team1 = teamEls[0].textContent.trim();
+        team2 = teamEls[1].textContent.trim();
+      }
+    }
+
+    return { team1, team2, start_time: startTime };
+  } catch (e) {
+    console.warn('No se pudo extraer la próxima partida:', e.message);
+    return null;
+  }
 }
 
 async function main() {
@@ -110,12 +124,14 @@ async function main() {
   const htmlRaw = await fetchLiquipediaHTML();
 
   if (!htmlRaw) {
-    console.error('❌ No se pudo obtener el contenido HTML desde ninguna fuente.');
+    console.error('❌ No se pudo obtener el contenido HTML.');
     process.exit(1);
   }
 
   const dom = new JSDOM(htmlRaw);
   const doc = dom.window.document;
+
+  const nextMatch = parseNextMatch(doc);
 
   const table = doc.querySelector('div[data-analytics-name="Swiss standings table"] table') ||
                 doc.querySelector('.standings-swiss table');
@@ -167,6 +183,7 @@ async function main() {
 
   const outputData = {
     updated_at: new Date().toISOString(),
+    next_match: nextMatch,
     teams
   };
 

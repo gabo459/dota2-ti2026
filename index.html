@@ -858,7 +858,7 @@
     <div class="status-bar">
       <div class="live-indicator">
         <div class="dot"></div>
-        <span>Sincronización Automática (Cada 60s)</span>
+        <span>Sincronización Automática (Cada 30 min)</span>
       </div>
       <button class="refresh-btn" onclick="loadLiquipediaData()">Actualizar Tabla</button>
     </div>
@@ -879,6 +879,9 @@
     window.OPENDOTA_ITEM_IDS = {};
     window.OPENDOTA_ITEMS = {};
     window.OPENDOTA_TI_MATCHES = [];
+
+    // Helper para pausas entre reintentos
+    const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     // 1. Cargar catálogo de héroes
     async function loadOpenDotaHeroes() {
@@ -976,15 +979,20 @@
     async function fetchWithFallback() {
       for (const pageUrl of PAGES) {
         for (const proxyFn of PROXIES) {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 sec timeout por petición
+
           try {
             const endpoint = proxyFn(pageUrl);
-            const response = await fetch(endpoint);
+            const response = await fetch(endpoint, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
             if (!response.ok) continue;
 
             let htmlRaw = '';
             if (endpoint.includes('allorigins')) {
               const wrapper = await response.json();
-              const json = JSON.parse(wrapper.contents);
+              const json = typeof wrapper.contents === 'string' ? JSON.parse(wrapper.contents) : wrapper.contents;
               htmlRaw = json?.parse?.text?.['*'] || '';
             } else {
               const json = await response.json();
@@ -993,7 +1001,9 @@
 
             if (htmlRaw) return htmlRaw;
           } catch (e) {
-            console.warn('Proxy falló, reintentando...', e);
+            clearTimeout(timeoutId);
+            console.warn('Proxy falló o expiró el tiempo de espera:', e.message);
+            await wait(1000); // Esperar 1 segundo antes de intentar con el siguiente proxy
           }
         }
       }
@@ -1013,16 +1023,24 @@
 
     async function loadLiquipediaData() {
       const container = document.getElementById('content');
-      container.innerHTML = '<div class="status-text">Obteniendo Swiss Standings desde Liquipedia...</div>';
+      
+      // Si la tabla no está renderizada aún, mostrar mensaje de carga
+      if (!container.querySelector('.standings-table')) {
+        container.innerHTML = '<div class="status-text">Obteniendo Swiss Standings desde Liquipedia...</div>';
+      }
+      
       window.MATCH_POPUPS_CACHE = [];
 
       const htmlRaw = await fetchWithFallback();
 
       if (!htmlRaw) {
-        container.innerHTML = `
-          <div class="status-text" style="color: var(--dire-red);">
-            No se pudieron obtener los datos. Presiona "Actualizar Tabla".
-          </div>`;
+        if (!container.querySelector('.standings-table')) {
+          container.innerHTML = `
+            <div class="status-text" style="color: var(--dire-red);">
+              No se pudieron obtener los datos. Proxies en mantenimiento o saturados.<br>
+              <button class="refresh-btn" style="margin-top:10px;" onclick="loadLiquipediaData()">Reintentar Ahora</button>
+            </div>`;
+        }
         return;
       }
 
@@ -1540,8 +1558,9 @@
       });
     });
 
+    // Carga inicial y refresco cada 30 minutos (1,800,000 ms)
     loadLiquipediaData();
-    setInterval(loadLiquipediaData, 60000);
+    setInterval(loadLiquipediaData, 1800000);
   </script>
 </body>
 </html>

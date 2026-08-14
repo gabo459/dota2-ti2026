@@ -1,1 +1,50 @@
-
+{
+  "updated_at": "2026-08-14",
+  "teams": [
+    {
+      "pos": "1",
+      "name": "Team Liquid",
+      "logo": "https://liquipedia.net/commons/images/thumb/7/75/Team_Liquid_logo.png/50px-Team_Liquid_logo.png",
+      "matches": "3-0",
+      "games": "6-0",
+      "status": "qualified",
+      "rounds": [
+        { "opponent": "Gaimin Gladiators", "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/87/Gaimin_Gladiators_logo.png/50px-Gaimin_Gladiators_logo.png", "score": "2:0", "result": "win" },
+        { "opponent": "Team Spirit", "opponentLogo": "https://liquipedia.net/commons/images/thumb/a/a2/Team_Spirit_logo.png/50px-Team_Spirit_logo.png", "score": "2:0", "result": "win" },
+        { "opponent": "BetBoom Team", "opponentLogo": "", "score": "2:0", "result": "win" },
+        "-",
+        "-"
+      ]
+    },
+    {
+      "pos": "2",
+      "name": "Gaimin Gladiators",
+      "logo": "https://liquipedia.net/commons/images/thumb/8/87/Gaimin_Gladiators_logo.png/50px-Gaimin_Gladiators_logo.png",
+      "matches": "2-1",
+      "games": "4-2",
+      "status": "active",
+      "rounds": [
+        { "opponent": "Team Liquid", "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/75/Team_Liquid_logo.png/50px-Team_Liquid_logo.png", "score": "0:2", "result": "loss" },
+        { "opponent": "OG", "opponentLogo": "", "score": "2:0", "result": "win" },
+        { "opponent": "Xtreme Gaming", "opponentLogo": "", "score": "2:0", "result": "win" },
+        "-",
+        "-"
+      ]
+    },
+    {
+      "pos": "3",
+      "name": "Team Spirit",
+      "logo": "https://liquipedia.net/commons/images/thumb/a/a2/Team_Spirit_logo.png/50px-Team_Spirit_logo.png",
+      "matches": "0-3",
+      "games": "1-6",
+      "status": "eliminated",
+      "rounds": [
+        { "opponent": "OG", "opponentLogo": "", "score": "1:2", "result": "loss" },
+        { "opponent": "Team Liquid", "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/75/Team_Liquid_logo.png/50px-Team_Liquid_logo.png", "score": "0:2", "result": "loss" },
+        { "opponent": "Falcons", "opponentLogo": "", "score": "0:2", "result": "loss" },
+        "-",
+        "-"
+      ]
+    }
+  ]
+}

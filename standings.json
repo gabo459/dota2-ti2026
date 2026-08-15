@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-15T03:52:49.502Z",
+  "updated_at": "2026-08-15T04:24:04.139Z",
   "next_match": {
     "start_time": "2026-08-15T05:00:00.000Z",
     "matches": [
@@ -385,7 +385,7 @@
       "name": "Team Resilience",
       "logo": "https://liquipedia.net/commons/images/thumb/b/bd/Team_Resilience_%28DOTA2%29_lightmode.png/79px-Team_Resilience_%28DOTA2%29_lightmode.png",
       "matches": "1 - 2",
-      "games": "5 - 4",
+      "games": "5 - 5",
       "status": "active",
       "rounds": [
         {
@@ -409,8 +409,8 @@
         {
           "opponent": "Team Yandex",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png",
-          "score": "1:0",
-          "result": "win"
+          "score": "1:1",
+          "result": ""
         },
         "-"
       ]
@@ -490,7 +490,7 @@
       "name": "Team Yandex",
       "logo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png",
       "matches": "1 - 2",
-      "games": "4 - 5",
+      "games": "5 - 5",
       "status": "active",
       "rounds": [
         {
@@ -514,8 +514,8 @@
         {
           "opponent": "Team Resilience",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/b/bd/Team_Resilience_%28DOTA2%29_lightmode.png/79px-Team_Resilience_%28DOTA2%29_lightmode.png",
-          "score": "0:1",
-          "result": "loss"
+          "score": "1:1",
+          "result": ""
         },
         "-"
       ]

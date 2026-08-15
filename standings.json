@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-08-15T05:49:12.584Z",
+  "updated_at": "2026-08-15T06:27:33.238Z",
   "next_match": {
-    "start_time": "2026-08-15T05:25:00.000Z",
+    "start_time": "2026-08-15T06:00:00.000Z",
     "matches": [
       {
-        "team1": "Nigma Galaxy",
-        "team1_logo": "https://liquipedia.net/commons/images/thumb/6/67/Nigma_Galaxy_allmode.png/50px-Nigma_Galaxy_allmode.png",
-        "team2": "Vici Gaming",
-        "team2_logo": "https://liquipedia.net/commons/images/thumb/c/ce/VICI_Gaming_allmode.png/49px-VICI_Gaming_allmode.png"
+        "team1": "Iron Wing",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
+        "team2": "Team Liquid",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png"
       }
     ]
   },
@@ -41,7 +41,7 @@
         {
           "opponent": "Team Spirit",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png",
-          "score": "",
+          "score": "0:0",
           "result": ""
         },
         "-"
@@ -76,7 +76,7 @@
         {
           "opponent": "TEAM VISION",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/5/55/TEAM_VISION_allmode.png/52px-TEAM_VISION_allmode.png",
-          "score": "",
+          "score": "0:0",
           "result": ""
         },
         "-"
@@ -181,7 +181,7 @@
         {
           "opponent": "Aurora Gaming",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png",
-          "score": "",
+          "score": "0:0",
           "result": ""
         },
         "-"
@@ -286,8 +286,78 @@
         {
           "opponent": "BoomBoys",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/0/05/BoomBoys_allmode.png/78px-BoomBoys_allmode.png",
-          "score": "",
+          "score": "0:0",
           "result": ""
+        },
+        "-"
+      ]
+    },
+    {
+      "pos": "9",
+      "name": "Team Falcons",
+      "logo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
+      "matches": "2 - 2",
+      "games": "6 - 6",
+      "status": "active",
+      "rounds": [
+        {
+          "opponent": "LGD Gaming",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
+          "score": "2:1",
+          "result": "win"
+        },
+        {
+          "opponent": "TEAM VISION",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/5/55/TEAM_VISION_allmode.png/52px-TEAM_VISION_allmode.png",
+          "score": "1:2",
+          "result": "loss"
+        },
+        {
+          "opponent": "Iron Wing",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
+          "score": "1:2",
+          "result": "loss"
+        },
+        {
+          "opponent": "GamerLegion",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png",
+          "score": "2:1",
+          "result": "win"
+        },
+        "-"
+      ]
+    },
+    {
+      "pos": "9",
+      "name": "LGD Gaming",
+      "logo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
+      "matches": "2 - 2",
+      "games": "5 - 6",
+      "status": "active",
+      "rounds": [
+        {
+          "opponent": "Team Falcons",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
+          "score": "1:2",
+          "result": "loss"
+        },
+        {
+          "opponent": "Team Resilience",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/b/bd/Team_Resilience_%28DOTA2%29_lightmode.png/79px-Team_Resilience_%28DOTA2%29_lightmode.png",
+          "score": "2:1",
+          "result": "win"
+        },
+        {
+          "opponent": "Nigma Galaxy",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/6/67/Nigma_Galaxy_allmode.png/50px-Nigma_Galaxy_allmode.png",
+          "score": "0:2",
+          "result": "loss"
+        },
+        {
+          "opponent": "Xtreme Gaming",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png",
+          "score": "2:1",
+          "result": "win"
         },
         "-"
       ]
@@ -328,147 +398,7 @@
       ]
     },
     {
-      "pos": "10",
-      "name": "Team Falcons",
-      "logo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
-      "matches": "1 - 2",
-      "games": "5 - 6",
-      "status": "active",
-      "rounds": [
-        {
-          "opponent": "LGD Gaming",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
-          "score": "2:1",
-          "result": "win"
-        },
-        {
-          "opponent": "TEAM VISION",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/5/55/TEAM_VISION_allmode.png/52px-TEAM_VISION_allmode.png",
-          "score": "1:2",
-          "result": "loss"
-        },
-        {
-          "opponent": "Iron Wing",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
-          "score": "1:2",
-          "result": "loss"
-        },
-        {
-          "opponent": "GamerLegion",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png",
-          "score": "1:1",
-          "result": ""
-        },
-        "-"
-      ]
-    },
-    {
-      "pos": "10",
-      "name": "LGD Gaming",
-      "logo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
-      "matches": "1 - 2",
-      "games": "4 - 6",
-      "status": "active",
-      "rounds": [
-        {
-          "opponent": "Team Falcons",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
-          "score": "1:2",
-          "result": "loss"
-        },
-        {
-          "opponent": "Team Resilience",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/b/bd/Team_Resilience_%28DOTA2%29_lightmode.png/79px-Team_Resilience_%28DOTA2%29_lightmode.png",
-          "score": "2:1",
-          "result": "win"
-        },
-        {
-          "opponent": "Nigma Galaxy",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/6/67/Nigma_Galaxy_allmode.png/50px-Nigma_Galaxy_allmode.png",
-          "score": "0:2",
-          "result": "loss"
-        },
-        {
-          "opponent": "Xtreme Gaming",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png",
-          "score": "1:1",
-          "result": ""
-        },
-        "-"
-      ]
-    },
-    {
-      "pos": "10",
-      "name": "Xtreme Gaming",
-      "logo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png",
-      "matches": "1 - 2",
-      "games": "3 - 5",
-      "status": "active",
-      "rounds": [
-        {
-          "opponent": "Team Spirit",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png",
-          "score": "0:2",
-          "result": "loss"
-        },
-        {
-          "opponent": "GamerLegion",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png",
-          "score": "0:2",
-          "result": "loss"
-        },
-        {
-          "opponent": "HULIGANI",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/81/HULIGANI_allmode.png/100px-HULIGANI_allmode.png",
-          "score": "2:0",
-          "result": "win"
-        },
-        {
-          "opponent": "LGD Gaming",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
-          "score": "1:1",
-          "result": ""
-        },
-        "-"
-      ]
-    },
-    {
-      "pos": "10",
-      "name": "GamerLegion",
-      "logo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png",
-      "matches": "1 - 2",
-      "games": "4 - 5",
-      "status": "active",
-      "rounds": [
-        {
-          "opponent": "Aurora Gaming",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png",
-          "score": "0:2",
-          "result": "loss"
-        },
-        {
-          "opponent": "Xtreme Gaming",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png",
-          "score": "2:0",
-          "result": "win"
-        },
-        {
-          "opponent": "Vici Gaming",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/c/ce/VICI_Gaming_allmode.png/49px-VICI_Gaming_allmode.png",
-          "score": "1:2",
-          "result": "loss"
-        },
-        {
-          "opponent": "Team Falcons",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
-          "score": "1:1",
-          "result": ""
-        },
-        "-"
-      ]
-    },
-    {
-      "pos": "14",
+      "pos": "12",
       "name": "OG",
       "logo": "https://liquipedia.net/commons/images/thumb/7/7b/OG_2026_allmode.png/36px-OG_2026_allmode.png",
       "matches": "1 - 3",
@@ -503,7 +433,7 @@
       ]
     },
     {
-      "pos": "14",
+      "pos": "12",
       "name": "Team Resilience",
       "logo": "https://liquipedia.net/commons/images/thumb/b/bd/Team_Resilience_%28DOTA2%29_lightmode.png/79px-Team_Resilience_%28DOTA2%29_lightmode.png",
       "matches": "1 - 3",
@@ -531,6 +461,76 @@
         {
           "opponent": "Team Yandex",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png",
+          "score": "1:2",
+          "result": "loss"
+        },
+        "-"
+      ]
+    },
+    {
+      "pos": "12",
+      "name": "Xtreme Gaming",
+      "logo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png",
+      "matches": "1 - 3",
+      "games": "3 - 6",
+      "status": "eliminated",
+      "rounds": [
+        {
+          "opponent": "Team Spirit",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png",
+          "score": "0:2",
+          "result": "loss"
+        },
+        {
+          "opponent": "GamerLegion",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png",
+          "score": "0:2",
+          "result": "loss"
+        },
+        {
+          "opponent": "HULIGANI",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/81/HULIGANI_allmode.png/100px-HULIGANI_allmode.png",
+          "score": "2:0",
+          "result": "win"
+        },
+        {
+          "opponent": "LGD Gaming",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
+          "score": "1:2",
+          "result": "loss"
+        },
+        "-"
+      ]
+    },
+    {
+      "pos": "12",
+      "name": "GamerLegion",
+      "logo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png",
+      "matches": "1 - 3",
+      "games": "4 - 6",
+      "status": "eliminated",
+      "rounds": [
+        {
+          "opponent": "Aurora Gaming",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png",
+          "score": "0:2",
+          "result": "loss"
+        },
+        {
+          "opponent": "Xtreme Gaming",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png",
+          "score": "2:0",
+          "result": "win"
+        },
+        {
+          "opponent": "Vici Gaming",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/c/ce/VICI_Gaming_allmode.png/49px-VICI_Gaming_allmode.png",
+          "score": "1:2",
+          "result": "loss"
+        },
+        {
+          "opponent": "Team Falcons",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
           "score": "1:2",
           "result": "loss"
         },

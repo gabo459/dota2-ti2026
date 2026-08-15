@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-15T10:24:32.124Z",
+  "updated_at": "2026-08-15T10:46:28.725Z",
   "next_match": {
     "start_time": "2026-08-15T10:40:00.000Z",
     "matches": [
@@ -242,7 +242,7 @@
         {
           "opponent": "BoomBoys",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/0/05/BoomBoys_allmode.png/78px-BoomBoys_allmode.png",
-          "score": "",
+          "score": "0:0",
           "result": ""
         }
       ]
@@ -362,7 +362,7 @@
         {
           "opponent": "Team Falcons",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
-          "score": "",
+          "score": "0:0",
           "result": ""
         }
       ]
@@ -452,7 +452,7 @@
       "name": "OG",
       "logo": "https://liquipedia.net/commons/images/thumb/7/7b/OG_2026_allmode.png/36px-OG_2026_allmode.png",
       "matches": "1 - 3",
-      "games": "2 - 7",
+      "games": "2 - 8",
       "status": "eliminated",
       "rounds": [
         {
@@ -482,8 +482,8 @@
         {
           "opponent": "GamerLegion",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "0:1",
+          "result": "loss"
         }
       ]
     },
@@ -572,7 +572,7 @@
       "name": "GamerLegion",
       "logo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png",
       "matches": "1 - 3",
-      "games": "4 - 6",
+      "games": "5 - 6",
       "status": "eliminated",
       "rounds": [
         {
@@ -602,8 +602,8 @@
         {
           "opponent": "OG",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/7b/OG_2026_allmode.png/36px-OG_2026_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "1:0",
+          "result": "win"
         }
       ]
     },

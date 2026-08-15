@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-08-15T08:44:01.097Z",
+  "updated_at": "2026-08-15T09:04:14.784Z",
   "next_match": {
-    "start_time": "2026-08-15T09:00:00.000Z",
+    "start_time": "2026-08-15T09:15:00.000Z",
     "matches": [
       {
         "team1": "TBDTBD",
@@ -16,8 +16,8 @@
       "pos": "1",
       "name": "TEAM VISION",
       "logo": "https://liquipedia.net/commons/images/thumb/5/55/TEAM_VISION_allmode.png/52px-TEAM_VISION_allmode.png",
-      "matches": "3 - 0",
-      "games": "7 - 2",
+      "matches": "4 - 0",
+      "games": "8 - 2",
       "status": "qualified",
       "rounds": [
         {
@@ -41,49 +41,14 @@
         {
           "opponent": "Team Spirit",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png",
-          "score": "1:0",
+          "score": "2:0",
           "result": "win"
         },
         "-"
       ]
     },
     {
-      "pos": "1",
-      "name": "Team Spirit",
-      "logo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png",
-      "matches": "3 - 0",
-      "games": "6 - 2",
-      "status": "qualified",
-      "rounds": [
-        {
-          "opponent": "Xtreme Gaming",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png",
-          "score": "2:0",
-          "result": "win"
-        },
-        {
-          "opponent": "Aurora Gaming",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png",
-          "score": "2:0",
-          "result": "win"
-        },
-        {
-          "opponent": "Team Liquid",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png",
-          "score": "2:1",
-          "result": "win"
-        },
-        {
-          "opponent": "TEAM VISION",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/5/55/TEAM_VISION_allmode.png/52px-TEAM_VISION_allmode.png",
-          "score": "0:1",
-          "result": "loss"
-        },
-        "-"
-      ]
-    },
-    {
-      "pos": "3",
+      "pos": "2",
       "name": "Nigma Galaxy",
       "logo": "https://liquipedia.net/commons/images/thumb/6/67/Nigma_Galaxy_allmode.png/50px-Nigma_Galaxy_allmode.png",
       "matches": "3 - 1",
@@ -118,7 +83,42 @@
       ]
     },
     {
-      "pos": "3",
+      "pos": "2",
+      "name": "Team Spirit",
+      "logo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png",
+      "matches": "3 - 1",
+      "games": "6 - 3",
+      "status": "qualified",
+      "rounds": [
+        {
+          "opponent": "Xtreme Gaming",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png",
+          "score": "2:0",
+          "result": "win"
+        },
+        {
+          "opponent": "Aurora Gaming",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png",
+          "score": "2:0",
+          "result": "win"
+        },
+        {
+          "opponent": "Team Liquid",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png",
+          "score": "2:1",
+          "result": "win"
+        },
+        {
+          "opponent": "TEAM VISION",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/5/55/TEAM_VISION_allmode.png/52px-TEAM_VISION_allmode.png",
+          "score": "0:2",
+          "result": "loss"
+        },
+        "-"
+      ]
+    },
+    {
+      "pos": "2",
       "name": "Aurora Gaming",
       "logo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png",
       "matches": "3 - 1",

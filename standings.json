@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-15T07:06:44.277Z",
+  "updated_at": "2026-08-15T07:43:14.601Z",
   "next_match": {
     "start_time": "2026-08-15T08:00:00.000Z",
     "matches": [
@@ -17,7 +17,7 @@
       "name": "TEAM VISION",
       "logo": "https://liquipedia.net/commons/images/thumb/5/55/TEAM_VISION_allmode.png/52px-TEAM_VISION_allmode.png",
       "matches": "3 - 0",
-      "games": "6 - 2",
+      "games": "7 - 2",
       "status": "qualified",
       "rounds": [
         {
@@ -41,8 +41,8 @@
         {
           "opponent": "Team Spirit",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "1:0",
+          "result": "win"
         },
         "-"
       ]
@@ -52,7 +52,7 @@
       "name": "Team Spirit",
       "logo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png",
       "matches": "3 - 0",
-      "games": "6 - 1",
+      "games": "6 - 2",
       "status": "qualified",
       "rounds": [
         {
@@ -76,8 +76,8 @@
         {
           "opponent": "TEAM VISION",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/5/55/TEAM_VISION_allmode.png/52px-TEAM_VISION_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "0:1",
+          "result": "loss"
         },
         "-"
       ]
@@ -87,7 +87,7 @@
       "name": "Iron Wing",
       "logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
       "matches": "2 - 1",
-      "games": "5 - 3",
+      "games": "6 - 3",
       "status": "active",
       "rounds": [
         {
@@ -111,8 +111,8 @@
         {
           "opponent": "Team Liquid",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "1:0",
+          "result": "win"
         },
         "-"
       ]
@@ -157,7 +157,7 @@
       "name": "BoomBoys",
       "logo": "https://liquipedia.net/commons/images/thumb/0/05/BoomBoys_allmode.png/78px-BoomBoys_allmode.png",
       "matches": "2 - 1",
-      "games": "4 - 3",
+      "games": "4 - 4",
       "status": "active",
       "rounds": [
         {
@@ -181,8 +181,8 @@
         {
           "opponent": "Aurora Gaming",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "0:1",
+          "result": "loss"
         },
         "-"
       ]
@@ -192,7 +192,7 @@
       "name": "Team Liquid",
       "logo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png",
       "matches": "2 - 1",
-      "games": "5 - 3",
+      "games": "5 - 4",
       "status": "active",
       "rounds": [
         {
@@ -216,8 +216,8 @@
         {
           "opponent": "Iron Wing",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "0:1",
+          "result": "loss"
         },
         "-"
       ]
@@ -262,7 +262,7 @@
       "name": "Aurora Gaming",
       "logo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png",
       "matches": "2 - 1",
-      "games": "4 - 3",
+      "games": "5 - 3",
       "status": "active",
       "rounds": [
         {
@@ -286,8 +286,8 @@
         {
           "opponent": "BoomBoys",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/0/05/BoomBoys_allmode.png/78px-BoomBoys_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "1:0",
+          "result": "win"
         },
         "-"
       ]

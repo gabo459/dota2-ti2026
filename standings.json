@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-15T09:37:46.447Z",
+  "updated_at": "2026-08-15T09:58:02.186Z",
   "next_match": {
     "start_time": "2026-08-15T09:35:00.000Z",
     "matches": [
@@ -125,6 +125,41 @@
     },
     {
       "pos": "2",
+      "name": "Team Liquid",
+      "logo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png",
+      "matches": "3 - 1",
+      "games": "7 - 4",
+      "status": "qualified",
+      "rounds": [
+        {
+          "opponent": "Vici Gaming",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/c/ce/VICI_Gaming_allmode.png/49px-VICI_Gaming_allmode.png",
+          "score": "2:0",
+          "result": "win"
+        },
+        {
+          "opponent": "Team Yandex",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png",
+          "score": "2:1",
+          "result": "win"
+        },
+        {
+          "opponent": "Team Spirit",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png",
+          "score": "1:2",
+          "result": "loss"
+        },
+        {
+          "opponent": "Iron Wing",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
+          "score": "2:1",
+          "result": "win"
+        },
+        "-"
+      ]
+    },
+    {
+      "pos": "2",
       "name": "Aurora Gaming",
       "logo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png",
       "matches": "3 - 1",
@@ -159,77 +194,7 @@
       ]
     },
     {
-      "pos": "5",
-      "name": "Iron Wing",
-      "logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
-      "matches": "2 - 1",
-      "games": "6 - 4",
-      "status": "active",
-      "rounds": [
-        {
-          "opponent": "Nigma Galaxy",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/6/67/Nigma_Galaxy_allmode.png/50px-Nigma_Galaxy_allmode.png",
-          "score": "2:0",
-          "result": "win"
-        },
-        {
-          "opponent": "BoomBoys",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/0/05/BoomBoys_allmode.png/78px-BoomBoys_allmode.png",
-          "score": "1:2",
-          "result": "loss"
-        },
-        {
-          "opponent": "Team Falcons",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
-          "score": "2:1",
-          "result": "win"
-        },
-        {
-          "opponent": "Team Liquid",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png",
-          "score": "1:1",
-          "result": ""
-        },
-        "-"
-      ]
-    },
-    {
-      "pos": "5",
-      "name": "Team Liquid",
-      "logo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png",
-      "matches": "2 - 1",
-      "games": "6 - 4",
-      "status": "active",
-      "rounds": [
-        {
-          "opponent": "Vici Gaming",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/c/ce/VICI_Gaming_allmode.png/49px-VICI_Gaming_allmode.png",
-          "score": "2:0",
-          "result": "win"
-        },
-        {
-          "opponent": "Team Yandex",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png",
-          "score": "2:1",
-          "result": "win"
-        },
-        {
-          "opponent": "Team Spirit",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png",
-          "score": "1:2",
-          "result": "loss"
-        },
-        {
-          "opponent": "Iron Wing",
-          "opponentLogo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
-          "score": "1:1",
-          "result": ""
-        },
-        "-"
-      ]
-    },
-    {
-      "pos": "7",
+      "pos": "6",
       "name": "Team Falcons",
       "logo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
       "matches": "2 - 2",
@@ -260,11 +225,16 @@
           "score": "2:1",
           "result": "win"
         },
-        "-"
+        {
+          "opponent": "BoomBoys",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/0/05/BoomBoys_allmode.png/78px-BoomBoys_allmode.png",
+          "score": "",
+          "result": ""
+        }
       ]
     },
     {
-      "pos": "7",
+      "pos": "6",
       "name": "LGD Gaming",
       "logo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
       "matches": "2 - 2",
@@ -298,13 +268,53 @@
         {
           "opponent": "Vici Gaming",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/c/ce/VICI_Gaming_allmode.png/49px-VICI_Gaming_allmode.png",
+          "score": "0:0",
+          "result": ""
+        }
+      ]
+    },
+    {
+      "pos": "6",
+      "name": "Iron Wing",
+      "logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
+      "matches": "2 - 2",
+      "games": "6 - 5",
+      "status": "active",
+      "rounds": [
+        {
+          "opponent": "Nigma Galaxy",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/6/67/Nigma_Galaxy_allmode.png/50px-Nigma_Galaxy_allmode.png",
+          "score": "2:0",
+          "result": "win"
+        },
+        {
+          "opponent": "BoomBoys",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/0/05/BoomBoys_allmode.png/78px-BoomBoys_allmode.png",
+          "score": "1:2",
+          "result": "loss"
+        },
+        {
+          "opponent": "Team Falcons",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
+          "score": "2:1",
+          "result": "win"
+        },
+        {
+          "opponent": "Team Liquid",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png",
+          "score": "1:2",
+          "result": "loss"
+        },
+        {
+          "opponent": "Team Yandex",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png",
           "score": "",
           "result": ""
         }
       ]
     },
     {
-      "pos": "7",
+      "pos": "6",
       "name": "BoomBoys",
       "logo": "https://liquipedia.net/commons/images/thumb/0/05/BoomBoys_allmode.png/78px-BoomBoys_allmode.png",
       "matches": "2 - 2",
@@ -335,11 +345,16 @@
           "score": "0:2",
           "result": "loss"
         },
-        "-"
+        {
+          "opponent": "Team Falcons",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
+          "score": "",
+          "result": ""
+        }
       ]
     },
     {
-      "pos": "7",
+      "pos": "6",
       "name": "Vici Gaming",
       "logo": "https://liquipedia.net/commons/images/thumb/c/ce/VICI_Gaming_allmode.png/49px-VICI_Gaming_allmode.png",
       "matches": "2 - 2",
@@ -373,13 +388,13 @@
         {
           "opponent": "LGD Gaming",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
-          "score": "",
+          "score": "0:0",
           "result": ""
         }
       ]
     },
     {
-      "pos": "7",
+      "pos": "6",
       "name": "Team Yandex",
       "logo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png",
       "matches": "2 - 2",
@@ -410,7 +425,12 @@
           "score": "2:1",
           "result": "win"
         },
-        "-"
+        {
+          "opponent": "Iron Wing",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
+          "score": "",
+          "result": ""
+        }
       ]
     },
     {

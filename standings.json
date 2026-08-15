@@ -1,13 +1,19 @@
 {
-  "updated_at": "2026-08-15T09:04:14.784Z",
+  "updated_at": "2026-08-15T09:37:46.447Z",
   "next_match": {
-    "start_time": "2026-08-15T09:15:00.000Z",
+    "start_time": "2026-08-15T09:35:00.000Z",
     "matches": [
       {
-        "team1": "TBDTBD",
-        "team1_logo": "",
-        "team2": "TBDTBD",
-        "team2_logo": ""
+        "team1": "Team Resilience",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/b/bd/Team_Resilience_%28DOTA2%29_lightmode.png/79px-Team_Resilience_%28DOTA2%29_lightmode.png",
+        "team2": "Xtreme Gaming",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png"
+      },
+      {
+        "team1": "OG",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/7/7b/OG_2026_allmode.png/36px-OG_2026_allmode.png",
+        "team2": "GamerLegion",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png"
       }
     ]
   },
@@ -289,7 +295,12 @@
           "score": "2:1",
           "result": "win"
         },
-        "-"
+        {
+          "opponent": "Vici Gaming",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/c/ce/VICI_Gaming_allmode.png/49px-VICI_Gaming_allmode.png",
+          "score": "",
+          "result": ""
+        }
       ]
     },
     {
@@ -359,7 +370,12 @@
           "score": "0:2",
           "result": "loss"
         },
-        "-"
+        {
+          "opponent": "LGD Gaming",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
+          "score": "",
+          "result": ""
+        }
       ]
     },
     {
@@ -429,7 +445,12 @@
           "score": "2:1",
           "result": "win"
         },
-        "-"
+        {
+          "opponent": "GamerLegion",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png",
+          "score": "0:0",
+          "result": ""
+        }
       ]
     },
     {
@@ -464,7 +485,12 @@
           "score": "1:2",
           "result": "loss"
         },
-        "-"
+        {
+          "opponent": "Xtreme Gaming",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png",
+          "score": "0:0",
+          "result": ""
+        }
       ]
     },
     {
@@ -499,7 +525,12 @@
           "score": "1:2",
           "result": "loss"
         },
-        "-"
+        {
+          "opponent": "Team Resilience",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/b/bd/Team_Resilience_%28DOTA2%29_lightmode.png/79px-Team_Resilience_%28DOTA2%29_lightmode.png",
+          "score": "0:0",
+          "result": ""
+        }
       ]
     },
     {
@@ -534,7 +565,12 @@
           "score": "1:2",
           "result": "loss"
         },
-        "-"
+        {
+          "opponent": "OG",
+          "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/7b/OG_2026_allmode.png/36px-OG_2026_allmode.png",
+          "score": "0:0",
+          "result": ""
+        }
       ]
     },
     {

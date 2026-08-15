@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-08-15T13:09:24.339Z",
-  "next_match": {
-    "start_time": "2026-08-15T12:55:00.000Z",
-    "matches": [
-      {
-        "team1": "Nigma Galaxy",
-        "team1_logo": "https://liquipedia.net/commons/images/thumb/6/67/Nigma_Galaxy_allmode.png/50px-Nigma_Galaxy_allmode.png",
-        "team2": "Team Spirit",
-        "team2_logo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png"
-      }
-    ]
-  },
+  "updated_at": "2026-08-15T13:42:22.141Z",
+  "next_match": null,
   "teams": [
     {
       "pos": "1",

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-15T13:42:22.141Z",
+  "updated_at": "2026-08-15T13:59:14.289Z",
   "next_match": null,
   "teams": [
     {
@@ -122,7 +122,7 @@
       "name": "Team Liquid",
       "logo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png",
       "matches": "3 - 1",
-      "games": "7 - 5",
+      "games": "8 - 5",
       "status": "qualified",
       "rounds": [
         {
@@ -152,8 +152,8 @@
         {
           "opponent": "Aurora Gaming",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png",
-          "score": "0:1",
-          "result": "loss"
+          "score": "1:1",
+          "result": ""
         }
       ]
     },
@@ -162,7 +162,7 @@
       "name": "Aurora Gaming",
       "logo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png",
       "matches": "3 - 1",
-      "games": "7 - 3",
+      "games": "7 - 4",
       "status": "qualified",
       "rounds": [
         {
@@ -192,8 +192,8 @@
         {
           "opponent": "Team Liquid",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png",
-          "score": "1:0",
-          "result": "win"
+          "score": "1:1",
+          "result": ""
         }
       ]
     },
@@ -282,7 +282,7 @@
       "name": "Iron Wing",
       "logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
       "matches": "2 - 2",
-      "games": "7 - 5",
+      "games": "7 - 6",
       "status": "active",
       "rounds": [
         {
@@ -312,8 +312,8 @@
         {
           "opponent": "Team Yandex",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png",
-          "score": "1:0",
-          "result": "win"
+          "score": "1:1",
+          "result": ""
         }
       ]
     },
@@ -362,7 +362,7 @@
       "name": "Team Yandex",
       "logo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png",
       "matches": "2 - 2",
-      "games": "6 - 6",
+      "games": "7 - 6",
       "status": "active",
       "rounds": [
         {
@@ -392,8 +392,8 @@
         {
           "opponent": "Iron Wing",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
-          "score": "0:1",
-          "result": "loss"
+          "score": "1:1",
+          "result": ""
         }
       ]
     },

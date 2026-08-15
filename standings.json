@@ -1,31 +1,31 @@
 {
-  "updated_at": "2026-08-15T02:11:13.511Z",
+  "updated_at": "2026-08-15T03:04:48.946Z",
   "next_match": {
-    "start_time": "2026-08-15T02:00:00.000Z",
+    "start_time": "2026-08-15T05:00:00.000Z",
     "matches": [
       {
-        "team1": "LGD Gaming",
-        "team1_logo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
-        "team2": "Xtreme Gaming",
-        "team2_logo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png"
+        "team1": "TEAM VISION",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/5/55/TEAM_VISION_allmode.png/52px-TEAM_VISION_allmode.png",
+        "team2": "Team Spirit",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png"
       },
       {
-        "team1": "Team Falcons",
-        "team1_logo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
-        "team2": "GamerLegion",
-        "team2_logo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png"
+        "team1": "Iron Wing",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
+        "team2": "Team Liquid",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png"
       },
       {
-        "team1": "Team Resilience",
-        "team1_logo": "https://liquipedia.net/commons/images/thumb/b/bd/Team_Resilience_%28DOTA2%29_lightmode.png/79px-Team_Resilience_%28DOTA2%29_lightmode.png",
-        "team2": "Team Yandex",
-        "team2_logo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png"
+        "team1": "BoomBoys",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/0/05/BoomBoys_allmode.png/78px-BoomBoys_allmode.png",
+        "team2": "Aurora Gaming",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png"
       },
       {
-        "team1": "OG",
-        "team1_logo": "https://liquipedia.net/commons/images/thumb/7/7b/OG_2026_allmode.png/36px-OG_2026_allmode.png",
-        "team2": "HULIGANI",
-        "team2_logo": "https://liquipedia.net/commons/images/thumb/8/81/HULIGANI_allmode.png/100px-HULIGANI_allmode.png"
+        "team1": "Nigma Galaxy",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/6/67/Nigma_Galaxy_allmode.png/50px-Nigma_Galaxy_allmode.png",
+        "team2": "Vici Gaming",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/c/ce/VICI_Gaming_allmode.png/49px-VICI_Gaming_allmode.png"
       }
     ]
   },

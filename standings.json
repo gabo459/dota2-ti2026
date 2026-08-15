@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-08-15T06:27:33.238Z",
+  "updated_at": "2026-08-15T07:06:44.277Z",
   "next_match": {
-    "start_time": "2026-08-15T06:00:00.000Z",
+    "start_time": "2026-08-15T08:00:00.000Z",
     "matches": [
       {
-        "team1": "Iron Wing",
-        "team1_logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
-        "team2": "Team Liquid",
-        "team2_logo": "https://liquipedia.net/commons/images/thumb/0/01/Team_Liquid_2024_lightmode.png/44px-Team_Liquid_2024_lightmode.png"
+        "team1": "TBDTBD",
+        "team1_logo": "",
+        "team2": "TBDTBD",
+        "team2_logo": ""
       }
     ]
   },
@@ -122,7 +122,7 @@
       "name": "Nigma Galaxy",
       "logo": "https://liquipedia.net/commons/images/thumb/6/67/Nigma_Galaxy_allmode.png/50px-Nigma_Galaxy_allmode.png",
       "matches": "2 - 1",
-      "games": "4 - 2",
+      "games": "5 - 2",
       "status": "active",
       "rounds": [
         {
@@ -146,8 +146,8 @@
         {
           "opponent": "Vici Gaming",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/c/ce/VICI_Gaming_allmode.png/49px-VICI_Gaming_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "1:0",
+          "result": "win"
         },
         "-"
       ]
@@ -227,7 +227,7 @@
       "name": "Vici Gaming",
       "logo": "https://liquipedia.net/commons/images/thumb/c/ce/VICI_Gaming_allmode.png/49px-VICI_Gaming_allmode.png",
       "matches": "2 - 1",
-      "games": "4 - 4",
+      "games": "4 - 5",
       "status": "active",
       "rounds": [
         {
@@ -251,8 +251,8 @@
         {
           "opponent": "Nigma Galaxy",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/6/67/Nigma_Galaxy_allmode.png/50px-Nigma_Galaxy_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "0:1",
+          "result": "loss"
         },
         "-"
       ]

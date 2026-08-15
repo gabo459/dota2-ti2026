@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-15T03:04:48.946Z",
+  "updated_at": "2026-08-15T03:52:49.502Z",
   "next_match": {
     "start_time": "2026-08-15T05:00:00.000Z",
     "matches": [
@@ -315,7 +315,7 @@
       "name": "Team Falcons",
       "logo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
       "matches": "1 - 2",
-      "games": "4 - 5",
+      "games": "5 - 5",
       "status": "active",
       "rounds": [
         {
@@ -339,8 +339,8 @@
         {
           "opponent": "GamerLegion",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "1:0",
+          "result": "win"
         },
         "-"
       ]
@@ -350,7 +350,7 @@
       "name": "LGD Gaming",
       "logo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
       "matches": "1 - 2",
-      "games": "3 - 5",
+      "games": "3 - 6",
       "status": "active",
       "rounds": [
         {
@@ -374,8 +374,8 @@
         {
           "opponent": "Xtreme Gaming",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "0:1",
+          "result": "loss"
         },
         "-"
       ]
@@ -385,7 +385,7 @@
       "name": "Team Resilience",
       "logo": "https://liquipedia.net/commons/images/thumb/b/bd/Team_Resilience_%28DOTA2%29_lightmode.png/79px-Team_Resilience_%28DOTA2%29_lightmode.png",
       "matches": "1 - 2",
-      "games": "4 - 4",
+      "games": "5 - 4",
       "status": "active",
       "rounds": [
         {
@@ -409,8 +409,8 @@
         {
           "opponent": "Team Yandex",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "1:0",
+          "result": "win"
         },
         "-"
       ]
@@ -420,7 +420,7 @@
       "name": "Xtreme Gaming",
       "logo": "https://liquipedia.net/commons/images/thumb/7/72/Xtreme_Gaming_%28China%29_allmode.png/50px-Xtreme_Gaming_%28China%29_allmode.png",
       "matches": "1 - 2",
-      "games": "2 - 4",
+      "games": "3 - 4",
       "status": "active",
       "rounds": [
         {
@@ -444,8 +444,8 @@
         {
           "opponent": "LGD Gaming",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "1:0",
+          "result": "win"
         },
         "-"
       ]
@@ -455,7 +455,7 @@
       "name": "GamerLegion",
       "logo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png",
       "matches": "1 - 2",
-      "games": "3 - 4",
+      "games": "3 - 5",
       "status": "active",
       "rounds": [
         {
@@ -479,8 +479,8 @@
         {
           "opponent": "Team Falcons",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "0:1",
+          "result": "loss"
         },
         "-"
       ]
@@ -490,7 +490,7 @@
       "name": "Team Yandex",
       "logo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png",
       "matches": "1 - 2",
-      "games": "4 - 4",
+      "games": "4 - 5",
       "status": "active",
       "rounds": [
         {
@@ -514,8 +514,8 @@
         {
           "opponent": "Team Resilience",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/b/bd/Team_Resilience_%28DOTA2%29_lightmode.png/79px-Team_Resilience_%28DOTA2%29_lightmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "0:1",
+          "result": "loss"
         },
         "-"
       ]
@@ -525,7 +525,7 @@
       "name": "OG",
       "logo": "https://liquipedia.net/commons/images/thumb/7/7b/OG_2026_allmode.png/36px-OG_2026_allmode.png",
       "matches": "0 - 3",
-      "games": "0 - 6",
+      "games": "1 - 6",
       "status": "eliminated",
       "rounds": [
         {
@@ -549,8 +549,8 @@
         {
           "opponent": "HULIGANI",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/8/81/HULIGANI_allmode.png/100px-HULIGANI_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "1:0",
+          "result": "win"
         },
         "-"
       ]
@@ -560,7 +560,7 @@
       "name": "HULIGANI",
       "logo": "https://liquipedia.net/commons/images/thumb/8/81/HULIGANI_allmode.png/100px-HULIGANI_allmode.png",
       "matches": "0 - 3",
-      "games": "1 - 6",
+      "games": "1 - 7",
       "status": "eliminated",
       "rounds": [
         {
@@ -584,8 +584,8 @@
         {
           "opponent": "OG",
           "opponentLogo": "https://liquipedia.net/commons/images/thumb/7/7b/OG_2026_allmode.png/36px-OG_2026_allmode.png",
-          "score": "0:0",
-          "result": ""
+          "score": "0:1",
+          "result": "loss"
         },
         "-"
       ]

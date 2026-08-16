@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-08-16T04:59:01.765Z",
+  "updated_at": "2026-08-16T05:31:58.706Z",
   "next_match": {
-    "start_time": "2026-08-16T04:30:00.000Z",
+    "start_time": "2026-08-16T06:00:00.000Z",
     "matches": [
       {
-        "team1": "Team Spirit",
-        "team1_logo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png",
-        "team2": "Team Resilience",
-        "team2_logo": "https://liquipedia.net/commons/images/thumb/b/bd/Team_Resilience_%28DOTA2%29_lightmode.png/79px-Team_Resilience_%28DOTA2%29_lightmode.png"
+        "team1": "Iron Wing",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
+        "team2": "GamerLegion",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png"
       }
     ]
   },

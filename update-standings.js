@@ -4,20 +4,21 @@ const { JSDOM } = require('jsdom');
 const LIQUIPEDIA_API_URL = 'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026/Group_Stage&format=json';
 const FALLBACK_URL = 'https://liquipedia.net/dota2/api.php?action=parse&page=The_International/2026&format=json';
 
-const PROXY_URL = (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`;
+// Proxy de respaldo gratuito sin restricciones de localhost
+const PROXY_ALLORIGINS = (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
 
 async function fetchLiquipediaHTML() {
   const headers = {
     'User-Agent': 'Dota2HUDApp/1.0 (https://github.com/gabo459/dota2-ti2026; gabo459@github.com)',
-    'Api-User-Agent': 'Dota2HUDApp/1.0 (https://github.com/gabo459/dota2-ti2026)',
+    'Accept-Encoding': 'gzip',
     'Accept': 'application/json'
   };
 
   const urlsToTry = [
     LIQUIPEDIA_API_URL,
     FALLBACK_URL,
-    PROXY_URL(LIQUIPEDIA_API_URL),
-    PROXY_URL(FALLBACK_URL)
+    PROXY_ALLORIGINS(LIQUIPEDIA_API_URL),
+    PROXY_ALLORIGINS(FALLBACK_URL)
   ];
 
   for (const url of urlsToTry) {
@@ -28,9 +29,14 @@ async function fetchLiquipediaHTML() {
       if (!res.ok) continue;
 
       const rawText = await res.text();
-      if (rawText.trim().startsWith('<')) continue;
+      
+      let data;
+      try {
+        data = JSON.parse(rawText);
+      } catch (e) {
+        continue;
+      }
 
-      const data = JSON.parse(rawText);
       const html = data?.parse?.text?.['*'];
 
       if (html) {
@@ -90,17 +96,12 @@ function parseRoundCell(td) {
   return td.textContent.trim() || '-';
 }
 
-// Extrae el nombre del equipo eliminando explícitamente siglas o clases duplicadas
 function cleanTeamName(container) {
   if (!container) return 'TBD';
 
-  // Clonar para no alterar el DOM original
   const clone = container.cloneNode(true);
-
-  // Eliminar siglas duplicadas o clases responsivas de Liquipedia
   clone.querySelectorAll('.team-template-shortname, .shortname, .mobile-only, .sm-only, [class*="short"]').forEach(el => el.remove());
 
-  // Buscar enlace principal con título de equipo
   const anchor = clone.querySelector('a[title]');
   if (anchor && anchor.getAttribute('title')) {
     const title = anchor.getAttribute('title').trim();
@@ -125,7 +126,6 @@ function parseNextMatches(doc) {
 
     if (timerEls.length === 0) return null;
 
-    // Solo conservar partidos futuros o que hayan comenzado hace menos de 30 minutos (1800s)
     const validItems = timerEls.map(el => ({
       el,
       timestamp: parseInt(el.getAttribute('data-timestamp'))
@@ -133,7 +133,6 @@ function parseNextMatches(doc) {
 
     if (validItems.length === 0) return null;
 
-    // Encontrar la fecha/hora de la partida más cercana
     const minTimestamp = Math.min(...validItems.map(item => item.timestamp));
     const startTime = new Date(minTimestamp * 1000).toISOString();
 
@@ -188,7 +187,6 @@ function parseNextMatches(doc) {
       }
     });
 
-    // Desduplicación estricta ignorando caracteres especiales y mayúsculas
     const seenKeys = new Set();
     const uniqueMatches = [];
 

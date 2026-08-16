@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-08-16T08:21:22.529Z",
-  "next_match": {
-    "start_time": "2026-08-16T08:00:00.000Z",
-    "matches": [
-      {
-        "team1": "LGD Gaming",
-        "team1_logo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
-        "team2": "Team Yandex",
-        "team2_logo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png"
-      }
-    ]
-  },
+  "updated_at": "2026-08-16T08:55:22.670Z",
+  "next_match": null,
   "teams": [
     {
       "pos": "1",

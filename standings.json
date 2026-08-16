@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-08-16T06:00:13.906Z",
+  "updated_at": "2026-08-16T06:52:35.583Z",
   "next_match": {
-    "start_time": "2026-08-16T05:45:00.000Z",
+    "start_time": "2026-08-16T08:00:00.000Z",
     "matches": [
       {
-        "team1": "Iron Wing",
-        "team1_logo": "https://liquipedia.net/commons/images/thumb/3/3c/Iron_Wing_allmode.png/58px-Iron_Wing_allmode.png",
-        "team2": "GamerLegion",
-        "team2_logo": "https://liquipedia.net/commons/images/thumb/2/21/GamerLegion_2026_allmode.png/49px-GamerLegion_2026_allmode.png"
+        "team1": "LGD Gaming",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/2/2f/LGD_Gaming_Dec_2019_allmode.png/50px-LGD_Gaming_Dec_2019_allmode.png",
+        "team2": "Team Yandex",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png"
       }
     ]
   },

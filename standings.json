@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-08-16T02:34:54.654Z",
+  "updated_at": "2026-08-16T03:31:57.636Z",
   "next_match": {
-    "start_time": "2026-08-16T03:00:00.000Z",
+    "start_time": "2026-08-16T05:00:00.000Z",
     "matches": [
       {
-        "team1": "Aurora Gaming",
-        "team1_logo": "https://liquipedia.net/commons/images/thumb/1/1c/Aurora_Gaming_2025_allmode.png/50px-Aurora_Gaming_2025_allmode.png",
-        "team2": "BoomBoys",
-        "team2_logo": "https://liquipedia.net/commons/images/thumb/0/05/BoomBoys_allmode.png/78px-BoomBoys_allmode.png"
+        "team1": "Team Spirit",
+        "team1_logo": "https://liquipedia.net/commons/images/thumb/6/66/Team_Spirit_2022_lightmode.png/43px-Team_Spirit_2022_lightmode.png",
+        "team2": "Team Resilience",
+        "team2_logo": "https://liquipedia.net/commons/images/thumb/b/bd/Team_Resilience_%28DOTA2%29_lightmode.png/79px-Team_Resilience_%28DOTA2%29_lightmode.png"
       }
     ]
   },

@@ -212,6 +212,9 @@ function parseNextMatches(doc) {
   }
 }
 
+// Snippet HTML de respaldo si Liquipedia aún no publica el bracket
+const FALLBACK_BRACKET_HTML = `<div class="brkts-bracket" style="--match-width-mobile:88px;--score-width:22px;--opponent-height:24px;--match-width:180px;--round-horizontal-margin:20px"><div class="brkts-round-header" style="margin:8px 0 2px"><div class="brkts-header brkts-header-div" style="line-height:14px;--skip-round:0;height:25px">UB Quarterfinals<div class="brkts-header-option">Upper Bracket Quarterfinals</div></div><div class="brkts-header brkts-header-div" style="line-height:14px;--skip-round:0;height:25px">Upper Bracket Semifinals<div class="brkts-header-option">Upper Bracket Semifinals</div></div><div class="brkts-header brkts-header-div" style="line-height:14px;--skip-round:1;height:25px">Upper Bracket Final<div class="brkts-header-option">Upper Bracket Final</div></div><div class="brkts-header brkts-header-div" style="line-height:14px;--skip-round:0;height:25px">Grand Final<div class="brkts-header-option">Grand Final</div></div></div></div>`;
+
 async function main() {
   console.log('Obteniendo datos de Liquipedia...');
   const htmlRaw = await fetchLiquipediaHTML();
@@ -226,62 +229,69 @@ async function main() {
 
   const nextMatch = parseNextMatches(doc);
 
+  // 1. Extraer el Bracket de Playoffs
+  const bracketEl = doc.querySelector('.brkts-bracket');
+  let bracketHtml = bracketEl ? bracketEl.outerHTML : FALLBACK_BRACKET_HTML;
+
+  // Normalizar rutas relativas de imágenes dentro del HTML del bracket
+  bracketHtml = bracketHtml.replace(/src="\/commons\//g, 'src="https://liquipedia.net/commons/');
+
+  // 2. Extraer Tabla Swiss Standings
   const table = doc.querySelector('div[data-analytics-name="Swiss standings table"] table') ||
                 doc.querySelector('.standings-swiss table');
 
-  if (!table) {
-    console.log('ℹ️ La tabla Swiss Standings aún no ha sido publicada en Liquipedia.');
-    return;
+  let teams = [];
+  if (table) {
+    const rows = Array.from(table.querySelectorAll('tr.table2__row--body')).filter(row => {
+      if (row.classList.contains('table2__row--head') || row.querySelector('th')) return false;
+      const pos = row.querySelector('.label--placement')?.textContent.trim() || row.cells[0]?.textContent.trim();
+      const name = row.querySelector('.block-team .name.hidden-xs')?.textContent.trim() ||
+                   row.querySelector('.block-team a')?.textContent.trim() ||
+                   row.cells[1]?.textContent.trim();
+      return pos && name && pos !== '#' && name.toLowerCase() !== 'participant';
+    });
+
+    teams = rows.map(row => {
+      const pos = row.querySelector('.label--placement')?.textContent.trim() || row.cells[0]?.textContent.trim();
+      const name = row.querySelector('.block-team .name.hidden-xs')?.textContent.trim() ||
+                   row.querySelector('.block-team a')?.textContent.trim() ||
+                   row.cells[1]?.textContent.trim();
+
+      const matches = row.cells[2]?.textContent.trim() || '-';
+      const games = row.cells[3]?.textContent.trim() || '-';
+
+      const logoImg = row.querySelector('.block-team img');
+      let logo = logoImg ? logoImg.getAttribute('src') || '' : '';
+      if (logo.startsWith('/')) logo = 'https://liquipedia.net' + logo;
+
+      let status = 'active';
+      const matchParts = matches.split('-').map(s => parseInt(s.trim()));
+      if (matchParts.length === 2 && !isNaN(matchParts[0]) && !isNaN(matchParts[1])) {
+        if (matchParts[0] >= 3) status = 'qualified';
+        else if (matchParts[1] >= 3) status = 'eliminated';
+      }
+
+      const rounds = [
+        parseRoundCell(row.cells[4]),
+        parseRoundCell(row.cells[5]),
+        parseRoundCell(row.cells[6]),
+        parseRoundCell(row.cells[7]),
+        parseRoundCell(row.cells[8])
+      ];
+
+      return { pos, name, logo, matches, games, status, rounds };
+    });
   }
-
-  const rows = Array.from(table.querySelectorAll('tr.table2__row--body')).filter(row => {
-    if (row.classList.contains('table2__row--head') || row.querySelector('th')) return false;
-    const pos = row.querySelector('.label--placement')?.textContent.trim() || row.cells[0]?.textContent.trim();
-    const name = row.querySelector('.block-team .name.hidden-xs')?.textContent.trim() ||
-                 row.querySelector('.block-team a')?.textContent.trim() ||
-                 row.cells[1]?.textContent.trim();
-    return pos && name && pos !== '#' && name.toLowerCase() !== 'participant';
-  });
-
-  const teams = rows.map(row => {
-    const pos = row.querySelector('.label--placement')?.textContent.trim() || row.cells[0]?.textContent.trim();
-    const name = row.querySelector('.block-team .name.hidden-xs')?.textContent.trim() ||
-                 row.querySelector('.block-team a')?.textContent.trim() ||
-                 row.cells[1]?.textContent.trim();
-
-    const matches = row.cells[2]?.textContent.trim() || '-';
-    const games = row.cells[3]?.textContent.trim() || '-';
-
-    const logoImg = row.querySelector('.block-team img');
-    let logo = logoImg ? logoImg.getAttribute('src') || '' : '';
-    if (logo.startsWith('/')) logo = 'https://liquipedia.net' + logo;
-
-    let status = 'active';
-    const matchParts = matches.split('-').map(s => parseInt(s.trim()));
-    if (matchParts.length === 2 && !isNaN(matchParts[0]) && !isNaN(matchParts[1])) {
-      if (matchParts[0] >= 3) status = 'qualified';
-      else if (matchParts[1] >= 3) status = 'eliminated';
-    }
-
-    const rounds = [
-      parseRoundCell(row.cells[4]),
-      parseRoundCell(row.cells[5]),
-      parseRoundCell(row.cells[6]),
-      parseRoundCell(row.cells[7]),
-      parseRoundCell(row.cells[8])
-    ];
-
-    return { pos, name, logo, matches, games, status, rounds };
-  });
 
   const outputData = {
     updated_at: new Date().toISOString(),
     next_match: nextMatch,
-    teams
+    bracket_html: bracketHtml,
+    teams: teams
   };
 
   fs.writeFileSync('standings.json', JSON.stringify(outputData, null, 2), 'utf-8');
-  console.log(`✅ standings.json actualizado con éxito (${teams.length} equipos procesados).`);
+  console.log(`✅ standings.json actualizado con éxito (Bracket e información guardados).`);
 }
 
 main();

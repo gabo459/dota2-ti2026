@@ -123,6 +123,11 @@
       box-shadow: 0 0 10px rgba(229, 193, 88, 0.4);
     }
 
+    .stage-tab-btn {
+      font-size: 0.95rem;
+      padding: 9px 20px;
+    }
+
     .streams-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
@@ -539,6 +544,9 @@
     .brkts-match .brkts-popup {
       display: none !important;
     }
+
+    .stage-view { display: none; }
+    .stage-view.active { display: block; }
 
     .status-text {
       text-align: center;
@@ -985,8 +993,7 @@
       </div>
     </div>
 
-    <!-- Tabla Swiss Standings -->
-    <div class="section-title" style="margin-bottom:18px;">Tabla de Posiciones - Swiss Stage</div>
+    <!-- Barra Superior de Estado y Controles -->
     <div class="status-bar">
       <div class="live-indicator">
         <div class="dot"></div>
@@ -1003,15 +1010,29 @@
       <button class="refresh-btn" onclick="loadLiquipediaData()">Actualizar Datos</button>
     </div>
 
-    <div id="content">
-      <div class="status-text">Cargando Tabla de Posiciones desde standings.json...</div>
+    <!-- Selector de Etapas del Torneo -->
+    <div class="section-header-flex">
+      <div id="stage-title" class="section-title">Fase de Grupos - Swiss Stage</div>
+      <div class="stream-controls">
+        <button id="btn-stage-swiss" class="hud-btn stage-tab-btn active" onclick="switchStage('swiss')">Fase de Grupos</button>
+        <button id="btn-stage-bracket" class="hud-btn stage-tab-btn" onclick="switchStage('bracket')">Evento Principal (Playoffs)</button>
+      </div>
     </div>
 
-    <!-- Sección Playoffs Bracket -->
-    <div class="section-title" style="margin-bottom:18px;">Playoffs - Cuadro de Eliminatorias</div>
-    <div id="bracket-container" class="bracket-wrapper">
-      <div class="status-text">Cargando cuadro de eliminatorias...</div>
+    <!-- VISTA 1: Fase de Grupos (Swiss Stage) -->
+    <div id="stage-view-swiss" class="stage-view active">
+      <div id="content">
+        <div class="status-text">Cargando Tabla de Posiciones desde standings.json...</div>
+      </div>
     </div>
+
+    <!-- VISTA 2: Evento Principal (Playoffs Bracket) -->
+    <div id="stage-view-bracket" class="stage-view">
+      <div id="bracket-container" class="bracket-wrapper">
+        <div class="status-text">Cargando cuadro de eliminatorias...</div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Contenedor Único para el Popup Dinámico -->
@@ -1026,6 +1047,29 @@
     window.OPENDOTA_ITEMS = {};
     window.OPENDOTA_TI_MATCHES = [];
     let countdownInterval = null;
+
+    // Conmutador de Etapas (Fase de Grupos vs Evento Principal)
+    function switchStage(stage) {
+      const swissView = document.getElementById('stage-view-swiss');
+      const bracketView = document.getElementById('stage-view-bracket');
+      const btnSwiss = document.getElementById('btn-stage-swiss');
+      const btnBracket = document.getElementById('btn-stage-bracket');
+      const titleEl = document.getElementById('stage-title');
+
+      if (stage === 'swiss') {
+        swissView.classList.add('active');
+        bracketView.classList.remove('active');
+        btnSwiss.classList.add('active');
+        btnBracket.classList.remove('active');
+        titleEl.textContent = 'Fase de Grupos - Swiss Stage';
+      } else {
+        swissView.classList.remove('active');
+        bracketView.classList.add('active');
+        btnSwiss.classList.remove('active');
+        btnBracket.classList.add('active');
+        titleEl.textContent = 'Evento Principal - Playoffs';
+      }
+    }
 
     // Normalizador de nombres de equipos para búsquedas flexibles
     function normalizeTeamName(name) {

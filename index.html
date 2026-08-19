@@ -6,7 +6,7 @@
   <meta name="referrer" content="no-referrer">
   <title>The International 2026 - Dota 2 HUD Multistream</title>
   
-  <!-- Carga de Font Awesome para los íconos originales de Liquipedia -->
+  <!-- Font Awesome para los íconos de la interfaz y Liquipedia -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
@@ -24,9 +24,7 @@
       --dire-red: #e74c3c;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: 'Radiance', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -320,6 +318,7 @@
       border: 1px solid var(--border-metallic);
       border-radius: 6px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.8);
+      margin-bottom: 35px;
     }
 
     .standings-table {
@@ -458,6 +457,89 @@
       white-space: nowrap;
     }
 
+    /* Estilos para el Bracket de Playoffs */
+    .bracket-wrapper {
+      background: var(--card-bg);
+      border: 1px solid var(--border-metallic);
+      border-radius: 6px;
+      padding: 20px;
+      overflow-x: auto;
+      margin-bottom: 35px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+    }
+
+    .brkts-bracket {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      min-width: max-content;
+    }
+
+    .brkts-round-header, .brkts-round-body {
+      display: flex;
+      gap: var(--round-horizontal-margin, 20px);
+    }
+
+    .brkts-header-div {
+      width: var(--match-width, 180px);
+      text-align: center;
+      font-weight: bold;
+      color: var(--accent-gold);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    .brkts-header-option { display: none; }
+    .brkts-header-option:first-child { display: block; }
+
+    .brkts-match {
+      width: var(--match-width, 180px);
+      background: #080c12;
+      border: 1px solid var(--border-metallic);
+      border-radius: 4px;
+      position: relative;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.1s;
+    }
+
+    .brkts-match:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-1px);
+    }
+
+    .brkts-opponent-entry {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      background: #0d1218;
+      border-bottom: 1px solid rgba(62, 49, 30, 0.4);
+      font-size: 0.8rem;
+    }
+
+    .brkts-opponent-entry-last { border-bottom: none; }
+    .brkts-opponent-entry-left { display: flex; align-items: center; gap: 6px; overflow: hidden; }
+
+    .brkts-opponent-entry img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+    }
+
+    .brkts-line {
+      position: absolute;
+      background: var(--border-highlight);
+    }
+
+    .brkts-connector, .brkts-round-lower-connectors {
+      position: relative;
+    }
+
+    /* Ocultar los popups embebidos nativos del bracket para mostrarlos dentro del modal */
+    .brkts-match .brkts-popup {
+      display: none !important;
+    }
+
     .status-text {
       text-align: center;
       padding: 25px;
@@ -467,13 +549,12 @@
       border: 1px solid var(--border-metallic);
     }
 
+    /* Estilos del Modal Overlay y Popups */
     .popup-modal-overlay {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
       background: rgba(3, 5, 8, 0.85);
       z-index: 2500;
       justify-content: center;
@@ -481,14 +562,11 @@
       backdrop-filter: blur(5px);
     }
 
-    .popup-modal-overlay.active {
-      display: flex;
-    }
+    .popup-modal-overlay.active { display: flex; }
 
     .brkts-popup.brkts-match-info-popup {
       position: relative !important;
-      top: auto !important;
-      left: auto !important;
+      top: auto !important; left: auto !important;
       width: 560px !important;
       max-width: 95vw;
       max-height: 90vh;
@@ -504,8 +582,7 @@
 
     .brkts-popup-close-button {
       position: absolute;
-      top: 10px;
-      right: 12px;
+      top: 10px; right: 12px;
       background: none;
       border: none;
       color: var(--text-muted);
@@ -680,8 +757,7 @@
     }
 
     .hero-card img {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: cover;
       display: block;
     }
@@ -694,8 +770,7 @@
     .hero-card.ban::after {
       content: '✖';
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       color: var(--dire-red);
       font-size: 16px;
@@ -825,27 +900,21 @@
       overflow: hidden;
     }
 
-    .item-slot.main {
-      width: 28px;
-      height: 20px;
-    }
+    .item-slot.main { width: 28px; height: 20px; }
 
     .item-slot.neutral {
-      width: 22px;
-      height: 22px;
+      width: 22px; height: 22px;
       border-radius: 50%;
       border: 1px solid var(--accent-gold);
     }
 
     .item-slot.backpack {
-      width: 18px;
-      height: 13px;
+      width: 18px; height: 13px;
       opacity: 0.6;
     }
 
     .item-slot img {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: cover;
       display: block;
     }
@@ -931,11 +1000,17 @@
         <div id="countdown-timer" class="timer-display">00h 00m 00s</div>
       </div>
 
-      <button class="refresh-btn" onclick="loadLiquipediaData()">Actualizar Tabla</button>
+      <button class="refresh-btn" onclick="loadLiquipediaData()">Actualizar Datos</button>
     </div>
 
     <div id="content">
       <div class="status-text">Cargando Tabla de Posiciones desde standings.json...</div>
+    </div>
+
+    <!-- Sección Playoffs Bracket -->
+    <div class="section-title" style="margin-bottom:18px;">Playoffs - Cuadro de Eliminatorias</div>
+    <div id="bracket-container" class="bracket-wrapper">
+      <div class="status-text">Cargando cuadro de eliminatorias...</div>
     </div>
   </div>
 
@@ -1063,9 +1138,7 @@
       try {
         const res = await fetch('https://api.opendota.com/api/proMatches');
         if (!res.ok) return;
-        const matches = await res.json();
-        
-        window.OPENDOTA_TI_MATCHES = matches;
+        window.OPENDOTA_TI_MATCHES = await res.json();
       } catch (e) {
         console.warn('No se pudieron obtener partidas pro de OpenDota', e);
       }
@@ -1108,6 +1181,7 @@
 
     async function loadLiquipediaData() {
       const container = document.getElementById('content');
+      const bracketContainer = document.getElementById('bracket-container');
       
       try {
         const response = await fetch(`./standings.json?nocache=${Date.now()}`);
@@ -1117,6 +1191,12 @@
 
         const data = await response.json();
         renderCustomStandingsTable(data, container);
+
+        if (data.bracket_html) {
+          bracketContainer.innerHTML = data.bracket_html;
+        } else {
+          bracketContainer.innerHTML = '<div class="status-text">Cuadro de eliminatorias no disponible.</div>';
+        }
 
       } catch (e) {
         container.innerHTML = `
@@ -1527,7 +1607,31 @@
       loadOpenDotaTIMatches();
 
       const modal = document.getElementById('match-modal');
+      const bracketContainer = document.getElementById('bracket-container');
+
+      // Interceptor de clics para el Bracket de Playoffs
+      bracketContainer.addEventListener('click', (e) => {
+        const matchBox = e.target.closest('.brkts-match');
+        if (matchBox) {
+          const popup = matchBox.querySelector('.brkts-popup');
+          if (popup) {
+            const container = document.getElementById('match-modal-container');
+            container.innerHTML = popup.outerHTML;
+
+            // Corregir imágenes relativas extraídas de Liquipedia
+            container.querySelectorAll('img').forEach(img => {
+              const src = img.getAttribute('src');
+              if (src && src.startsWith('/')) {
+                img.src = 'https://liquipedia.net' + src;
+              }
+            });
+
+            modal.classList.add('active');
+          }
+        }
+      });
       
+      // Controladores de cierre del modal
       modal.addEventListener('click', (e) => {
         if (e.target === modal || e.target.closest('.brkts-popup-close-button, .popup-close-btn')) {
           closeMatchModal();

@@ -2,7 +2,7 @@ name: Update Standings
 
 on:
   schedule:
-    - cron: '*/ * * * *'
+   
   workflow_dispatch:
 
 jobs:
